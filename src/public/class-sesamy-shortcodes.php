@@ -61,7 +61,7 @@ class Sesamy_Shortcodes {
 	function make_tag( $name, $atts, $content){
 
 		$a = $this->html_attributes($this->remove_empty_values($atts));
-		return do_shortcode( "<sesamy-content-container" . (!empty($a) ? " $a" : "") . ">$content</sesamy-content-container>" );
+		return do_shortcode( "<$name" . (!empty($a) ? " $a" : "") . ">$content</$name>" );
 	}
 
 	public function register_shortcode($name) {

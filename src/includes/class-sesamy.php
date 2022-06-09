@@ -127,6 +127,9 @@ class Sesamy {
 		 */
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-sesamy-shortcodes.php';
 
+
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-sesamy-content-container.php';
+
 		$this->loader = new Sesamy_Loader();
 
 	}
@@ -179,6 +182,11 @@ class Sesamy {
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
 		$this->loader->add_action( 'init', $plugin_public, 'register_shortcodes' );
 
+		$sesamyContentContainer = new Sesamy_ContentContainer();
+		$this->loader->add_filter( 'sesamy_content', $sesamyContentContainer, 'process_content' );
+
+		// Make sure we process sesamy after all other hooks with order 999
+		$this->loader->add_filter( 'the_content', $sesamyContentContainer, 'process_main_content', 999 );
 	}
 
 	/**
