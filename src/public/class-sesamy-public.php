@@ -98,6 +98,21 @@ class Sesamy_Public {
 
 		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/sesamy-public.js', array( 'jquery' ), $this->version, false );
 
+		wp_enqueue_script( 'sesamy-content-container', 'https://assets.sesamy.dev/scripts/checkout-button/sesamy-content-container.min.js', array(), $this->version, true );
+		wp_enqueue_script( 'sesamy-button-container', 'https://assets.sesamy.dev/scripts/checkout-button/sesamy-button-container.min.js', array(), $this->version, true );
+		wp_enqueue_script( 'sesamy-button', 'https://assets.sesamy.dev/scripts/checkout-button/sesamy-button.min.js', array(), $this->version, true );
+	}
+
+
+	/**
+	 * Register shortcodes
+	 *
+	 * @since    1.0.0
+	 */
+	public function register_shortcodes() {
+
+		$shortcodes = new Sesamy_Shortcodes();
+		$shortcodes->register();
 	}
 
 }
