@@ -33,6 +33,12 @@ class Sesamy_Shortcodes {
 		$this->register_shortcode( 'sesamy_content_container' );
 		$this->register_shortcode( 'sesamy_button_container' );
 		$this->register_shortcode( 'sesamy_button' );
+		$this->register_shortcode( 'sesamy_login' );
+	}
+	
+	public function register_shortcode($name) {
+
+		add_shortcode( $name, [$this, $name]);
 	}
 
 	/**
@@ -64,11 +70,6 @@ class Sesamy_Shortcodes {
 		return do_shortcode( "<$name" . (!empty($a) ? " $a" : "") . ">$content</$name>" );
 	}
 
-	public function register_shortcode($name) {
-
-		add_shortcode( $name, [$this, $name]);
-	}
-
 	public function sesamy_content_container($atts, $content){
 	
 		$atts = shortcode_atts( array(
@@ -97,6 +98,15 @@ class Sesamy_Shortcodes {
 		), $atts, 'sesamy_button' );
 
 		return $this->make_tag( 'sesamy-button', $atts, $content );
+	}
+
+	public function sesamy_login($atts, $content){
+	
+		$atts = shortcode_atts( array(
+			'client_id' => ''
+		), $atts, 'sesamy_login' );
+
+		return $this->make_tag( 'sesamy-login', $atts, $content );
 	}
 
 }
