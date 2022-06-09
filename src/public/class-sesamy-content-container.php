@@ -27,11 +27,19 @@ class Sesamy_ContentContainer {
 
 	function process_content( $content ) {
 	
+		global $post;
 
-		// Todo: Apply protection based on ruleset
+		// TODO: Add filter for post types to cover from settings
 
-		return "<sesamy-content-container>" . $content . "<sesamy-button></sesamy-button></sesamy_content_container>";
+		if ($post->post_type == 'post') {
 
+			// Todo: Apply protection based on ruleset
+
+			return "<sesamy-content-container>" . $content . "<sesamy-button></sesamy-button></sesamy_content_container>";
+
+		}
+
+		return $content;
 	}
 
 
