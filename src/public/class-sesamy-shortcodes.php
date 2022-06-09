@@ -34,6 +34,8 @@ class Sesamy_Shortcodes {
 		$this->register_shortcode( 'sesamy_button_container' );
 		$this->register_shortcode( 'sesamy_button' );
 		$this->register_shortcode( 'sesamy_login' );
+		$this->register_shortcode( 'sesamy_user_profile' );
+		
 	}
 	
 	public function register_shortcode($name) {
@@ -64,10 +66,17 @@ class Sesamy_Shortcodes {
 		});
 	}
 
+	/**
+	 * Generate tag, empty content will generate a self-closing tag
+	 */
 	function make_tag( $name, $atts, $content){
 
 		$a = $this->html_attributes($this->remove_empty_values($atts));
-		return do_shortcode( "<$name" . (!empty($a) ? " $a" : "") . ">$content</$name>" );
+
+		$tag = "<$name" . (!empty($a) ? " $a" : "");
+		$tag .= empty($content) ? "/>" : ">$content</$name>";
+
+		return $tag;
 	}
 
 	public function sesamy_content_container($atts, $content){
@@ -107,6 +116,15 @@ class Sesamy_Shortcodes {
 		), $atts, 'sesamy_login' );
 
 		return $this->make_tag( 'sesamy-login', $atts, $content );
+	}
+
+	public function sesamy_user_profile($atts, $content){
+	
+		$atts = shortcode_atts( array(
+			// Add here if needed
+		), $atts, 'sesamy-login' );
+
+		return $this->make_tag( 'sesamy-user-profile', $atts, $content );
 	}
 
 }
