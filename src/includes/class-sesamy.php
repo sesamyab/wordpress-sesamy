@@ -123,12 +123,11 @@ class Sesamy {
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-sesamy-public.php';
 
 		/**
-		 * The class responsible for defining all shortcodes
+		 * The following classes contains sesamy plugin logic
 		 */
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-sesamy-shortcodes.php';
-
-
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-sesamy-content-container.php';
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-sesamy-meta.php';
 
 		$this->loader = new Sesamy_Loader();
 
@@ -187,6 +186,10 @@ class Sesamy {
 
 		// Make sure we process sesamy after all other hooks with order 999
 		$this->loader->add_filter( 'the_content', $sesamyContentContainer, 'process_main_content', 999 );
+
+		// Make sure we process sesamy after all other hooks with order 999
+		$sesamyMeta = new Sesamy_Meta();
+		$this->loader->add_filter( 'wp_head', $sesamyMeta, 'add_meta_tags' );
 	}
 
 	/**
