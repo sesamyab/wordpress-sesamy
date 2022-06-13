@@ -35,7 +35,7 @@ class Sesamy_ContentContainer {
 
 			// Todo: Apply protection based on ruleset
 
-			return "<sesamy-content-container>" . $content . "<sesamy-button></sesamy-button></sesamy_content_container>";
+			return '<sesamy-content-container item-src="' . get_permalink() . '">' . $content . '</sesamy-content-container><sesamy-button-container><sesamy-button item-src="' . get_permalink() . '"></sesamy-button></sesamy-button-container>';
 
 		}
 
