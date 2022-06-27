@@ -31,7 +31,7 @@ class Sesamy_ContentContainer {
 
 		// TODO: Add filter for post types to cover from settings
 
-		if ($post->post_type == 'post') {
+		if ( in_array( $post->post_type, ['post', 'artiklar'] ) ) {
 
 			$atts = [
 				'item_src' => get_permalink(),
