@@ -101,6 +101,8 @@ class Sesamy_Public {
 		wp_enqueue_script( 'sesamy-content-container', 'https://assets.sesamy.dev/scripts/checkout-button/sesamy-content-container.min.js', array(), $this->version, true );
 		wp_enqueue_script( 'sesamy-button-container', 'https://assets.sesamy.dev/scripts/checkout-button/sesamy-button-container.min.js', array(), $this->version, true );
 		wp_enqueue_script( 'sesamy-button', 'https://assets.sesamy.dev/scripts/checkout-button/sesamy-button.min.js', array(), $this->version, true );
+		wp_enqueue_script( 'sesamy-login', 'https://assets.sesamy.com/scripts/checkout-button/sesamy-login.min.js', array(), $this->version, true );
+		
 	}
 
 

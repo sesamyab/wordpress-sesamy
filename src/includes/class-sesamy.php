@@ -125,9 +125,11 @@ class Sesamy {
 		/**
 		 * The following classes contains sesamy plugin logic
 		 */
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-sesamy-utils.php';
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-sesamy-shortcodes.php';
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-sesamy-content-container.php';
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-sesamy-meta.php';
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/sesamy-global-functions.php';
 
 		$this->loader = new Sesamy_Loader();
 

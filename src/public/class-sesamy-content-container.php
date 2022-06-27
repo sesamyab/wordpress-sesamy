@@ -33,15 +33,16 @@ class Sesamy_ContentContainer {
 
 		if ($post->post_type == 'post') {
 
-			// Todo: Apply protection based on ruleset
+			$atts = [
+				'item_src' => get_permalink(),
+				'preview' => get_the_excerpt()
+			];
 
-			return '<sesamy-content-container item-src="' . get_permalink() . '">' . $content . '</sesamy-content-container><sesamy-button-container><sesamy-button item-src="' . get_permalink() . '"></sesamy-button></sesamy-button-container>';
+			// Todo: Apply protection based on ruleset
+			return sesamy_content_container( $atts, $content) . sesamy_button( $atts, '');
 
 		}
 
 		return $content;
 	}
-
-
-
 }
