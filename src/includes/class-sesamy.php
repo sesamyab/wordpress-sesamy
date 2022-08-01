@@ -76,6 +76,7 @@ class Sesamy {
 
 		$this->load_dependencies();
 		$this->set_locale();
+		$this->define_common_hooks();
 		$this->define_admin_hooks();
 		$this->define_public_hooks();
 
@@ -122,10 +123,18 @@ class Sesamy {
 		 */
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-sesamy-public.php';
 
+
 		/**
-		 * The following classes contains sesamy plugin logic
+		 * Sesamy includes
 		 */
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-sesamy-utils.php';
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-sesamy-tiers.php';
+
+
+		/**
+		 * The following classes contains sesamy public
+		 */
+
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-sesamy-shortcodes.php';
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-sesamy-content-container.php';
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-sesamy-meta.php';
@@ -156,6 +165,14 @@ class Sesamy {
 
 		$this->loader->add_action( 'plugins_loaded', $plugin_i18n, 'load_plugin_textdomain' );
 
+	}
+
+
+	private function define_common_hooks() {
+
+		$tiers = new Sesamy_Tiers();
+
+		$this->loader->add_action( 'init', $tiers, 'register_taxonomy' );
 	}
 
 	/**

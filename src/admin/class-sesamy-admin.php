@@ -39,7 +39,10 @@ class Sesamy_Admin {
 	 * @var      string    $version    The current version of this plugin.
 	 */
 	private $version;
+
+
 	private $settings;
+	private $tiers;
 
 	/**
 	 * Initialize the class and set its properties.
@@ -101,17 +104,13 @@ class Sesamy_Admin {
 
 	}
 
-	public function admin_init(){
+	public function admin_init(){		
 
-		
 		$this->settings->add_settings(); 
 
 	}
 
 	public function admin_menu(){
-
-		
-
 
 		$this->settings->admin_menu(); 
 
