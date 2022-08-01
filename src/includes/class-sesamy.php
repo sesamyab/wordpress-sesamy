@@ -131,6 +131,12 @@ class Sesamy {
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-sesamy-meta.php';
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/sesamy-global-functions.php';
 
+
+		/**
+		 * Admin includes
+		 */
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-sesamy-settings-admin.php';
+
 		$this->loader = new Sesamy_Loader();
 
 	}
@@ -165,7 +171,8 @@ class Sesamy {
 
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
-
+		$this->loader->add_action( 'admin_init', $plugin_admin, 'admin_init' );
+		$this->loader->add_action( 'admin_menu', $plugin_admin, 'admin_menu' );
 	}
 
 	/**

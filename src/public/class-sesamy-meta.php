@@ -28,7 +28,7 @@ class Sesamy_Meta {
 		if ( is_singular() ) {
 			global $post;
 
-			if ( in_array( $post->post_type, ['post', 'artiklar'] ) ) {
+			if ( in_array( $post->post_type, sesamy_get_enabled_post_types()  ) ) {
 
 
 				echo $this->make_tag( 'sesamy:title', $post->post_title );

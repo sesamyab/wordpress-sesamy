@@ -60,9 +60,17 @@ function sesamy_profile($atts, $content){
 
     $atts = shortcode_atts( array(
         // Add here if needed
-    ), $atts, 'sesamy-login' );
+    ), $atts, 'sesamy_profile' );
 
     return Sesamy_Utils::make_tag( 'sesamy-profile', $atts, $content );
 }
 
+
+function sesamy_get_enabled_post_types(){
+
+    $enabled_types = get_option( 'sesamy_content_types' );
+
+    return is_array( $enabled_types ) ? $enabled_types : [];
+
+}
 
