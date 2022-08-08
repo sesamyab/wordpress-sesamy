@@ -42,7 +42,7 @@ class Sesamy_Admin {
 
 
 	private $settings;
-	private $tiers;
+	private $post_editor;
 
 	/**
 	 * Initialize the class and set its properties.
@@ -56,6 +56,7 @@ class Sesamy_Admin {
 		$this->plugin_name = $plugin_name;
 		$this->version = $version;
 		$this->settings = new Sesamy_Settings_Admin();
+		$this->post_editor = new Sesamy_Post_Editor();
 	}
 
 	/**
@@ -104,10 +105,16 @@ class Sesamy_Admin {
 
 	}
 
+	public function init(){	
+		
+		$this->post_editor->init();
+
+	}
+
 	public function admin_init(){		
 
 		$this->settings->add_settings(); 
-
+		
 	}
 
 	public function admin_menu(){

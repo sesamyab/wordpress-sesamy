@@ -1,0 +1,17 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 2,
+	"name": "sesamy-post-editor/sesamy-post-editor",
+	"version": "0.1.0",
+	"title": "Sesamy",
+	"category": "text",
+	"icon": "lock",
+	"description": "Options for Sesamy",
+	"supports": {
+		"html": false
+	},
+	"textdomain": "sesamy-post-editor",
+	"editorScript": "file:./index.js",
+	"editorStyle": "file:./index.css",
+	"style": "file:./style-index.css"
+}

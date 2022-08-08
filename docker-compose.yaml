@@ -19,6 +19,7 @@ services:
     volumes:
       - wordpress_data:/var/www/html
       - ./src:/var/www/html/wp-content/plugins/sesamy
+      - ./wordpress.ini:/usr/local/etc/php/conf.d/wordpress.ini 
     ports:
       - "8000:80"
     restart: always
@@ -27,7 +28,7 @@ services:
       WORDPRESS_DB_USER: wordpress
       WORDPRESS_DB_PASSWORD: wordpress
       WORDPRESS_DB_NAME: wordpress
-      WORDPRESS_DEBUG: 1
+      WORDPRESS_DEBUG: 1     
 volumes:
   db_data: {}
   wordpress_data: {}

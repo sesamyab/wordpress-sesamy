@@ -30,12 +30,13 @@ class Sesamy_Meta {
 
 			if ( in_array( $post->post_type, sesamy_get_enabled_post_types()  ) ) {
 
+				$price_info = Sesamy_Post_Properties::get_post_price_info( $post );
 
 				echo $this->make_tag( 'sesamy:title', $post->post_title );
-				echo $this->make_tag( 'sesamy:description', $post->post_excerpt );
+				echo $this->make_tag( 'sesamy:description', wp_strip_all_tags( $post->post_excerpt ) );
 				echo $this->make_tag( 'sesamy:image', get_the_post_thumbnail_url( $post ) );
-				echo $this->make_tag( 'sesamy:price', "10" );
-				echo $this->make_tag( 'sesamy:currency ', "SEK" );
+				echo $this->make_tag( 'sesamy:price', $price_info['price'] );
+				echo $this->make_tag( 'sesamy:currency', $price_info['currency'] );
 			}
 		}
 

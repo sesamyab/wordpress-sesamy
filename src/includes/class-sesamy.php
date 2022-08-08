@@ -29,6 +29,12 @@
  */
 class Sesamy {
 
+
+	/**
+	 * The instance of the plugin
+	 */
+	public static $instance;
+
 	/**
 	 * The loader that's responsible for maintaining and registering all hooks that power
 	 * the plugin.
@@ -57,6 +63,7 @@ class Sesamy {
 	 */
 	protected $version;
 
+
 	/**
 	 * Define the core functionality of the plugin.
 	 *
@@ -82,6 +89,7 @@ class Sesamy {
 
 	}
 
+	
 	/**
 	 * Load the required dependencies for this plugin.
 	 *
@@ -129,6 +137,7 @@ class Sesamy {
 		 */
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-sesamy-utils.php';
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-sesamy-tiers.php';
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-sesamy-post-properties.php';
 
 
 		/**
@@ -145,6 +154,7 @@ class Sesamy {
 		 * Admin includes
 		 */
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-sesamy-settings-admin.php';
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-sesamy-post-editor.php';
 
 		$this->loader = new Sesamy_Loader();
 
@@ -173,6 +183,11 @@ class Sesamy {
 		$tiers = new Sesamy_Tiers();
 
 		$this->loader->add_action( 'init', $tiers, 'register_taxonomy' );
+
+
+		$post_properties = new Sesamy_Post_Properties();
+		$this->loader->add_action( 'init', $post_properties, 'register_post_meta' );		
+
 	}
 
 	/**
@@ -190,6 +205,7 @@ class Sesamy {
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
 		$this->loader->add_action( 'admin_init', $plugin_admin, 'admin_init' );
 		$this->loader->add_action( 'admin_menu', $plugin_admin, 'admin_menu' );
+		$this->loader->add_action( 'init', $plugin_admin, 'init' );
 	}
 
 	/**

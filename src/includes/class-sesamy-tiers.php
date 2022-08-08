@@ -17,7 +17,9 @@ class Sesamy_Tiers {
             'show_in_nav_menus' => false,
             'rewrite' => false,
             'hierarchical' => true,
-            'show_in_rest' => true
+            'show_in_rest' => true,
+            'show_in_quick_edit' => false,
+            'meta_box_cb' => false,
         ] );
 
         // NOTE: Different form templates are used in add and edit because of WordPress is not streamlined :(
