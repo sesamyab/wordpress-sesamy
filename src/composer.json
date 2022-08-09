@@ -1,0 +1,6 @@
+{
+    "require": {
+        "web-token/jwt-signature": "2.2.11",
+        "web-token/jwt-signature-algorithm-rsa": "2.2.11"
+    }
+}

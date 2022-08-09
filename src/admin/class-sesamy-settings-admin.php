@@ -46,17 +46,17 @@ class Sesamy_Settings_Admin {
             )
         );
 
-        register_setting( 'sesamy', 'sesamy_protection_level' );
+        register_setting( 'sesamy', 'sesamy_lock_mode' );
 
         add_settings_field(
-            'sesamy_protection_level',
-            __( 'Protection Level', 'sesamy' ),
+            'sesamy_lock_mode',
+            __( 'Lock mode', 'sesamy' ),
             [$this, 'settings_render_select'],
             'sesamy',
             'sesamy_section_general',
             array(
-                'name'                  => 'sesamy_protection_level',
-                'options'               => ['hidden' => 'Hidden', 'hidden_noindex' => "Hidden (not indexed)", "protected" => "Protected"],
+                'name'                  => 'sesamy_lock_mode',
+                'options'               => ['embedded' => 'Embedded', "signedurl" => "Signed URL", 'event' => "Event", ],
                 'label_for'             => 'sesamy_content_types',
             )
         );

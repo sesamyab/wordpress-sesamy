@@ -78,7 +78,6 @@ class Sesamy_Tiers {
 
     public function edit_taxonomy_form_fields( $term ) {
 
-        $protection_level = get_term_meta( $term->term_id, 'protection_level', true );
         $type = get_term_meta( $term->term_id, 'type', true );
         $price = get_term_meta( $term->term_id, 'price', true );
         $currency = get_term_meta( $term->term_id, 'currency', true );

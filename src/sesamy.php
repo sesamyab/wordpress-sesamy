@@ -64,6 +64,10 @@ register_deactivation_hook( __FILE__, 'deactivate_sesamy' );
  */
 require plugin_dir_path( __FILE__ ) . 'includes/class-sesamy.php';
 
+/**
+ * Include composer packages
+ */
+require plugin_dir_path( __FILE__ ) . 'vendor/autoload.php';
 
 Sesamy::$instance = new Sesamy();
 Sesamy::$instance->run();

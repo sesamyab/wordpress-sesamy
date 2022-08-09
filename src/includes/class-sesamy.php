@@ -138,6 +138,9 @@ class Sesamy {
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-sesamy-utils.php';
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-sesamy-tiers.php';
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-sesamy-post-properties.php';
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-sesamy-signed-url.php';
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-sesamy-content-endpoint.php';	
+		
 
 
 		/**
@@ -188,6 +191,11 @@ class Sesamy {
 		$post_properties = new Sesamy_Post_Properties();
 		$this->loader->add_action( 'init', $post_properties, 'register_post_meta' );		
 
+		$ep = new Sesamy_Content_Endpoint();
+		$this->loader->add_action( 'rest_api_init', $ep, 'register_route' );
+		$this->loader->add_filter( 'rest_pre_serve_request', $ep, 'format_response', 10, 4 );
+		
+
 	}
 
 	/**
@@ -224,7 +232,7 @@ class Sesamy {
 		$this->loader->add_action( 'init', $plugin_public, 'register_shortcodes' );
 
 		$sesamyContentContainer = new Sesamy_ContentContainer();
-		$this->loader->add_filter( 'sesamy_content', $sesamyContentContainer, 'process_content' );
+		$this->loader->add_filter( 'sesamy_content', $sesamyContentContainer, 'process_content', 999, 2 );
 
 		// Make sure we process sesamy after all other hooks with order 999
 		$this->loader->add_filter( 'the_content', $sesamyContentContainer, 'process_main_content', 999 );

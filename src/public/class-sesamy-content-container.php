@@ -29,7 +29,25 @@ class Sesamy_ContentContainer {
 				$locked = get_post_meta( $post->ID, '_sesamy_locked', true);
 
 				if( $locked ){
-					return apply_filters( 'sesamy_content', $content );
+
+					$link_has_valid_sign = false;
+
+					// Check if current request has a valid signed link
+					if ( isset( $_GET['ss']) ) {
+
+						global $wp;
+						$current_url = home_url( add_query_arg( $_GET, $wp->request ) );
+						$signed_url = new Sesamy_Signed_Url();
+	
+						$link_has_valid_sign = ( TRUE === $signed_url->is_valid_link( $current_url ) );
+
+					}
+
+					// Apply content container if current url is not signed
+					if ( !$link_has_valid_sign ) {
+						return apply_filters( 'sesamy_content', $post, $content );
+					}
+					
 				}
 		}
 	
@@ -37,11 +55,10 @@ class Sesamy_ContentContainer {
 	}
 
 
-	function process_content( $content ) {
-
-		
+	function process_content( $post, $content ) {
 
 		$atts = [
+			'pid' => $post->ID,
 			'item_src' => get_permalink(),
 			'preview' => get_the_excerpt()
 		];

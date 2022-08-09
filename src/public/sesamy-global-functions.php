@@ -3,16 +3,27 @@
 
 function sesamy_content_container($atts, $content){
 	
+
     $atts = shortcode_atts( array(
-        'preview' => get_the_excerpt(),
-        'item_src' => get_permalink(),
+        'pid'               => '',
+        'preview'           => get_the_excerpt(),
+        'item_src'          => get_permalink(),
         'show_childs_count' => '',
-        'gradient' => ''
+        'gradient'          => '',
+        'lock_mode'         => get_option( 'sesamy_lock_mode' ),
+        'access_url'        => get_site_url() . '/wp-json/sesamy/v1/posts/' . $atts['pid']
     ), $atts, 'sesamy_content_container' );
 
 
-    $tag_content = '<div slot="preview">' . $atts['preview'] . '</div><div slot="content">' .  $content . '</div>';
+    $tag_content = '<div slot="preview">' . $atts['preview'] . '</div>';
     
+    if ( $atts['lock_mode'] == 'embedded' ) {
+        $tag_content .= '<div slot="content">' .  $content . '</div>';
+    }
+    
+    if( $atts['lock_mode'] !== 'signedurl' ){
+        unset( $atts['access_url'] );
+    }
 
     // Exclude attributes used by WordPress when making sesamy tag
     $non_display_atts =  [ 'preview' ];
@@ -27,9 +38,11 @@ function sesamy_content_container($atts, $content){
 function sesamy_button_container($atts, $content){
 
     $atts = shortcode_atts( array(
-        'item_src' => '',
-        'description ' => ''
+        'pid'               => '',
+        'item_src'          => '',
+        'description '      => '',
     ), $atts, 'sesamy_button_container' );
+
 
     return Sesamy_Utils::make_tag( 'sesamy-button-container', $atts, $content );
 }
