@@ -88,7 +88,7 @@ class Sesamy_Signed_Url {
         // Use transient to avoid calling api more than needed
         if ( $jwk === false) { 
 
-          $c = curl_init('https://assets.sesamy.dev/vault-jwks.json'); 
+          $c = curl_init( Sesamy::$instance->get_assets_url() . '/vault-jwks.json'); 
           curl_setopt($c, CURLOPT_RETURNTRANSFER, 1); 
           curl_setopt($c, CURLOPT_USERPWD, 'david:hax0r'); 
           $json = curl_exec($c); 

@@ -281,5 +281,14 @@ class Sesamy {
 	public function get_version() {
 		return $this->version;
 	}
+	
+
+	/**
+	 * Return URL for assets based on admin settings
+	 */
+	public function get_assets_url() {
+		$ep =  get_option( 'sesamy_api_endpoint' );
+		return ( $ep === 'production' ) ? 'https://assets.sesamy.com' : 'https://assets.sesamy.dev';
+	}
 
 }
