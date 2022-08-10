@@ -76,6 +76,12 @@ class Sesamy_Post_Properties {
 
     }
 
+
+    public static function is_locked( $post ) {
+
+        return get_post_meta( $post->ID, '_sesamy_locked', true );
+    }
+
     /**
      * Returns price info with applied ruleset and logic
      */
