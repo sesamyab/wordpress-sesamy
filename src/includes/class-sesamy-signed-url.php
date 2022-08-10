@@ -1,4 +1,5 @@
 <?php
+use Jose\Component\Core\JWK;
 use Jose\Component\Core\AlgorithmManager;
 use Jose\Component\Signature\Algorithm\RS256;
 
