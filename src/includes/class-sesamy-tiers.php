@@ -20,6 +20,12 @@ class Sesamy_Tiers {
             'show_in_rest' => true,
             'show_in_quick_edit' => false,
             'meta_box_cb' => false,
+            'capabilities' => [
+                'manage_terms'  => 'manage_options',
+                'edit_terms'    => 'manage_options',
+                'delete_terms'  => 'manage_options',
+                'assign_terms'  => 'edit_posts'
+            ]
         ] );
 
         // NOTE: Different form templates are used in add and edit because of WordPress is not streamlined :(
