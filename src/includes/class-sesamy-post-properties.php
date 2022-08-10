@@ -26,13 +26,6 @@ class Sesamy_Post_Properties {
                 'auth_callback' => '__return_true'
             ] );
 
-            register_post_meta( $post_type, '_sesamy_enable_price_overrides', [
-                'show_in_rest' => true,
-                'single' => true,
-                'type' => 'boolean',
-                'auth_callback' => '__return_true'
-            ] );
-
             register_post_meta( $post_type, '_sesamy_price', [
                 'show_in_rest' => true,
                 'single' => true,
@@ -47,16 +40,7 @@ class Sesamy_Post_Properties {
                 'auth_callback' => '__return_true'
             ] );
 
-            register_post_meta( $post_type, '_sesamy_price_overrides', [
-                'show_in_rest' => true,
-                'single' => true,
-                'type' => [
-                    'price' => 'number',
-                    'currency' => 'string',
-                    'market'    => 'string'
-                ],
-                'auth_callback' => '__return_true'
-            ] );
+         
           
         }
 

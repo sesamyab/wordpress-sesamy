@@ -9,7 +9,7 @@ export default () => {
   const sesamyTiersTaxonomy = wp.data.select('core').getEntityRecords('taxonomy', 'sesamy_tiers');  
   const currentPost = useSelect(select => select('core/editor').getCurrentPost());
   const sesamy_tiers = useSelect(select => select('core/editor').getEditedPostAttribute('sesamy_tiers'));
-  const selectedTier = sesamy_tiers && sesamy_tiers.length > 0 ? sesamy_tiers[0] : null;
+  const selectedTier = sesamy_tiers && sesamy_tiers.length > 0 ? sesamy_tiers[0] : undefined;
   const dispatch = useDispatch();
 
   const setMeta = (meta) => {
@@ -17,6 +17,15 @@ export default () => {
   }
 
   const currencies = ['SEK', 'NOK', 'DKK'];
+
+  const setTier = (value) => {
+    dispatch( 'core' ).editEntityRecord( 'postType', currentPost.type, currentPost.id, { 'sesamy_tiers': [ value ] } );
+  }
+
+  // Ensure no inconsistencies (NOTE: useEffect cannot be used in gutenberg as regular React)
+  if(!selectedTier && meta['_sesamy_payment_type'] == 'tier' && sesamyTiersTaxonomy && sesamyTiersTaxonomy.length > 0 && meta['_sesamy_locked'] == true){
+    setTier(sesamyTiersTaxonomy[0].id);
+  }
 
   return (
     <PluginDocumentSettingPanel
@@ -27,7 +36,13 @@ export default () => {
       <ToggleControl
         checked={meta['_sesamy_locked']}
         label={__('Locked', 'sesamy')}
-        onChange={(value) => setMeta({ '_sesamy_locked': value })}
+        onChange={(value) => {
+          if (sesamy_tiers && sesamy_tiers.length > 0 != selectedTier){
+
+          }
+          setMeta({ '_sesamy_locked': value });
+        }
+        }
       />
 
 
@@ -50,11 +65,7 @@ export default () => {
           label="Selected Tier"
           value={ selectedTier }
           options={ sesamyTiersTaxonomy && sesamyTiersTaxonomy.map(x => ({ label: x.name, value: x.id})) }
-          onChange={(value) => {
-
-            dispatch( 'core' ).editEntityRecord( 'postType', currentPost.type, currentPost.id, { 'sesamy_tiers': [ value ] } );
-
-          }}
+          onChange={(value) => setTier(value) }
           __nextHasNoMarginBottom
         />
 
@@ -78,34 +89,6 @@ export default () => {
             onChange={(value) => setMeta({ '_sesamy_currency': value })}
             __nextHasNoMarginBottom
           />
-
-
-        <h3>Price overrides</h3>
-
-        <ToggleControl
-                checked={meta['_sesamy_enable_price_overrides']}
-                label={__('Enable price overrides', 'sesamy')}
-                onChange={(value) => setMeta({ '_sesamy_enable_price_overrides': value })}
-              />
-
-            {meta['_sesamy_enable_price_overrides'] && <>
-
-                
-
-                {currencies && currencies.map(currency =>
-                  <TextControl
-                  label={`Price in ${currency}`}
-                  value={meta['_sesamy_price_overrides'] && meta['_sesamy_price_overrides'][currency] ? meta['_sesamy_price_overrides'][currency] : ''}
-                  placeholder={""}
-                  onChange={(value) => {
-                    // TODO: Implement
-                    //setMeta({ 'meta['_sesamy_price_overrides'][currency]': value })
-                  }}
-                />
-
-                )}
-
-      </>}
 
       </>}
 

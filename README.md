@@ -7,6 +7,13 @@ Run the following command to install the dependencies:
     cd src && composer update
 
 
+For debugging gutenberg post editor:
+
+    cd admin/gutenberg/sesamy-post-editor
+    npm start
+
+(Make sure to hard-refresh to avoid script caching issues)
+
 # Filters and actions
 
 In the main loop the wrapping of sesamy container is hooked into two filters, the_content and sesamy_content.
