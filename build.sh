@@ -28,6 +28,7 @@ rm composer.phar
 
 cd 'admin/gutenberg/sesamy-post-editor'
 
+npm install
 npm run build
 
 
