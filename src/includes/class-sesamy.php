@@ -140,8 +140,8 @@ class Sesamy {
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-sesamy-post-properties.php';
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-sesamy-signed-url.php';
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-sesamy-content-endpoint.php';	
-		
-
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-sesamy-currencies.php';	
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-sesamy-settings.php';	
 
 		/**
 		 * The following classes contains sesamy public
@@ -189,12 +189,20 @@ class Sesamy {
 
 
 		$post_properties = new Sesamy_Post_Properties();
-		$this->loader->add_action( 'init', $post_properties, 'register_post_meta' );		
+		$this->loader->add_action( 'init', $post_properties, 'register_post_meta' );	
+		$this->loader->add_action( 'admin_init', $post_properties, 'register_post_meta' );
+		$this->loader->add_action( 'rest_api_init', $post_properties, 'register_post_meta' );	
 
 		$ep = new Sesamy_Content_Endpoint();
 		$this->loader->add_action( 'rest_api_init', $ep, 'register_route' );
 		$this->loader->add_filter( 'rest_pre_serve_request', $ep, 'format_response', 10, 4 );
 		
+		$currencies = new Sesamy_Currencies();
+		$this->loader->add_action( 'rest_api_init', $currencies, 'register_route' );
+
+		$settings = new Sesamy_Settings();
+		$this->loader->add_action( 'init', $settings, 'register_settings' );
+		$this->loader->add_action( 'rest_api_init', $settings, 'register_route' );
 
 	}
 

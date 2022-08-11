@@ -14,6 +14,7 @@ class Sesamy_Post_Properties {
                 'show_in_rest' => true,
                 'single' => true,
                 'type' => 'boolean',
+                'default' => false,
                 'auth_callback' => '__return_true'
             ] );
 

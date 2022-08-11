@@ -2,31 +2,154 @@ import { ToggleControl, TextControl, SelectControl } from '@wordpress/components
 import { PluginDocumentSettingPanel } from '@wordpress/edit-post';
 import { useSelect, useDispatch } from '@wordpress/data';
 import { __ } from '@wordpress/i18n';
+import { useEffect, useState, useMemo } from  '@wordpress/element';
 
+
+function* getPaymentOptions(enableTiers){
+
+  if(enableTiers){
+    yield {label: 'Tier', value: 'tier'};
+  }
+
+  yield {label: 'Custom Price', value: 'custom'};
+}
+
+// Only load for enabled post types
 export default () => {
 
+  const currentPostType = useSelect(select => select('core/editor').getCurrentPostType()); 
+  const [settings, setSettings] = useState(); 
+
+    // Load settings
+    useEffect(() => {
+
+      fetch('/wp-json/sesamy/v1/settings')
+      .then((response) => response.json())
+      .then((data) => setSettings(data) );
+  
+    }, []);
+
+  // Only show box for enabled post types
+  return (settings && settings.content_types.includes(currentPostType))  ? (<SesamyPostEditor />) : null;
+
+}
+
+/**
+ * The sesamy post editor
+ * @returns 
+ */
+const SesamyPostEditor = () => {
+  
   const meta = useSelect(select => select('core/editor').getEditedPostAttribute('meta')); 
   const sesamyTiersTaxonomy = wp.data.select('core').getEntityRecords('taxonomy', 'sesamy_tiers');  
   const currentPost = useSelect(select => select('core/editor').getCurrentPost());
   const sesamy_tiers = useSelect(select => select('core/editor').getEditedPostAttribute('sesamy_tiers'));
   const selectedTier = sesamy_tiers && sesamy_tiers.length > 0 ? sesamy_tiers[0] : undefined;
+  const [currencies, setCurrencies] = useState(); 
+  
+
   const dispatch = useDispatch();
 
   const setMeta = (meta) => {
     dispatch('core/editor').editPost({ meta });
   }
 
-  const currencies = ['SEK', 'NOK', 'DKK'];
+
+  // Load currencies
+  useEffect(() => {
+
+    fetch('/wp-json/sesamy/v1/currencies')
+    .then((response) => response.json())
+    .then((data) => setCurrencies(Object.keys(data)) );
+
+  }, []);
 
   const setTier = (value) => {
     dispatch( 'core' ).editEntityRecord( 'postType', currentPost.type, currentPost.id, { 'sesamy_tiers': [ value ] } );
   }
 
-  // Ensure no inconsistencies (NOTE: useEffect cannot be used in gutenberg as regular React)
-  if(!selectedTier && meta['_sesamy_payment_type'] == 'tier' && sesamyTiersTaxonomy && sesamyTiersTaxonomy.length > 0 && meta['_sesamy_locked'] == true){
-    setTier(sesamyTiersTaxonomy[0].id);
-  }
+  // Enable tiers if there is at least one
+  const enableTiers = useMemo(() => {
 
+    if (!sesamyTiersTaxonomy){
+      return;
+    }
+    
+    return sesamyTiersTaxonomy.length > 0;
+  }, [sesamyTiersTaxonomy]);
+
+  // Populate payment types
+  const paymentTypes = useMemo(() => {
+
+    if(enableTiers === undefined) {
+      return;
+    }
+
+    return Array.from(getPaymentOptions(enableTiers))
+  }, [enableTiers]);
+
+
+  // Default to first payment type if nothing is set or misconfigured (tier removed etc)
+  useEffect(() => {
+
+    if(!paymentTypes){
+      return;
+    }
+
+    if(!meta['_sesamy_payment_type']){      
+      setMeta({ '_sesamy_payment_type': paymentTypes[0].value })
+    }
+
+    // Notify user if configuration is invalid
+    if(!paymentTypes.map(x => x.value).includes(meta['_sesamy_payment_type'])){
+      console.log(paymentTypes);
+      setMeta({ '_sesamy_payment_type': paymentTypes[0].value })
+      wp.data.dispatch( 'core/notices' ).createNotice(
+        'error',
+        'Sesamy: The configured tier is no longer available. Defaulting to custom pricing.',
+        { id: 'sesamy-tier-config', isDismissible: true }
+      );
+    }
+
+
+    
+
+
+  }, ['_sesamy_payment_type', paymentTypes])
+
+  useEffect(() => {
+   
+
+    if(!meta || meta['_sesamy_locked'] !== true){
+      return;
+    }
+
+    switch (meta['_sesamy_payment_type']) {
+        case 'tier':
+
+          if(!selectedTier && sesamyTiersTaxonomy && sesamyTiersTaxonomy.length > 0){
+            setTier(sesamyTiersTaxonomy[0].id);
+          }        
+
+          break;
+        case 'custom':
+
+          if( !meta['_sesamy_currency'] && currencies && currencies.length > 0){
+            setMeta({ '_sesamy_currency': currencies[0] });
+          }
+
+          
+          break;
+    }
+
+
+  }, [selectedTier, sesamyTiersTaxonomy, meta['_sesamy_payment_type'], meta['_sesamy_locked'], currencies ]);
+
+
+  
+
+console.log(meta, paymentTypes, enableTiers);
+  
   return (
     <PluginDocumentSettingPanel
       name="sesamy-post-editor"
@@ -36,13 +159,7 @@ export default () => {
       <ToggleControl
         checked={meta['_sesamy_locked']}
         label={__('Locked', 'sesamy')}
-        onChange={(value) => {
-          if (sesamy_tiers && sesamy_tiers.length > 0 != selectedTier){
-
-          }
-          setMeta({ '_sesamy_locked': value });
-        }
-        }
+        onChange={(value) => setMeta({ '_sesamy_locked': value }) }
       />
 
 
@@ -51,7 +168,7 @@ export default () => {
       <SelectControl
           label="Payment Type"
           value={ meta['_sesamy_payment_type'] }
-          options={ [{label: 'Tier', value: 'tier'}, {label: 'Custom Price', value: 'custom'}] }
+          options={ paymentTypes }
           onChange={(value) => {
             setMeta({ '_sesamy_payment_type': value })
           }}
@@ -59,7 +176,7 @@ export default () => {
         />
 
 
-      {meta['_sesamy_payment_type']  == 'tier' &&  
+      {enableTiers && meta['_sesamy_payment_type']  == 'tier' &&  
 
       <SelectControl
           label="Selected Tier"
@@ -69,6 +186,8 @@ export default () => {
           __nextHasNoMarginBottom
         />
 
+
+        
       }
 
         {meta['_sesamy_payment_type'] == "custom" && <>
@@ -85,7 +204,7 @@ export default () => {
           <SelectControl
             label="Currency"
             value={meta['_sesamy_currency']}
-            options={currencies.map(x => ({label: x, value: x}))}
+            options={currencies && currencies.map(x => ({label: x, value: x}))}
             onChange={(value) => setMeta({ '_sesamy_currency': value })}
             __nextHasNoMarginBottom
           />

@@ -76,7 +76,7 @@ class Sesamy_Tiers {
         </div>
         <div class="form-field">
             <label for="currency">Currency</label>
-            <?php $this->render_select( 'currency', ['SEK' => 'SEK', 'NOK' => "NOK", "DKK" => "DKK"] ) ?>
+            <?php $this->render_select( 'currency', Sesamy_Currencies::get_currencies() ) ?>
             <p>Currency for this tier</p>
         </div>
         <?php
@@ -103,7 +103,7 @@ class Sesamy_Tiers {
         <tr class="form-field">
         <th><label for="currency">Currency</label></th>
         <td>
-            <?php $this->render_select( 'currency', ['SEK' => 'SEK', 'NOK' => "NOK", "DKK" => "DKK"], $currency) ?>
+            <?php $this->render_select( 'currency', Sesamy_Currencies::get_currencies(), $currency) ?>
             <p>Currency for this tier</p></td>
         </tr>
         <?php

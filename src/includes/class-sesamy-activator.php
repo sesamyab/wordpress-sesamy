@@ -33,7 +33,7 @@ class Sesamy_Activator {
 
 		// Set default endpoint to debug
 		if( get_option( 'sesamy_api_endpoint' ) === false ) {
-			add_option( 'sesamy_api_endpoint', 'debug' );
+			add_option( 'sesamy_api_endpoint', 'develop' );
 		}
 		
 	}

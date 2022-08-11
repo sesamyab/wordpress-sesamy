@@ -90,7 +90,6 @@ class Sesamy_Signed_Url {
 
           $c = curl_init( Sesamy::$instance->get_assets_url() . '/vault-jwks.json'); 
           curl_setopt($c, CURLOPT_RETURNTRANSFER, 1); 
-          curl_setopt($c, CURLOPT_USERPWD, 'david:hax0r'); 
           $json = curl_exec($c); 
           curl_close($c);
 

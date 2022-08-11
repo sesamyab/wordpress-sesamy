@@ -31,7 +31,7 @@ class Sesamy_Settings_Admin {
         );
 
 
-        register_setting( 'sesamy', 'sesamy_content_types' );
+      
     
         add_settings_field(
             'sesamy_content_types',
@@ -46,8 +46,7 @@ class Sesamy_Settings_Admin {
             )
         );
 
-        register_setting( 'sesamy', 'sesamy_lock_mode' );
-
+        
         add_settings_field(
             'sesamy_lock_mode',
             __( 'Lock mode', 'sesamy' ),
@@ -61,7 +60,6 @@ class Sesamy_Settings_Admin {
             )
         );
 
-        register_setting( 'sesamy', 'sesamy_api_endpoint' );
         
         add_settings_field(
             'sesamy_api_endpoint',
@@ -71,7 +69,7 @@ class Sesamy_Settings_Admin {
             'sesamy_section_general',
             array(
                 'name'                  => 'sesamy_api_endpoint',
-                'options'               => ['production' => 'Production', "debug" => "Debug" ],
+                'options'               => ['production' => 'Production', "develop" => "Develop" ],
                 'label_for'             => 'sesamy_api_endpoint',
             )
         );
