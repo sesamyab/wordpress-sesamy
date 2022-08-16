@@ -31,4 +31,6 @@ cd 'admin/gutenberg/sesamy-post-editor'
 npm install
 npm run build
 
+# Remove node modules
+rm -rf ./node_modules
 
