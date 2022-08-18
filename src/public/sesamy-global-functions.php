@@ -21,7 +21,7 @@ function sesamy_content_container($atts, $content){
         $tag_content .= '<div slot="content">' .  $content . '</div>';
     }
     
-    if( $atts['lock_mode'] !== 'signedurl' ){
+    if( $atts['lock_mode'] !== 'signedUrl' ){
         unset( $atts['access_url'] );
     }
 
