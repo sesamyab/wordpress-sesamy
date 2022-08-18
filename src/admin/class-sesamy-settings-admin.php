@@ -31,6 +31,17 @@ class Sesamy_Settings_Admin {
         );
 
 
+        add_settings_field(
+            'sesamy_client_id',
+            __( 'Client ID', 'sesamy' ),
+            [$this, 'settings_render_input'],
+            'sesamy',
+            'sesamy_section_general',
+            array(
+                'name'                  => 'sesamy_client_id',
+                'label_for'             => 'sesamy_client_id',
+            )
+        );
       
     
         add_settings_field(
@@ -108,6 +119,14 @@ class Sesamy_Settings_Admin {
             $checked = in_array($key, $options) ? 'checked' : '';
             echo "<label><input type=\"checkbox\" name=\"{$args['name']}[]\" value=\"$key\" $checked>$value</label><br>";
         }
+    }
+
+
+    function settings_render_input($args) {
+
+        $settings_value = get_option( $args['name'] );
+
+        echo '<input type="text" name="' . $args['name'] . '" value="' . $settings_value . '">';
     }
 
 

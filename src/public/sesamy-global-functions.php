@@ -78,6 +78,18 @@ function sesamy_profile($atts, $content){
     return Sesamy_Utils::make_tag( 'sesamy-profile', $atts, $content );
 }
 
+/**
+ * Render the config tag
+ */
+function sesamy_config($atts, $content){
+
+    $atts = shortcode_atts( array(
+        'client_id' => '',
+        'currency' => ''
+    ), $atts, 'sesamy_config' );
+
+    return Sesamy_Utils::make_tag( 'sesamy-config', $atts, $content );
+}
 
 function sesamy_get_enabled_post_types(){
 
