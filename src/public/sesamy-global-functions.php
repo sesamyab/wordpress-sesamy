@@ -17,7 +17,7 @@ function sesamy_content_container($atts, $content){
 
     $tag_content = '<div slot="preview">' . $atts['preview'] . '</div>';
     
-    if ( $atts['lock_mode'] == 'embedded' ) {
+    if ( $atts['lock_mode'] == 'embed' ) {
         $tag_content .= '<div slot="content">' .  $content . '</div>';
     }
     

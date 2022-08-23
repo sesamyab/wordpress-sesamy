@@ -66,7 +66,7 @@ class Sesamy_Settings_Admin {
             'sesamy_section_general',
             array(
                 'name'                  => 'sesamy_lock_mode',
-                'options'               => ['embedded' => 'Embedded', "signedUrl" => "Signed URL", 'event' => "Event", ],
+                'options'               => ['embed' => 'Embed', "signedUrl" => "Signed URL", 'event' => "Event", ],
                 'label_for'             => 'sesamy_content_types',
             )
         );
