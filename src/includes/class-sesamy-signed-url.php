@@ -13,13 +13,13 @@ class Sesamy_Signed_Url {
 
         $params = $this->get_request_parameters( $url );
 
-        $expected_keys = ['si', 'se', 'ss'];
+        $expected_keys = ['sp', 'se', 'ss'];
  
         if ( count( array_intersect( array_keys( $params),  $expected_keys ) ) !== count( $expected_keys )) {
             return new WP_Error(404, 'Missing request parameters');
         }
        
-        $post = get_post( $params['si'] );
+        $post = get_post( $params['sp'] );
 
         if( $post == null) {
           return new WP_Error(404, 'Item not found');

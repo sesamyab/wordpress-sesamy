@@ -15,7 +15,7 @@ class Sesamy_Content_Endpoint {
                 'se' => [
                   'validate_callback' => [$this, 'validate_numeric_param']
                 ],
-                'si' => [
+                'sp' => [
                   'validate_callback' => [$this, 'validate_numeric_param']
                 ],
                 'ss' => [],
@@ -39,13 +39,13 @@ class Sesamy_Content_Endpoint {
       
         $signed_url = new Sesamy_Signed_Url();
 
-        $public_signed_url = $_SERVER['HTTP_X_SESAMY_SIGNED_URL']; // ?? get_the_permalink( $data['si'] ) . "&se=". $data['se'] . "&si=" . $data['si'] . "&ss=" . $data['ss'];
+        $public_signed_url = $_SERVER['HTTP_X_SESAMY_SIGNED_URL']; 
 
         $result = $signed_url->is_valid_link( $public_signed_url );
 
         if( is_bool($result) && TRUE == $result ){
           $params = $signed_url->get_request_parameters($public_signed_url);
-          $post = get_post( $params['si']);
+          $post = get_post( $params['sp']);
           return new WP_REST_Response( ['data' => apply_filters( 'the_content', $post->post_content ) ]);
         }else{
 
