@@ -58,9 +58,9 @@ class Sesamy_ContentContainer {
 	function process_content( $post, $content ) {
 
 		$atts = [
-			'pid' => $post->ID,
-			'item_src' => get_permalink(),
-			'preview' => get_the_excerpt()
+			'publisher_content_id' 	=> $post->ID,
+			'item_src' 				=> get_permalink(),
+			'preview'				 => get_the_excerpt()
 		];
 
 		return sesamy_content_container( $atts, $content) . sesamy_button( $atts, '');

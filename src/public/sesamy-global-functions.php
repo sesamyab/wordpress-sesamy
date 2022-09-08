@@ -5,13 +5,13 @@ function sesamy_content_container($atts, $content){
 	
 
     $atts = shortcode_atts( array(
-        'pid'               => '',
-        'preview'           => get_the_excerpt(),
-        'item_src'          => get_permalink(),
-        'show_childs_count' => '',
-        'gradient'          => '',
-        'lock_mode'         => get_option( 'sesamy_lock_mode' ),
-        'access_url'        => get_site_url() . '/wp-json/sesamy/v1/posts/' . $atts['pid']
+        'publisher_content_id'  => '',
+        'preview'               => get_the_excerpt(),
+        'item_src'              => get_permalink(),
+        'show_childs_count'     => '',
+        'gradient'              => '',
+        'lock_mode'             => get_option( 'sesamy_lock_mode' ),
+        'access_url'            => get_site_url() . '/wp-json/sesamy/v1/posts/' . $atts['publisher_content_id']
     ), $atts, 'sesamy_content_container' );
 
 
@@ -38,9 +38,9 @@ function sesamy_content_container($atts, $content){
 function sesamy_button_container($atts, $content){
 
     $atts = shortcode_atts( array(
-        'pid'               => '',
-        'item_src'          => '',
-        'description '      => '',
+        'publisher_content_id'  => '',
+        'item_src'              => '',
+        'description '          => '',
     ), $atts, 'sesamy_button_container' );
 
 
