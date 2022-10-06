@@ -38,7 +38,7 @@ class Sesamy_Signed_Url {
         }
 
         // Verify signature
-        if ( $this->verify_signature( $params['signed_url'], $params['ss'] ) ) {
+        if ( $this->verify_signature( $params['signed_url'], base64_decode($params['ss']) ) ) {
           return true;
         }else{
           return new WP_Error(404, 'Invalid signature.');

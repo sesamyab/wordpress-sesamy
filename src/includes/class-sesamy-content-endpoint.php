@@ -7,7 +7,7 @@ class Sesamy_Content_Endpoint {
 
     public function register_route(){
 
-        register_rest_route( 'sesamy/v1', '/post/(?P<id>\d+)', array(
+        register_rest_route( 'sesamy/v1', '/posts/(?P<id>\d+)', array(
             'methods' => 'GET',
             'callback' => [$this, 'sesamy_post_ep'],
             'permission_callback' => '__return_true',
@@ -45,7 +45,13 @@ class Sesamy_Content_Endpoint {
 
         if( is_bool($result) && TRUE == $result ){
           $params = $signed_url->get_request_parameters($public_signed_url);
+
+          if ( intval( $request["id"] ) != intval( $params["sp"] ) ){
+            return new WP_Error(400, 'The supplied route id does not match the sp in supplied token');
+          }
+
           $post = get_post( $params['sp']);
+
           return new WP_REST_Response( ['data' => apply_filters( 'the_content', $post->post_content ) ]);
         }else{
 
