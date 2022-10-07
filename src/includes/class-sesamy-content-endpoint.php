@@ -52,7 +52,7 @@ class Sesamy_Content_Endpoint {
 
           $post = get_post( $params['sp']);
 
-          return new WP_REST_Response( ['data' => apply_filters( 'the_content', $post->post_content ) ]);
+          return new WP_REST_Response( ['data' => apply_filters( 'the_content', $post->post_content )] );
         }else{
 
           return new WP_Error(400, 'The link is incorrect or no longer valid.');
@@ -76,33 +76,27 @@ class Sesamy_Content_Endpoint {
        */
       public function format_response($served, $result, $request, $server) {
 
-
-        if ( preg_match('/^\/sesamy\/v1\/post\/[0-9]+$/m', $request->get_route() ) && isset( $result->data['data'] )){
+  
+        if ( preg_match('/^\/sesamy\/v1\/posts\/[0-9]+$/m', $request->get_route() ) && isset( $result->data )){
 
           switch ( $_SERVER['HTTP_ACCEPT'] ) {
 
             case 'text/html':
               header( 'Content-Type: text/html; charset=' . get_option( 'blog_charset' ) );
-
-              echo $result->data['data'];
-              $served = true;
-              break;
+              echo $result->data["data"];
+              exit;
         
             case 'application/xml':
               header( 'Content-Type: application/xml; charset=' . get_option( 'blog_charset' )  );
-        
+
               $xmlDoc = new DOMDocument();
-              $response = $xmlDoc->appendChild( $xmlDoc->createElement( 'Response' ) );
-              $response->appendChild( $xmlDoc->createElement( 'Data', $result->data->my_text_data ) );
+              $response = $xmlDoc->appendChild( $xmlDoc->createElement( 'Data', $result->data["data"] ) );
         
               echo $xmlDoc->saveXML();
-              $served = true;
-              break;
+              exit;
         
           }
         
-          return $served;
-
         }
       
       }
