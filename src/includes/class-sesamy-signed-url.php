@@ -34,14 +34,14 @@ class Sesamy_Signed_Url {
 
         // Verify expiration
         if ( $params['se'] < time() ) {
-          return new WP_Error(404, 'Link is expired');
+          return new WP_Error(400, 'The link is expired');
         }
 
         // Verify signature
         if ( $this->verify_signature( $params['signed_url'], base64_decode($params['ss']) ) ) {
           return true;
         }else{
-          return new WP_Error(404, 'Invalid signature.');
+          return new WP_Error(400, 'The signature is invalid.');
         }
     }
 

@@ -35,15 +35,17 @@ class Sesamy_Content_Endpoint {
      * Endpoint for validating request and returning the content
      */
     public function sesamy_post_ep( $request ) {
-       
       
         $signed_url = new Sesamy_Signed_Url();
 
         $public_signed_url = $_SERVER['HTTP_X_SESAMY_SIGNED_URL']; 
 
         $result = $signed_url->is_valid_link( $public_signed_url );
+      
 
-        if( is_bool($result) && TRUE == $result ){
+        if( is_wp_error( $result ) ){
+          return $result;
+        }else if( is_bool($result) && TRUE == $result ){
           $params = $signed_url->get_request_parameters($public_signed_url);
 
           if ( intval( $request["id"] ) != intval( $params["sp"] ) ){
@@ -77,7 +79,7 @@ class Sesamy_Content_Endpoint {
       public function format_response($served, $result, $request, $server) {
 
   
-        if ( preg_match('/^\/sesamy\/v1\/posts\/[0-9]+$/m', $request->get_route() ) && isset( $result->data )){
+        if ( preg_match('/^\/sesamy\/v1\/posts\/[0-9]+$/m', $request->get_route() ) && isset( $result->data["data"] )){
 
           switch ( $_SERVER['HTTP_ACCEPT'] ) {
 

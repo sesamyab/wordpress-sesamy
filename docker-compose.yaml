@@ -15,11 +15,12 @@ services:
   wordpress:
     depends_on:
       - db
-    image: wordpress:latest
+    build: .
     volumes:
       - wordpress_data:/var/www/html
       - ./src:/var/www/html/wp-content/plugins/sesamy
-      - ./wordpress.ini:/usr/local/etc/php/conf.d/wordpress.ini 
+      - ./wordpress.ini:/usr/local/etc/php/conf.d/wordpress.ini
+      - ./xdebug.ini:/usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
     ports:
       - "8000:80"
     restart: always
@@ -29,6 +30,10 @@ services:
       WORDPRESS_DB_PASSWORD: wordpress
       WORDPRESS_DB_NAME: wordpress
       WORDPRESS_DEBUG: 1     
+      XDEBUG_MODE: develop,debug
+      XDEBUG_CONFIG:
+          client_host=host.docker.internal
+          start_with_request=yes
 volumes:
   db_data: {}
   wordpress_data: {}
