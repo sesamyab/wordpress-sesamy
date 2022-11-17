@@ -1,4 +1,4 @@
-import { ToggleControl, TextControl, SelectControl } from '@wordpress/components';
+import { ToggleControl, __experimentalNumberControl  as NumberControl, SelectControl, CheckboxControl } from '@wordpress/components';
 import { PluginDocumentSettingPanel } from '@wordpress/edit-post';
 import { useSelect, useDispatch } from '@wordpress/data';
 import { __ } from '@wordpress/i18n';
@@ -41,12 +41,13 @@ export default () => {
 const SesamyPostEditor = () => {
   
   const meta = useSelect(select => select('core/editor').getEditedPostAttribute('meta')); 
-  const sesamyTiersTaxonomy = wp.data.select('core').getEntityRecords('taxonomy', 'sesamy_tiers');  
+  const sesamyTiersTaxonomy = wp.data.select('core').getEntityRecords('taxonomy', 'sesamy_passes');  
   const currentPost = useSelect(select => select('core/editor').getCurrentPost());
-  const sesamy_tiers = useSelect(select => select('core/editor').getEditedPostAttribute('sesamy_tiers'));
-  const selectedTier = sesamy_tiers && sesamy_tiers.length > 0 ? sesamy_tiers[0] : undefined;
+  const sesamy_passes = useSelect(select => select('core/editor').getEditedPostAttribute('sesamy_passes'));
   const [currencies, setCurrencies] = useState(); 
   
+
+
 
   const dispatch = useDispatch();
 
@@ -64,8 +65,21 @@ const SesamyPostEditor = () => {
 
   }, []);
 
-  const setTier = (value) => {
-    dispatch( 'core' ).editEntityRecord( 'postType', currentPost.type, currentPost.id, { 'sesamy_tiers': [ value ] } );
+
+  const setTier = (tier, included) => {
+
+
+    var newPasses = [];
+
+    if(included && !sesamy_passes.includes(tier.id)){
+      newPasses = [...sesamy_passes, tier.id];
+    }else if(!included){
+      newPasses = [...sesamy_passes.filter(id => id !== tier.id)]
+    }
+
+
+
+    dispatch( 'core' ).editEntityRecord( 'postType', currentPost.type, currentPost.id, { 'sesamy_passes': newPasses } );
   }
 
   // Enable tiers if there is at least one
@@ -89,66 +103,21 @@ const SesamyPostEditor = () => {
   }, [enableTiers]);
 
 
-  // Default to first payment type if nothing is set or misconfigured (tier removed etc)
   useEffect(() => {
 
-    if(!paymentTypes){
+    if (!meta || meta['_sesamy_locked'] !== true){
       return;
     }
 
-    if(!meta['_sesamy_payment_type']){      
-      setMeta({ '_sesamy_payment_type': paymentTypes[0].value })
+
+    // Set first currency as default
+    if( !meta['_sesamy_currency'] && currencies && currencies.length > 0){
+      setMeta({ '_sesamy_currency': currencies[0] });
     }
 
-    // Notify user if configuration is invalid
-    if(!paymentTypes.map(x => x.value).includes(meta['_sesamy_payment_type'])){
-      console.log(paymentTypes);
-      setMeta({ '_sesamy_payment_type': paymentTypes[0].value })
-      wp.data.dispatch( 'core/notices' ).createNotice(
-        'error',
-        'Sesamy: The configured tier is no longer available. Defaulting to custom pricing.',
-        { id: 'sesamy-tier-config', isDismissible: true }
-      );
-    }
-
-
-    
-
-
-  }, ['_sesamy_payment_type', paymentTypes])
-
-  useEffect(() => {
-   
-
-    if(!meta || meta['_sesamy_locked'] !== true){
-      return;
-    }
-
-    switch (meta['_sesamy_payment_type']) {
-        case 'tier':
-
-          if(!selectedTier && sesamyTiersTaxonomy && sesamyTiersTaxonomy.length > 0){
-            setTier(sesamyTiersTaxonomy[0].id);
-          }        
-
-          break;
-        case 'custom':
-
-          if( !meta['_sesamy_currency'] && currencies && currencies.length > 0){
-            setMeta({ '_sesamy_currency': currencies[0] });
-          }
-
-          
-          break;
-    }
-
-
-  }, [selectedTier, sesamyTiersTaxonomy, meta['_sesamy_payment_type'], meta['_sesamy_locked'], currencies ]);
-
+  }, [meta['_sesamy_locked'], currencies ]);
 
   
-
-console.log(meta, paymentTypes, enableTiers);
   
   return (
     <PluginDocumentSettingPanel
@@ -158,58 +127,71 @@ console.log(meta, paymentTypes, enableTiers);
 
       <ToggleControl
         checked={meta['_sesamy_locked']}
-        label={__('Locked', 'sesamy')}
+        label={__('Enable paywall', 'sesamy')}
         onChange={(value) => setMeta({ '_sesamy_locked': value }) }
       />
+
+   
+      
 
 
       {meta['_sesamy_locked'] && <>
 
-      <SelectControl
-          label="Payment Type"
-          value={ meta['_sesamy_payment_type'] }
-          options={ paymentTypes }
-          onChange={(value) => {
-            setMeta({ '_sesamy_payment_type': value })
-          }}
-          __nextHasNoMarginBottom
+     
+      <h3>Single purchase</h3>
+      <ToggleControl
+          checked={meta['_sesamy_enable_single_purchase']}
+          label={__('Enable single-purchase', 'sesamy')}
+          onChange={(value) => setMeta({ '_sesamy_enable_single_purchase': value }) }
         />
 
-
-      {enableTiers && meta['_sesamy_payment_type']  == 'tier' &&  
-
-      <SelectControl
-          label="Selected Tier"
-          value={ selectedTier }
-          options={ sesamyTiersTaxonomy && sesamyTiersTaxonomy.map(x => ({ label: x.name, value: x.id})) }
-          onChange={(value) => setTier(value) }
-          __nextHasNoMarginBottom
-        />
+     {meta['_sesamy_enable_single_purchase'] && <>
 
 
-        
-      }
+     <NumberControl
+              label="Price"
+              value={parseFloat(meta['_sesamy_price'])}
+              min={0}   
+              step={'0.01'}
+              onChange={(value) => {
+                setMeta({ '_sesamy_price': value })
+              }}
+            />
 
-        {meta['_sesamy_payment_type'] == "custom" && <>
+            <SelectControl
+              label="Currency"
+              value={meta['_sesamy_currency']}
+              min={1}
+              step={'0.01'}
+              options={currencies && currencies.map(x => ({label: x, value: x}))}
+              onChange={(value) => setMeta({ '_sesamy_currency': value })}
+              __nextHasNoMarginBottom
+            />
 
-          <TextControl
-            label="Price"
-            value={meta['_sesamy_price']}
-            placeholder={""}
-            onChange={(value) => {
-              setMeta({ '_sesamy_price': value })
-            }}
-          />
+    </>}
 
-          <SelectControl
-            label="Currency"
-            value={meta['_sesamy_currency']}
-            options={currencies && currencies.map(x => ({label: x, value: x}))}
-            onChange={(value) => setMeta({ '_sesamy_currency': value })}
-            __nextHasNoMarginBottom
-          />
+          {enableTiers &&  <>
 
-      </>}
+
+              <h3>Sesamy Passes</h3>
+             
+
+            {sesamyTiersTaxonomy.map(tier => {
+              
+              const isChecked = sesamy_passes && sesamy_passes.includes(tier.id);
+
+              return <CheckboxControl
+                label={tier.name}
+                checked={ isChecked }
+                onChange={(checked) => setTier(tier, checked) }
+                __nextHasNoMarginBottom
+              />
+
+            })}
+            
+          </>}
+
+
 
       </>
       }

@@ -136,10 +136,10 @@ class Sesamy {
 		 * Sesamy includes
 		 */
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-sesamy-utils.php';
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-sesamy-tiers.php';
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-sesamy-passes.php';
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-sesamy-post-properties.php';
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-sesamy-signed-url.php';
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-sesamy-content-endpoint.php';	
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-sesamy-api-endpoint.php';	
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-sesamy-currencies.php';	
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-sesamy-settings.php';	
 
@@ -183,7 +183,7 @@ class Sesamy {
 
 	private function define_common_hooks() {
 
-		$tiers = new Sesamy_Tiers();
+		$tiers = new sesamy_passes();
 
 		$this->loader->add_action( 'init', $tiers, 'register_taxonomy' );
 

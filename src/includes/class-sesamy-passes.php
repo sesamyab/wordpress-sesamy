@@ -1,15 +1,15 @@
 <?php
 
-class Sesamy_Tiers {
+class Sesamy_Passes {
 
 
     public function register_taxonomy(){
 
         $post_types = sesamy_get_enabled_post_types();
 
-        register_taxonomy( 'sesamy_tiers', $post_types, [
-            "label" => "Sesamy Tiers",
-            "singular_label" => "Sesamy Tier",
+        register_taxonomy( 'sesamy_passes', $post_types, [
+            "label" => "Sesamy Passes",
+            "singular_label" => "Sesamy Pass",
             'query_var' => true,            
             'public' => false,
             'show_ui' => true,
@@ -30,11 +30,11 @@ class Sesamy_Tiers {
 
         // NOTE: Different form templates are used in add and edit because of WordPress is not streamlined :(
 
-        add_action( 'sesamy_tiers_add_form_fields', [ $this, 'add_taxonomy_form_fields' ] );
-        add_action( 'sesamy_tiers_edit_form_fields', [ $this, 'edit_taxonomy_form_fields' ] );
+        add_action( 'sesamy_passes_add_form_fields', [ $this, 'add_taxonomy_form_fields' ] );
+        add_action( 'sesamy_passes_edit_form_fields', [ $this, 'edit_taxonomy_form_fields' ] );
 
-        add_action( 'created_sesamy_tiers', [ $this, 'save_fields' ] );
-        add_action( 'edited_sesamy_tiers', [ $this, 'save_fields' ] );
+        add_action( 'created_sesamy_passes', [ $this, 'save_fields' ] );
+        add_action( 'edited_sesamy_passes', [ $this, 'save_fields' ] );
 
     }
 

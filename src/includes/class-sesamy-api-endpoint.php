@@ -22,6 +22,12 @@ class Sesamy_Content_Endpoint {
             ],
           ) );
 
+          register_rest_route( 'sesamy/v1', '/passes', array(
+            'methods' => 'GET',
+            'callback' => [$this, 'sesamy_passes_ep'],
+            'permission_callback' => '__return_true'            
+          ) );
+
     }
 
     /**
@@ -60,6 +66,25 @@ class Sesamy_Content_Endpoint {
           return new WP_Error(400, 'The link is incorrect or no longer valid.');
         }
 
+
+      }
+
+
+      public function sesamy_passes_ep( $request ) {
+
+        $passes = get_terms('sesamy_passes', []);
+
+
+        $data = array_map(function($pass){
+          return [
+            'id' =>  $pass->term_id,
+            'slug' => $pass->slug,
+            'name' => $pass->name
+          ];
+        }, $passes);
+
+
+        return rest_ensure_response( array_values( $data ) );
 
       }
 
