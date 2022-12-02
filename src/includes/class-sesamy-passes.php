@@ -83,6 +83,9 @@ class Sesamy_Passes {
         update_term_meta( $term_id, 'currency', sanitize_text_field( $_POST[ 'currency' ] ) );
         update_term_meta( $term_id, 'url', sanitize_text_field( $_POST[ 'url' ] ) );
         update_term_meta( $term_id, 'image_id', sanitize_text_field( $_POST[ 'image_id' ] ) );
+        update_term_meta( $term_id, 'period', sanitize_text_field( $_POST[ 'period' ] ) );
+        update_term_meta( $term_id, 'time', sanitize_text_field( $_POST[ 'time' ] ) );
+ 
     }
 
 
@@ -121,13 +124,23 @@ class Sesamy_Passes {
        
         <div class="form-field">
             <label for="price">Price</label>
-            <input type="text" name="price" />
+            <input type="number" step="0.01" min="0.01"  name="price" required />
             <p>Price for this pass</p>
         </div>
         <div class="form-field">
             <label for="currency">Currency</label>
             <?php $this->render_select( 'currency', Sesamy_Currencies::get_currencies() ) ?>
             <p>Currency for this pass</p>
+        </div>
+        <div class="form-field">
+            <label for="period">Payment period</label>
+            <?php $this->render_select( 'period', ['monthly' => 'Monthly', 'yearly' => 'Yearly'] ) ?>
+            <p>Payment interval for this pass</p>
+        </div>
+        <div class="form-field">
+            <label for="time">Payment time</label>
+            <input type="number" step="1" min="1"  name="time" value="1" required />
+            <p>Payment time for this pass. Ex 1 for every month, 3 for every third month.</p>
         </div>
         <div class="form-field">
             <label for="cb_custom_meta_data_url">Public URL</label>
@@ -144,6 +157,8 @@ class Sesamy_Passes {
         $currency = get_term_meta( $term->term_id, 'currency', true );
         $url = get_term_meta( $term->term_id, 'url', true );
         $image_id = get_term_meta( $term->term_id, 'image_id', true );
+        $period = get_term_meta( $term->term_id, 'period', true );
+        $time = get_term_meta( $term->term_id, 'time', true );
 
         ?>
 
@@ -171,9 +186,24 @@ class Sesamy_Passes {
 
         <tr class="form-field">
         <th><label for="price">Price</label></th>
-        <td><input type="text" name="price" id="price" value="<?php echo $price; ?>" />
+        <td><input type="number" step="0.01" min="0.01" name="price" id="price" value="<?php echo $price; ?>" required />
             <p>Price for this tier</p></td>
         </div>
+        
+        <tr class="form-field">
+        <th><label for="currency">Payment period</label></th>
+        <td>
+            <?php $this->render_select( 'period', ['monthly' => 'Monthly', 'yearly' => 'Yearly'], $period) ?>
+            <p>Payment period for this pass</p>
+        </tr>
+
+        <tr class="form-field">
+        <th><label for="currency">Payment time</label></th>
+        <td>
+            <input type="number" step="1" min="1"  name="time" value="<?php echo $time; ?>" required />
+            <p>Payment time for this pass. Ex 1 for every month, 3 for every third month.</p>
+        </tr>
+
         <tr class="form-field">
         <th><label for="currency">Currency</label></th>
         <td>

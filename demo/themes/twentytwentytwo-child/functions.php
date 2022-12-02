@@ -8,8 +8,7 @@ function show_paywall( $default_paywall, $post, $post_settings){
 
 
     ?>
-
-    <div class="sesamy-paywall">
+    <div class="sesamy-paywall" data-sesamy-paywall data-sesamy-item-src="<?php echo get_the_permalink( $post->ID ); ?>" data-sesamy-passes="<?php  sesamy_get_passes( $post->ID ) ?>">
 
 
         <div class="sesamy-login">
@@ -74,7 +73,6 @@ function show_paywall( $default_paywall, $post, $post_settings){
            
         ?>
     </div>
-
 
     <style>
         .sesamy-paywall {

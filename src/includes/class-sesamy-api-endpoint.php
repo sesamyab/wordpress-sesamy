@@ -79,7 +79,7 @@ class Sesamy_Content_Endpoint {
       public function sesamy_passes_ep( $request ) {
 
 
-        $passes = get_terms('sesamy_passes', []);
+        $passes = get_terms('sesamy_passes', ['hide_empty' => false]);
         $data = array_map( 'sesamy_get_pass_info', $passes);
         return rest_ensure_response( array_values( $data ) );
 

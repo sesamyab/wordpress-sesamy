@@ -37,8 +37,13 @@ class Sesamy_Signed_Url {
           return new WP_Error(400, 'The link is expired');
         }
 
+        // Fix for not having an urlencoded ss
+
+        $url = explode("ss=", $url);
+        $ss = $url[1];
+
         // Verify signature
-        if ( $this->verify_signature( $params['signed_url'], base64_decode($params['ss']) ) ) {
+        if ( $this->verify_signature( $params['signed_url'], base64_decode($ss) ) ) {
           return true;
         }else{
           return new WP_Error(400, 'The signature is invalid.');
