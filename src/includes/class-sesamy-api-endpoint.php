@@ -28,6 +28,12 @@ class Sesamy_Content_Endpoint {
             'permission_callback' => '__return_true'            
           ) );
 
+          register_rest_route( 'sesamy/v1', '/passes/(?P<id>\d+)', array(
+            'methods' => 'GET',
+            'callback' => [$this, 'sesamy_passes_details_ep'],
+            'permission_callback' => '__return_true'            
+          ) );
+
     }
 
     /**
@@ -72,19 +78,18 @@ class Sesamy_Content_Endpoint {
 
       public function sesamy_passes_ep( $request ) {
 
+
         $passes = get_terms('sesamy_passes', []);
-
-
-        $data = array_map(function($pass){
-          return [
-            'id' =>  $pass->term_id,
-            'slug' => $pass->slug,
-            'name' => $pass->name
-          ];
-        }, $passes);
-
-
+        $data = array_map( 'sesamy_get_pass_info', $passes);
         return rest_ensure_response( array_values( $data ) );
+
+      }
+
+      public function sesamy_passes_details_ep( $request ) {
+
+        $term_id = $request['id'];
+        $term = get_term( $term_id, 'sesamy_passes' );       
+        return rest_ensure_response( sesamy_get_pass_info($term) );
 
       }
 

@@ -28,14 +28,14 @@ class Sesamy_Utils {
     }
 
     /**
-     * Generate tag, empty content will generate a self-closing tag
+     * Generate tag, empty content will generate a self-closing tag unless $self_close is false
      */
-    public static function make_tag( $name, $atts, $content){
+    public static function make_tag( $name, $atts, $content, $self_close = true){
 
         $a = self::html_attributes(self::remove_empty_values($atts));
 
         $tag = "<$name" . (!empty($a) ? " $a" : "");
-        $tag .= empty($content) ? "/>" : ">$content</$name>";
+        $tag .= (empty($content) && $self_close) ? "/>" : ">$content</$name>";
 
         return $tag;
     }

@@ -4,6 +4,8 @@
 function sesamy_content_container($atts, $content){
 	
 
+    $post_settings = sesamy_get_post_settings(get_the_ID());
+
     $atts = shortcode_atts( array(
         'publisher_content_id'  => '',
         'preview'               => get_the_excerpt(),
@@ -11,7 +13,8 @@ function sesamy_content_container($atts, $content){
         'show_childs_count'     => '',
         'gradient'              => '',
         'lock_mode'             => get_option( 'sesamy_lock_mode' ),
-        'access_url'            => get_site_url() . '/wp-json/sesamy/v1/posts/' . $atts['publisher_content_id']
+        'access_url'            => get_site_url() . '/wp-json/sesamy/v1/posts/' . $atts['publisher_content_id'],
+        'pass'                  => ''
     ), $atts, 'sesamy_content_container' );
 
 
@@ -50,12 +53,14 @@ function sesamy_button_container($atts, $content){
 function sesamy_button($atts, $content){
 
     $atts = shortcode_atts( array(
-        'text' => '',
-        'price' => '',
-        'currency' => ''        
+        'text'                  => '',
+        'price'                 => '',
+        'currency'              => '',
+        'item_src'              => '',
+        'publisher_content_id'  => ''
     ), $atts, 'sesamy_button' );
 
-    return Sesamy_Utils::make_tag( 'sesamy-button', $atts, $content );
+    return Sesamy_Utils::make_tag( 'sesamy-button', $atts, $content, false );
 }
 
 function sesamy_login($atts, $content){
@@ -97,3 +102,43 @@ function sesamy_get_enabled_post_types(){
 
 }
 
+
+/**
+ * Return information about a pass in sesamy in a easily accessible way
+ */
+function sesamy_get_pass_info($term){
+
+    $image_id =  get_term_meta($term->term_id, 'image_id', true);
+
+    return [
+        'id'            => $term->term_id,
+        'slug'          => $term->slug,
+        'title'         => $term->name,        
+        'description'   => $term->description,
+        'price'         => get_term_meta($term->term_id, 'price', true),
+        'currency'      => get_term_meta($term->term_id, 'currency', true),
+        'image'         => !empty($image_id) ? wp_get_attachment_image_url(  $image_id , 'full' ) : null,
+        'url'           => get_term_meta($term->term_id, 'url', true),
+        'item_src'      => get_site_url() . '/wp-json/sesamy/v1/passes/' . $term->term_id
+    ];
+
+}
+
+/**
+ * Return information about sesamy settings for a post in an easy accessible way
+ */
+function sesamy_get_post_settings( $post_id ){
+
+    $post = get_post( $post_id );
+    $meta = get_post_meta( $post_id );
+    $passes = get_the_terms($post->ID, 'sesamy_passes');
+
+    return [
+        'locked'                 => $meta['_sesamy_locked'],
+        'enable_single_purchase' => $meta['_sesamy_enable_single_purchase'],
+        'price'                  => $meta['_sesamy_price'],
+        'currency'               => $meta['_sesamy_currency'],
+        'passes'                 => array_map( 'sesamy_get_pass_info' , $passes)
+    ];
+
+}
