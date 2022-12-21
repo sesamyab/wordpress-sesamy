@@ -1,0 +1,27 @@
+name: SemanticRelease
+on:
+  push:
+    branches:
+      - master
+jobs:
+  release:
+    name: Release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          # cache: 'yarn'
+          node-version: '16.x'
+          registry-url: 'https://npm.pkg.github.com'
+          scope: '@sesamyab'
+      - name: Install dependencies
+        run: yarn
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.PACKAGE_READ_TOKEN }}    
+      - name: Release
+        run: yarn semantic-release
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
