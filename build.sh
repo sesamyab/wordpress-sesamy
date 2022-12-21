@@ -34,3 +34,12 @@ npm run build
 # Remove node modules
 rm -rf ./node_modules
 
+# Go back to root
+cd '../../../..'
+
+# TODO: Set version
+
+# Zip package
+mkdir dist
+zip -r dist/sesamy-wordpress.zip src
+
