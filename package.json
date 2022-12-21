@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "get-version": "echo $npm_package_version",
     "build": "sh ./build.sh",
     "semantic-release": "semantic-release",
     "initialize-repo": "husky install"
