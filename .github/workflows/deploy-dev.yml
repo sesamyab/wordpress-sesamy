@@ -30,7 +30,7 @@ jobs:
         run: yarn semantic-release
 
       - name: Build
-        run: yarn run build:dev
+        run: yarn run build
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
