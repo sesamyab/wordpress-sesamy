@@ -140,7 +140,7 @@ function sesamy_get_post_settings( $post_id ){
         'enable_single_purchase' => $meta['_sesamy_enable_single_purchase'],
         'price'                  => $meta['_sesamy_price'],
         'currency'               => $meta['_sesamy_currency'],
-        'passes'                 => array_map( 'sesamy_get_pass_info' , $passes)
+        'passes'                 => is_array( $passes) ? array_map( 'sesamy_get_pass_info' , $passes) : []
     ];
 
 }
@@ -162,9 +162,9 @@ function sesamy_get_passes( $post_id_or_passes ){
         $passes = sesamy_get_post_settings( $post_id_or_passes )['passes'];
     }
 
-    $pass_names = array_map( function($p) { 
+    $pass_names = is_array($passes) ? array_map( function($p) { 
         return !empty($p['id']) ? $p['id'] : null; 
-    }, $passes); 
+    }, $passes) : [];
 
     return implode(',', $pass_names);
 }
