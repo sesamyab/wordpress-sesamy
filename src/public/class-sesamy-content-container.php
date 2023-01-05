@@ -92,7 +92,7 @@ class Sesamy_ContentContainer {
 		ob_start();
 
 		$headline = get_the_title( $post);
-		$image = get_the_post_thumbnail( $post, 'full' );
+		$image = get_the_post_thumbnail_url( $post, 'full' );
 		$datePublished = get_the_date( 'c', $post );
 		$dateModified = get_the_modified_date( 'c', $post );
 		$author = get_the_author_meta( 'display_name', $post );
