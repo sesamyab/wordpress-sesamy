@@ -37,7 +37,7 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: eu-west-1
+          aws-region: ${{ secrets.S3_BUCKET_REGION }}
 
       - name: Deploy to S3 bucket
         run: aws s3 sync ./dist s3://${{ secrets.S3_BUCKET }}/scripts/${{ github.event.repository.name }} --delete --cache-control max-age=0
