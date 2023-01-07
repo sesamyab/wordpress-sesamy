@@ -37,7 +37,9 @@ rm -rf ./node_modules
 # Go back to root
 cd '../../../..'
 
-# TODO: Set version
+# Create version file
+package_json_version=$(npm run get-version -silent)
+echo "<?php\n\ndefine( 'SESAMY_VERSION', ${package_json_version} );" | tee src/version.php
 
 # Zip package
 mkdir dist
