@@ -105,9 +105,9 @@ class Sesamy_ContentContainer {
 		"@context": "https://schema.org",
 		"@type": "NewsArticle",
 		"headline": "<?php  echo $headline; ?>,
-		"image": "<?php echo $image; ?>",
-		"datePublished": "<?php echo $datePublished; ?>",
-		"dateModified": "<?php echo $dateModified; ?>",
+		"image": "<?php echo esc_html( $image ); ?>",
+		"datePublished": "<?php echo esc_html( $datePublished ); ?>",
+		"dateModified": "<?php echo esc_html( $dateModified ); ?>",
 		"author": {
 			"@type": "Person",
 			"name": "<?php echo $author; ?>"
