@@ -17,6 +17,10 @@ function sesamy_content_container($atts = null, $content = null){
         'pass'                  => ''
     ), $atts, 'sesamy_content_container' );
 
+    // If lock mode is none, we should not wrap or do anything with the content
+    if( $atts['lock_mode'] == "none" ) {
+        return $content;
+    }
 
     $tag_content = '<div slot="preview">' . $atts['preview'] . '</div>';
     
