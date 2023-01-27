@@ -34,3 +34,14 @@ npm run build
 # Remove node modules
 rm -rf ./node_modules
 
+# Go back to root
+cd '../../../..'
+
+# Create version file
+package_json_version=$(npm run get-version -silent)
+echo "<?php\n\ndefine( 'SESAMY_VERSION', ${package_json_version} );" | tee src/version.php
+
+# Zip package
+mkdir dist
+zip -r dist/sesamy-wordpress.zip src
+

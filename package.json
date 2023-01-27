@@ -1,0 +1,56 @@
+{
+  "name": "wordpress-sesamy",
+  "version": "1.0.1",
+  "description": "Dependencies for signature validation are implemented with libraries using composer.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "get-version": "echo $npm_package_version",
+    "build": "sh ./build.sh",
+    "semantic-release": "semantic-release",
+    "initialize-repo": "husky install"
+  },
+  "release": {
+    "branches": [
+      "master"
+    ],
+    "plugins": [
+      "@semantic-release/commit-analyzer",
+      "@semantic-release/release-notes-generator",
+      [
+        "@semantic-release/npm",
+        {
+          "npmPublish": false
+        }
+      ],
+      [
+        "@semantic-release/git",
+        {
+          "assets": [
+            "docs",
+            "package.json"
+          ],
+          "message": "chore(release): ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}"
+        }
+      ]
+    ]
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sesamyab/wordpress-sesamy.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/sesamyab/wordpress-sesamy/issues"
+  },
+  "homepage": "https://github.com/sesamyab/wordpress-sesamy#readme",
+  "devDependencies": {
+    "@commitlint/cli": "^17.3.0",
+    "@commitlint/config-conventional": "^17.3.0",
+    "@commitlint/prompt-cli": "^17.3.0",
+    "@semantic-release/git": "^10.0.1",
+    "husky": "^8.0.2",
+    "semantic-release": "^19.0.5"
+  }
+}
