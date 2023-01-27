@@ -1,2 +1,3 @@
 src/vendor/*
 docker-compose.prod.yml
+dist/*

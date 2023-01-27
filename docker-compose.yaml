@@ -18,7 +18,7 @@ services:
     build: .
     volumes:
       - wordpress_data:/var/www/html
-      - ./src:/var/www/html/wp-content/plugins/sesamy
+      - ./dist:/var/www/html/wp-content/plugins/sesamy
       - ./demo/themes/twentytwentytwo-child:/var/www/html/wp-content/themes/twentytwentytwo-child
       - ./wordpress.ini:/usr/local/etc/php/conf.d/wordpress.ini
       - ./xdebug.ini:/usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
