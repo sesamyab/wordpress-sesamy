@@ -92,10 +92,10 @@ class Sesamy_Passes {
     private function render_select($name, $options, $field_value = null){
 
         ?>
-        <select name="<?php echo $name; ?>" id="<?php echo $name; ?>">
+        <select name="<?php echo esc_html( $name ); ?>" id="<?php echo esc_html( $name ); ?>">
         <?php
         foreach($options as $key => $value){
-            echo '<option value="' . $key . '"'. ( $field_value == $key ? 'selected' : '' ) . ">$value</option>";
+            echo '<option value="' . esc_html( $key ) . '"'. ( $field_value == $key ? 'selected' : '' ) . ">" . esc_html( $value ) . "</option>";
         }
         ?>
         </select>

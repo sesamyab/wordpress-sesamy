@@ -14,6 +14,16 @@ For debugging gutenberg post editor:
 
 (Make sure to hard-refresh to avoid script caching issues)
 
+# Plugin configuration
+
+## Setup
+
+
+## Enable the paywall for an article
+
+## Passes
+
+
 # Filters and actions
 
 In the main loop the wrapping of sesamy container is hooked into two filters, the_content and sesamy_content.
@@ -28,3 +38,13 @@ To modify the data before returned you can add a filter. The default priority fo
 
     function my_callback( $post, $content)
 
+
+## Custom paywall design
+
+You can customize how paywall will be rendering by supplying your own template in code using the filter `sesamy_paywall` like this:
+
+        add_filter('sesamy_paywall', 'show_paywall', 11, 3);
+
+        function show_paywall( $default_paywall, $post, $post_settings){
+            // Code for your custom layout. Please see /demo folder for a complete example
+        }

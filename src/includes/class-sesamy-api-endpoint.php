@@ -50,7 +50,7 @@ class Sesamy_Content_Endpoint {
       
         $signed_url = new Sesamy_Signed_Url();
 
-        $public_signed_url = $_SERVER['HTTP_X_SESAMY_SIGNED_URL']; 
+        $public_signed_url = esc_url_raw( $_SERVER['HTTP_X_SESAMY_SIGNED_URL'] ); 
 
         $result = $signed_url->is_valid_link( $public_signed_url );
       

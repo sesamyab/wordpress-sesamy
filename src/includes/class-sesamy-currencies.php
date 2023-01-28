@@ -13,11 +13,8 @@ class Sesamy_Currencies {
         // Use transient to avoid calling api more than needed
         if ($currencies === false) { 
 
-          $c = curl_init( Sesamy::$instance->get_assets_url() . '/markets.json'); 
-          curl_setopt($c, CURLOPT_RETURNTRANSFER, 1); 
-          $json = curl_exec($c); 
-          curl_close($c);
-
+          $req = wp_remote_get( Sesamy::$instance->get_assets_url() . '/markets.json' );
+          $json = wp_remote_retrieve_body( $req); 
           $data = json_decode( $json );
 
           $currencies = [];
@@ -29,7 +26,7 @@ class Sesamy_Currencies {
           set_transient( 'sesamy_currencies', $currencies, 60);
 
         }   
-       
+
         return $currencies;
       }
 

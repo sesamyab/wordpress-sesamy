@@ -93,10 +93,8 @@ class Sesamy_Signed_Url {
         // Use transient to avoid calling api more than needed
         if ( $jwk === false) { 
 
-          $c = curl_init( Sesamy::$instance->get_assets_url() . '/vault-jwks.json'); 
-          curl_setopt($c, CURLOPT_RETURNTRANSFER, 1); 
-          $json = curl_exec($c); 
-          curl_close($c);
+          $req = wp_remote_get( Sesamy::$instance->get_assets_url() . '/vault-jwks.json');
+          $json = wp_remote_retrieve_body( $req); 
 
           $jwk = JWK::createFromJson($json);
           set_transient( 'sesamy_public_key', $jwk, 3600);
