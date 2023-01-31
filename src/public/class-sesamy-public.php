@@ -20,7 +20,8 @@
  * @subpackage Sesamy/public
  * @author     Jonas Stensved <jonas@viggeby.com>
  */
-class Sesamy_Public {
+class Sesamy_Public
+{
 
 	/**
 	 * The ID of this plugin.
@@ -47,11 +48,11 @@ class Sesamy_Public {
 	 * @param      string    $plugin_name       The name of the plugin.
 	 * @param      string    $version    The version of this plugin.
 	 */
-	public function __construct( $plugin_name, $version ) {
+	public function __construct($plugin_name, $version)
+	{
 
 		$this->plugin_name = $plugin_name;
 		$this->version = $version;
-
 	}
 
 	/**
@@ -59,7 +60,8 @@ class Sesamy_Public {
 	 *
 	 * @since    1.0.0
 	 */
-	public function enqueue_styles() {
+	public function enqueue_styles()
+	{
 
 		/**
 		 * This function is provided for demonstration purposes only.
@@ -73,8 +75,7 @@ class Sesamy_Public {
 		 * class.
 		 */
 
-		wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/sesamy-public.css', array(), $this->version, 'all' );
-
+		wp_enqueue_style($this->plugin_name, plugin_dir_url(__FILE__) . 'css/sesamy-public.css', array(), $this->version, 'all');
 	}
 
 	/**
@@ -82,7 +83,8 @@ class Sesamy_Public {
 	 *
 	 * @since    1.0.0
 	 */
-	public function enqueue_scripts() {
+	public function enqueue_scripts()
+	{
 
 		/**
 		 * This function is provided for demonstration purposes only.
@@ -96,10 +98,7 @@ class Sesamy_Public {
 		 * class.
 		 */
 
-		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/sesamy-public.js', array( 'jquery' ), $this->version, false );		
-		wp_enqueue_script( 'sesamy-scripts', Sesamy::$instance->get_assets_url() . '/scripts/web-components/sesamy-bundle.min.js', array(), $this->version, true );
-		wp_enqueue_script( 'sesamy-public', SESAMY_PLUGIN_URL . '/public/js/sesamy-public.js', [ 'sesamy-scripts' ], $this->version, true );
-
+		wp_enqueue_script('sesamy-scripts', Sesamy::$instance->get_assets_url() . '/scripts/web-components/sesamy-bundle.min.js', array(), $this->version, true);
 	}
 
 
@@ -108,7 +107,8 @@ class Sesamy_Public {
 	 *
 	 * @since    1.0.0
 	 */
-	public function register_shortcodes() {
+	public function register_shortcodes()
+	{
 
 		$shortcodes = new Sesamy_Shortcodes();
 		$shortcodes->register();
@@ -117,20 +117,20 @@ class Sesamy_Public {
 	/**
 	 *  Wrap main content with sesamy content container
 	 */
-	public function register_container_logic() {
+	public function register_container_logic()
+	{
 
-		add_filter( 'the_content', 'filter_the_content_in_the_main_loop', 1 );
- 
-		function filter_the_content_in_the_main_loop( $content ) {
-		
+		add_filter('the_content', 'filter_the_content_in_the_main_loop', 1);
+
+		function filter_the_content_in_the_main_loop($content)
+		{
+
 			// Check if we're inside the main loop in a single Post.
-			if ( is_singular() && in_the_loop() && is_main_query() ) {
-				return $content . esc_html__( 'I’m filtering the content inside the main loop', 'wporg');
+			if (is_singular() && in_the_loop() && is_main_query()) {
+				return $content . esc_html__('I’m filtering the content inside the main loop', 'wporg');
 			}
-		
+
 			return $content;
 		}
-
 	}
-
 }
