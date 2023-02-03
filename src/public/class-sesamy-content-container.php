@@ -79,8 +79,16 @@ class Sesamy_ContentContainer {
 		$paywall_seo = apply_filters( 'sesamy_paywall_seo', $this->show_seo_paywall_data( $post ), $post );
 
 		// Note: The wrapping div makes the container inherit sizes and margins by default in most themes compared to raw webpart
-		return  $paywall_seo  . '<div>' . sesamy_content_container( $atts, $content) . '</div>' .  apply_filters( 'sesamy_paywall', $default_paywall, $post, $post_settings);
+		return  $paywall_seo  . sesamy_content_container( $atts, $content) .  apply_filters( 'sesamy_paywall', $default_paywall, $post, $post_settings);
 
+	}
+
+	/**
+	 * Wrap the content container. This is added to a function to be easy to opt-out of with filter
+	 * This makes the default theme and probably other themes work more nicely out of the box with sesamy component
+	 */
+	function sesamy_content_container_wrap( $content ){
+		return '<div>' . $content . '</div>';
 	}
 
 	/**

@@ -186,7 +186,7 @@ class Sesamy_Passes {
 
         <tr class="form-field">
         <th><label for="price">Price</label></th>
-        <td><input type="number" step="0.01" min="0.01" name="price" id="price" value="<?php echo $price; ?>" required />
+        <td><input type="number" step="0.01" min="0.01" name="price" id="price" value="<?php echo esc_html( $price ); ?>" required />
             <p>Price for this tier</p></td>
         </div>
         
@@ -200,7 +200,7 @@ class Sesamy_Passes {
         <tr class="form-field">
         <th><label for="currency">Payment time</label></th>
         <td>
-            <input type="number" step="1" min="1"  name="time" value="<?php echo $time; ?>" required />
+            <input type="number" step="1" min="1"  name="time" value="<?php echo esc_html( $time ); ?>" required />
             <p>Payment time for this pass. Ex 1 for every month, 3 for every third month.</p>
         </tr>
 
@@ -211,7 +211,7 @@ class Sesamy_Passes {
             <p>Currency for this tier</p></td>
         </tr>
         <th><label for="url">Public URL</label></th>
-        <td><input type="text" name="url" id="url" value="<?php echo $url; ?>" />
+        <td><input type="text" name="url" id="url" value="<?php echo esc_url( $url ); ?>" />
             <p>Url where a visitor can read more about the pass. Also used as the item-src identifier with Sesamy.</p></td>
         </div>
         <?php

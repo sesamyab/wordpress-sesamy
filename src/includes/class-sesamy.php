@@ -238,13 +238,20 @@ class Sesamy {
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
 		$this->loader->add_action( 'init', $plugin_public, 'register_shortcodes' );
 
-		$sesamyContentContainer = new Sesamy_ContentContainer();
-		$this->loader->add_filter( 'sesamy_content', $sesamyContentContainer, 'process_content', 999, 2 );
 
-		// Make sure we process sesamy after all other hooks with order 999
-		$this->loader->add_filter( 'the_content', $sesamyContentContainer, 'process_main_content', 999 );
+		// If the lock mode is set to 'none' we should do nothing with the content.
+		if ( get_option( 'sesamy_lock_mode' ) !== 'none' ) {
 
-		// Make sure we process sesamy after all other hooks with order 999
+			$sesamyContentContainer = new Sesamy_ContentContainer();
+			$this->loader->add_filter( 'sesamy_content', $sesamyContentContainer, 'process_content', 999, 2 );
+			$this->loader->add_filter( 'sesamy_content_container', $sesamyContentContainer, 'sesamy_content_container_wrap', 10, 1 );
+
+			// Make sure we process sesamy after all other hooks with order 999.
+			$this->loader->add_filter( 'the_content', $sesamyContentContainer, 'process_main_content', 999 );
+
+		}
+
+		// Make sure we process sesamy after all other hooks with order 999.
 		$sesamyMeta = new Sesamy_Meta();
 		$this->loader->add_filter( 'wp_head', $sesamyMeta, 'add_meta_tags' );
 	}

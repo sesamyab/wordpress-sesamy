@@ -4,7 +4,7 @@ Tags: sesamy, paywall
 Requires at least: 5.0.1
 Requires PHP: 5.6
 Tested up to: 6.1
-Stable tag: 1.0.2
+Stable tag: 1.0.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -35,6 +35,10 @@ This section describes how to install the plugin;
 1. Click “Choose file” then select our plugin .zip file.
 1. Install and activate the plugin.
 1. Add your client_id from the "Sesamy" menu option with a account that has at least `manage_options` permissions and configure your preferences
+
+Requirements:
+
+* You must have pretty permalinks active for the plugin to work
 
 == Frequently Asked Questions ==
 
@@ -69,6 +73,24 @@ You can customize how the paywall will be rendered by supplying your own templat
 
 For a more complete example, please see the folder "demo" in our source code repository at https://github.com/sesamyab/wordpress-sesamy
 
+== Filters ==
+
+The following filters can be used to modify the default output from the plugin:
+
+    add_filter( 'sesamy_content', 'my_sesamy_content', 10, 2);
+    function my_sesamy_content( $post, $content ) {
+        return $content;
+    }
+
+    add_filter( 'sesamy_content_container', 'my_sesamy_content_container', 10, 1);
+    function ( $content_container ){
+        return $content_container;
+    }
+
+    add_filter( 'sesamy_paywall_seo', 'my_paywall_seo_callback', 10, 2);
+    function my_paywall_seo_callback( $default_seo, $post ) {
+        return $default_seo;
+    }
 
 == Screenshots ==
 
@@ -79,6 +101,9 @@ directory take precedence. For example, `/assets/screenshot-1.png` would win ove
 2. This is the second screen shot
 
 == Changelog ==
+
+= 1.0.3 =
+* Sanitized output for security
 
 = 1.0.2 =
 * Adjustments and bugfixes for security

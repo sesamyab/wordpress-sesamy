@@ -96,9 +96,8 @@ class Sesamy_Public {
 		 * class.
 		 */
 
-		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/sesamy-public.js', array( 'jquery' ), $this->version, false );		
 		wp_enqueue_script( 'sesamy-scripts', Sesamy::$instance->get_assets_url() . '/scripts/web-components/sesamy-bundle.min.js', array(), $this->version, true );
-		wp_enqueue_script( 'sesamy-public', SESAMY_PLUGIN_URL . '/public/js/sesamy-public.js', [ 'sesamy-scripts' ], $this->version, true );
+		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/sesamy-public.js', [ 'jquery', 'sesamy-scripts' ], $this->version, true );		
 
 	}
 
@@ -114,23 +113,5 @@ class Sesamy_Public {
 		$shortcodes->register();
 	}
 
-	/**
-	 *  Wrap main content with sesamy content container
-	 */
-	public function register_container_logic() {
-
-		add_filter( 'the_content', 'filter_the_content_in_the_main_loop', 1 );
- 
-		function filter_the_content_in_the_main_loop( $content ) {
-		
-			// Check if we're inside the main loop in a single Post.
-			if ( is_singular() && in_the_loop() && is_main_query() ) {
-				return $content . esc_html__( 'I’m filtering the content inside the main loop', 'wporg');
-			}
-		
-			return $content;
-		}
-
-	}
 
 }

@@ -39,7 +39,7 @@ function sesamy_content_container($atts = null, $content = null){
     } , ARRAY_FILTER_USE_KEY);
 
 
-    return Sesamy_Utils::make_tag( 'sesamy-content-container', $html_attributes, $tag_content );
+    return apply_filters( 'sesamy_content_container', Sesamy_Utils::make_tag( 'sesamy-content-container', $html_attributes, $tag_content ) );
 }
 
 function sesamy_button_container($atts = null, $content = null){
