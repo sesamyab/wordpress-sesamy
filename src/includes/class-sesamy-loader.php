@@ -126,4 +126,30 @@ class Sesamy_Loader {
 
 	}
 
+	/**
+	 * Remove a registered filter
+	 * 
+	 */
+	public function remove_filter( $hook ) {
+
+		if ( isset( $this->filters[ $hook ] ) ) {
+			$reg = $this->filters[ $hook ];
+			remove_filter( $reg['hook'], $reg['callback'], $reg['priority'] );
+			unset( $this->filters[ $hook ] );
+		}
+	}
+
+	/**
+	 * Remove a registered action
+	 * 
+	 */
+	public function remove_action( $hook ) {
+
+		if ( isset( $this->filters[ $hook ] ) ) {
+			$reg = $this->filters[ $hook ];
+			remove_action( $reg['hook'], $reg['callback'], $reg['priority'] );
+			unset( $this->filters[ $hook ] );
+		}
+	}
+
 }
