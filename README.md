@@ -14,6 +14,11 @@ For debugging gutenberg post editor:
 
 (Make sure to hard-refresh to avoid script caching issues)
 
+## Enable codesniffer
+
+Run the following command to enable codesniffer
+    ./vendor/bin/phpcs --config-set default_standard WordPress
+
 # Plugin configuration
 
 ## Setup

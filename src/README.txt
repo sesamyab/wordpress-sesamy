@@ -73,6 +73,24 @@ You can customize how the paywall will be rendered by supplying your own templat
 
 For a more complete example, please see the folder "demo" in our source code repository at https://github.com/sesamyab/wordpress-sesamy
 
+== Filters ==
+
+The following filters can be used to modify the default output from the plugin:
+
+    add_filter( 'sesamy_content', 'my_sesamy_content', 10, 2);
+    function my_sesamy_content( $post, $content ) {
+        return $content;
+    }
+
+    add_filter( 'sesamy_content_container', 'my_sesamy_content_container', 10, 1);
+    function ( $content_container ){
+        return $content_container;
+    }
+
+    add_filter( 'sesamy_paywall_seo', 'my_paywall_seo_callback', 10, 2);
+    function my_paywall_seo_callback( $default_seo, $post ) {
+        return $default_seo;
+    }
 
 == Screenshots ==
 
