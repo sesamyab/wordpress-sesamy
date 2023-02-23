@@ -6,102 +6,105 @@ use Jose\Component\Signature\Algorithm\RS256;
 
 class Sesamy_Signed_Url {
 
-    /**
-     * Main function to test if a signed link is valid
-     */
-    public function is_valid_link( $url ){
 
-        $params = $this->get_request_parameters( $url );
+	/**
+	 * Main function to test if a signed link is valid
+	 */
+	public function is_valid_link( $url ) {
 
-        $expected_keys = ['sp', 'se', 'ss'];
- 
-        if ( count( array_intersect( array_keys( $params),  $expected_keys ) ) !== count( $expected_keys )) {
-            return new WP_Error(404, 'Missing request parameters');
-        }
-       
-        $post = get_post( $params['sp'] );
+		$params = $this->get_request_parameters( $url );
 
-        if( $post == null) {
-          return new WP_Error(404, 'Item not found');
-        }
+		$expected_keys = array( 'sp', 'se', 'ss' );
 
-        // Check if post is locked, if not, just return content
-        $is_locked = get_post_meta( $post->ID, '_sesamy_locked', true);
+		if ( count( array_intersect( array_keys( $params ), $expected_keys ) ) !== count( $expected_keys ) ) {
+			return new WP_Error( 404, 'Missing request parameters' );
+		}
 
-        if ( !$is_locked ){
-          return true;
-        }
+		$post = get_post( $params['sp'] );
 
-        // Verify expiration
-        if ( $params['se'] < time() ) {
-          return new WP_Error(400, 'The link is expired');
-        }
+		if ( $post === null ) {
+			return new WP_Error( 404, 'Item not found' );
+		}
 
-        // Fix for not having an urlencoded ss
+		// Check if post is locked, if not, just return content
+		$is_locked = get_post_meta( $post->ID, '_sesamy_locked', true );
 
-        $url = explode("ss=", $url);
-        $ss = $url[1];
+		if ( ! $is_locked ) {
+			return true;
+		}
 
-        // Verify signature
-        if ( $this->verify_signature( $params['signed_url'], base64_decode($ss) ) ) {
-          return true;
-        }else{
-          return new WP_Error(400, 'The signature is invalid.');
-        }
-    }
+		// Verify expiration
+		if ( $params['se'] < time() ) {
+			return new WP_Error( 400, 'The link is expired' );
+		}
 
-      /**
-       * Get parameters for the request. 
-       */
-      function get_request_parameters( $url ) {
+		// Fix for not having an urlencoded ss
 
-        $query_string = parse_url( $url, PHP_URL_QUERY );
-        parse_str($query_string, $parts );
-        array_flip( $parts ); 
+		$url = explode( 'ss=', $url );
+		$ss  = $url[1];
 
-        // Get the url part without signature part
-        $split_url = explode('&ss=', $url);
-        
-        return array_merge( ['signed_url' => $split_url[0]], $parts );
-      }
+		// Verify signature
+		if ( $this->verify_signature( $params['signed_url'], base64_decode( $ss ) ) ) {
+			return true;
+		} else {
+			return new WP_Error( 400, 'The signature is invalid.' );
+		}
+	}
 
-      /**
-       * Validate signature with 
-       */
-      function verify_signature($url, $signature){
+	/**
+	 * Get parameters for the request.
+	 */
+	function get_request_parameters( $url ) {
 
-        $algorithm_manager = new AlgorithmManager([
-          new RS256()
-        ]);
+		$query_string = wp_parse_url( $url, PHP_URL_QUERY );
+		parse_str( $query_string, $parts );
+		array_flip( $parts );
 
-        $rs256 = $algorithm_manager->get('RS256');
-        $jwk = $this->get_public_key();
+		// Get the url part without signature part
+		$split_url = explode( '&ss=', $url );
 
-        return  $rs256->verify($jwk, $url, $signature);
-        
-      }
+		return array_merge( array( 'signed_url' => $split_url[0] ), $parts );
+	}
+
+	/**
+	 * Validate signature with
+	 */
+	function verify_signature( $url, $signature ) {
+
+		$algorithm_manager = new AlgorithmManager(
+			array(
+				new RS256(),
+			)
+		);
+
+		$rs256 = $algorithm_manager->get( 'RS256' );
+		$jwk   = $this->get_public_key();
+
+		return $rs256->verify( $jwk, $url, $signature );
+
+	}
 
 
 
-      /**
-       * Get the public key
-       */
-      function get_public_key(){
+	/**
+	 * Get the public key
+	 */
+	function get_public_key() {
 
-        $jwk = get_transient( 'sesamy_public_key' );
+		$jwk = get_transient( 'sesamy_public_key' );
 
-        // Use transient to avoid calling api more than needed
-        if ( $jwk === false) { 
+		// Use transient to avoid calling api more than needed
+		if ( $jwk === false ) {
 
-          $req = wp_remote_get( Sesamy::$instance->get_assets_url() . '/vault-jwks.json');
-          $json = wp_remote_retrieve_body( $req); 
+			$req  = wp_remote_get( Sesamy::$instance->get_assets_url() . '/vault-jwks.json' );
+			$json = wp_remote_retrieve_body( $req );
 
-          $jwk = JWK::createFromJson($json);
-          set_transient( 'sesamy_public_key', $jwk, 3600);
+			$jwk = JWK::createFromJson( $json );
+			set_transient( 'sesamy_public_key', $jwk, 3600 );
 
-        }   
-       
-        return $jwk;
-      }
+		}
+
+		return $jwk;
+	}
 
 }

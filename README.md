@@ -19,6 +19,17 @@ For debugging gutenberg post editor:
 Run the following command to enable codesniffer
     ./vendor/bin/phpcs --config-set default_standard WordPress
 
+
+## Run the codesniffer
+
+Install VS Code plugin here https://marketplace.visualstudio.com/items?itemName=shevaua.phpcs or run manually:
+
+    ./vendor/bin/phpcs ./src  --ignore=*/vendor/* --standard=WordPress
+
+You can also run automatic fixes according to standards like this
+
+    ./vendor/bin/phpcbf ./src  --ignore=*/vendor/* --standard=WordPress
+
 # Plugin configuration
 
 ## Setup

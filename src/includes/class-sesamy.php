@@ -6,8 +6,8 @@
  * A class definition that includes attributes and functions used across both the
  * public-facing side of the site and the admin area.
  *
- * @link       https://www.viggeby.com
- * @since      1.0.0
+ * @link  https://www.viggeby.com
+ * @since 1.0.0
  *
  * @package    Sesamy
  * @subpackage Sesamy/includes
@@ -30,6 +30,7 @@
 class Sesamy {
 
 
+
 	/**
 	 * The instance of the plugin
 	 */
@@ -39,27 +40,27 @@ class Sesamy {
 	 * The loader that's responsible for maintaining and registering all hooks that power
 	 * the plugin.
 	 *
-	 * @since    1.0.0
-	 * @access   protected
-	 * @var      Sesamy_Loader    $loader    Maintains and registers all hooks for the plugin.
+	 * @since  1.0.0
+	 * @access protected
+	 * @var    Sesamy_Loader    $loader    Maintains and registers all hooks for the plugin.
 	 */
 	protected $loader;
 
 	/**
 	 * The unique identifier of this plugin.
 	 *
-	 * @since    1.0.0
-	 * @access   protected
-	 * @var      string    $plugin_name    The string used to uniquely identify this plugin.
+	 * @since  1.0.0
+	 * @access protected
+	 * @var    string    $plugin_name    The string used to uniquely identify this plugin.
 	 */
 	protected $plugin_name;
 
 	/**
 	 * The current version of the plugin.
 	 *
-	 * @since    1.0.0
-	 * @access   protected
-	 * @var      string    $version    The current version of the plugin.
+	 * @since  1.0.0
+	 * @access protected
+	 * @var    string    $version    The current version of the plugin.
 	 */
 	protected $version;
 
@@ -71,7 +72,7 @@ class Sesamy {
 	 * Load the dependencies, define the locale, and set the hooks for the admin area and
 	 * the public-facing side of the site.
 	 *
-	 * @since    1.0.0
+	 * @since 1.0.0
 	 */
 	public function __construct() {
 		if ( defined( 'SESAMY_VERSION' ) ) {
@@ -89,7 +90,7 @@ class Sesamy {
 
 	}
 
-	
+
 	/**
 	 * Load the required dependencies for this plugin.
 	 *
@@ -103,8 +104,8 @@ class Sesamy {
 	 * Create an instance of the loader which will be used to register the hooks
 	 * with WordPress.
 	 *
-	 * @since    1.0.0
-	 * @access   private
+	 * @since  1.0.0
+	 * @access private
 	 */
 	private function load_dependencies() {
 
@@ -112,52 +113,50 @@ class Sesamy {
 		 * The class responsible for orchestrating the actions and filters of the
 		 * core plugin.
 		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-sesamy-loader.php';
+		include_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-sesamy-loader.php';
 
 		/**
 		 * The class responsible for defining internationalization functionality
 		 * of the plugin.
 		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-sesamy-i18n.php';
+		include_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-sesamy-i18n.php';
 
 		/**
 		 * The class responsible for defining all actions that occur in the admin area.
 		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-sesamy-admin.php';
+		include_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-sesamy-admin.php';
 
 		/**
 		 * The class responsible for defining all actions that occur in the public-facing
 		 * side of the site.
 		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-sesamy-public.php';
-
+		include_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-sesamy-public.php';
 
 		/**
 		 * Sesamy includes
 		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-sesamy-utils.php';
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-sesamy-passes.php';
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-sesamy-post-properties.php';
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-sesamy-signed-url.php';
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-sesamy-api-endpoint.php';	
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-sesamy-currencies.php';	
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-sesamy-settings.php';	
+		include_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-sesamy-utils.php';
+		include_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-sesamy-passes.php';
+		include_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-sesamy-post-properties.php';
+		include_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-sesamy-signed-url.php';
+		include_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-sesamy-api-endpoint.php';
+		include_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-sesamy-currencies.php';
+		include_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-sesamy-settings.php';
 
 		/**
 		 * The following classes contains sesamy public
 		 */
 
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-sesamy-shortcodes.php';
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-sesamy-content-container.php';
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-sesamy-meta.php';
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/sesamy-global-functions.php';
-
+		include_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-sesamy-shortcodes.php';
+		include_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-sesamy-content-container.php';
+		include_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-sesamy-meta.php';
+		include_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/sesamy-global-functions.php';
 
 		/**
 		 * Admin includes
 		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-sesamy-settings-admin.php';
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-sesamy-post-editor.php';
+		include_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-sesamy-settings-admin.php';
+		include_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-sesamy-post-editor.php';
 
 		$this->loader = new Sesamy_Loader();
 
@@ -169,8 +168,8 @@ class Sesamy {
 	 * Uses the Sesamy_i18n class in order to set the domain and to register the hook
 	 * with WordPress.
 	 *
-	 * @since    1.0.0
-	 * @access   private
+	 * @since  1.0.0
+	 * @access private
 	 */
 	private function set_locale() {
 
@@ -186,14 +185,14 @@ class Sesamy {
 		$this->loader->add_action( 'init', Sesamy_Passes::getInstance(), 'register_taxonomy' );
 
 		$post_properties = new Sesamy_Post_Properties();
-		$this->loader->add_action( 'init', $post_properties, 'register_post_meta' );	
+		$this->loader->add_action( 'init', $post_properties, 'register_post_meta' );
 		$this->loader->add_action( 'admin_init', $post_properties, 'register_post_meta' );
-		$this->loader->add_action( 'rest_api_init', $post_properties, 'register_post_meta' );	
+		$this->loader->add_action( 'rest_api_init', $post_properties, 'register_post_meta' );
 
 		$ep = new Sesamy_Content_Endpoint();
 		$this->loader->add_action( 'rest_api_init', $ep, 'register_route' );
 		$this->loader->add_filter( 'rest_pre_serve_request', $ep, 'format_response', 10, 4 );
-		
+
 		$currencies = new Sesamy_Currencies();
 		$this->loader->add_action( 'rest_api_init', $currencies, 'register_route' );
 
@@ -207,8 +206,8 @@ class Sesamy {
 	 * Register all of the hooks related to the admin area functionality
 	 * of the plugin.
 	 *
-	 * @since    1.0.0
-	 * @access   private
+	 * @since  1.0.0
+	 * @access private
 	 */
 	private function define_admin_hooks() {
 
@@ -227,8 +226,8 @@ class Sesamy {
 	 * Register all of the hooks related to the public-facing functionality
 	 * of the plugin.
 	 *
-	 * @since    1.0.0
-	 * @access   private
+	 * @since  1.0.0
+	 * @access private
 	 */
 	private function define_public_hooks() {
 
@@ -237,7 +236,6 @@ class Sesamy {
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_styles' );
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
 		$this->loader->add_action( 'init', $plugin_public, 'register_shortcodes' );
-
 
 		// If the lock mode is set to 'none' we should do nothing with the content.
 		if ( get_option( 'sesamy_lock_mode' ) !== 'none' ) {
@@ -259,7 +257,7 @@ class Sesamy {
 	/**
 	 * Run the loader to execute all of the hooks with WordPress.
 	 *
-	 * @since    1.0.0
+	 * @since 1.0.0
 	 */
 	public function run() {
 		$this->loader->run();
@@ -269,8 +267,8 @@ class Sesamy {
 	 * The name of the plugin used to uniquely identify it within the context of
 	 * WordPress and to define internationalization functionality.
 	 *
-	 * @since     1.0.0
-	 * @return    string    The name of the plugin.
+	 * @since  1.0.0
+	 * @return string    The name of the plugin.
 	 */
 	public function get_plugin_name() {
 		return $this->plugin_name;
@@ -279,8 +277,8 @@ class Sesamy {
 	/**
 	 * The reference to the class that orchestrates the hooks with the plugin.
 	 *
-	 * @since     1.0.0
-	 * @return    Sesamy_Loader    Orchestrates the hooks of the plugin.
+	 * @since  1.0.0
+	 * @return Sesamy_Loader    Orchestrates the hooks of the plugin.
 	 */
 	public function get_loader() {
 		return $this->loader;
@@ -289,19 +287,19 @@ class Sesamy {
 	/**
 	 * Retrieve the version number of the plugin.
 	 *
-	 * @since     1.0.0
-	 * @return    string    The version number of the plugin.
+	 * @since  1.0.0
+	 * @return string    The version number of the plugin.
 	 */
 	public function get_version() {
 		return $this->version;
 	}
-	
+
 
 	/**
 	 * Return URL for assets based on admin settings
 	 */
 	public function get_assets_url() {
-		$ep =  get_option( 'sesamy_api_endpoint' );
+		$ep = get_option( 'sesamy_api_endpoint' );
 		return ( $ep === 'production' ) ? 'https://assets.sesamy.com' : 'https://assets.sesamy.dev';
 	}
 

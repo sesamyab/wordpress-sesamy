@@ -36,6 +36,7 @@ export default () => {
 
 /**
  * The sesamy post editor
+ *
  * @returns 
  */
 const SesamyPostEditor = () => {
