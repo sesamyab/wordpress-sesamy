@@ -189,7 +189,7 @@ class Sesamy {
 		$this->loader->add_action( 'admin_init', $post_properties, 'register_post_meta' );
 		$this->loader->add_action( 'rest_api_init', $post_properties, 'register_post_meta' );
 
-		$ep = new Sesamy_Content_Endpoint();
+		$ep = new Sesamy_Api_Endpoint();
 		$this->loader->add_action( 'rest_api_init', $ep, 'register_route' );
 		$this->loader->add_filter( 'rest_pre_serve_request', $ep, 'format_response', 10, 4 );
 
