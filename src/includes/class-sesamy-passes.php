@@ -5,7 +5,7 @@ class Sesamy_Passes {
 
 	private static $instance;
 
-	public static function getInstance() {
+	public static function get_instance() {
 		if ( empty( $instance ) ) {
 			self::$instance = new Sesamy_Passes();
 		}
@@ -69,7 +69,7 @@ class Sesamy_Passes {
 	}
 
 	public function load_scripts() {
-		if ( ! isset( $_GET['taxonomy'] ) || $_GET['taxonomy'] != 'sesamy_passes' ) {
+		if ( ! isset( $_GET['taxonomy'] ) || 'sesamy_passes' !== $_GET['taxonomy'] ) {
 			return;
 		}
 
@@ -102,7 +102,7 @@ class Sesamy_Passes {
 		<select name="<?php echo esc_html( $name ); ?>" id="<?php echo esc_html( $name ); ?>">
 		<?php
 		foreach ( $options as $key => $value ) {
-			echo '<option value="' . esc_html( $key ) . '"' . ( $field_value == $key ? 'selected' : '' ) . '>' . esc_html( $value ) . '</option>';
+			echo '<option value="' . esc_html( $key ) . '"' . ( $field_value === $key ? 'selected' : '' ) . '>' . esc_html( $value ) . '</option>';
 		}
 		?>
 		</select>
@@ -117,7 +117,7 @@ class Sesamy_Passes {
 		<style>
 			.term-parent-wrap {display: none;}
 		</style>
-		
+
 		<div class="form-field term-group">
 			<label for="category-image-id"><?php _e( 'Image', 'sesamy' ); ?></label>
 			<input type="hidden" id="taxonomy-image-id" name="image_id" class="custom_media_url" value="">
@@ -128,7 +128,7 @@ class Sesamy_Passes {
 			</p>
 		</div>
 
-		
+
 		<div class="form-field">
 			<label for="price">Price</label>
 			<input type="number" step="0.01" min="0.01"  name="price" required />
@@ -204,7 +204,7 @@ class Sesamy_Passes {
 		<td><input type="number" step="0.01" min="0.01" name="price" id="price" value="<?php echo esc_html( $price ); ?>" required />
 			<p>Price for this tier</p></td>
 		</div>
-		 
+
 		<tr class="form-field">
 		<th><label for="currency">Payment period</label></th>
 		<td>

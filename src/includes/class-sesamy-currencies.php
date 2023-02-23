@@ -12,7 +12,7 @@ class Sesamy_Currencies {
 		$currencies = get_transient( 'sesamy_currencies' );
 
 		// Use transient to avoid calling api more than needed
-		if ( $currencies === false ) {
+		if ( false === $currencies ) {
 
 			$req  = wp_remote_get( Sesamy::$instance->get_assets_url() . '/markets.json' );
 			$json = wp_remote_retrieve_body( $req );

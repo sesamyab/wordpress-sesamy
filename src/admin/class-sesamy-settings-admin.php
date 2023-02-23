@@ -4,7 +4,7 @@ class Sesamy_Settings_Admin {
 
 
 
-	function admin_menu() {
+	public function admin_menu() {
 
 		add_menu_page(
 			'Sesamy',
@@ -17,12 +17,12 @@ class Sesamy_Settings_Admin {
 	}
 
 
-	function admin_menu_html() {
+	public function admin_menu_html() {
 		include plugin_dir_path( dirname( __FILE__ ) ) . 'admin/partials/sesamy-admin-display.php';
 	}
 
 
-	function add_settings() {
+	public function add_settings() {
 
 		add_settings_section(
 			'sesamy_section_general',
@@ -93,24 +93,24 @@ class Sesamy_Settings_Admin {
 	}
 
 
-	function sesamy_section_general_callback() {
+	public function sesamy_section_general_callback() {
 		// Add if needed
 	}
 
-	function settings_render_select( $args ) {
+	public function settings_render_select( $args ) {
 
 		$settings_value = get_option( $args['name'] );
 
-		echo "<select name=\"{$args['name']}\">";
+		echo '<select name="' . esc_attr( $args['name'] ) . '">';
 		foreach ( $args['options'] as $key => $value ) {
-			$selected = $key == $settings_value ? 'selected' : '';
-			echo "<option value=\"$key\" $selected>$value</option>";
+			$selected = $key === $settings_value ? 'selected' : '';
+			echo '<option value="' . esc_attr( $key ) . '"' . esc_attr( $selected ) . '>' . esc_html( $value ) . '</option>';
 		}
 		echo '</select>';
 	}
 
 
-	function settings_render_checkboxlist( $args ) {
+	public function settings_render_checkboxlist( $args ) {
 
 		$options = get_option( $args['name'] );
 
@@ -119,17 +119,19 @@ class Sesamy_Settings_Admin {
 		}
 
 		foreach ( $args['options'] as $key => $value ) {
-			$checked = in_array( $key, $options ) ? 'checked' : '';
-			echo "<label><input type=\"checkbox\" name=\"{$args['name']}[]\" value=\"$key\" $checked>$value</label><br>";
+			$checked = in_array( $key, $options, true ) ? 'checked' : '';
+			echo '<label><input type="checkbox" name="' . esc_attr( $args['name'] ) . '[]" value="' . esc_attr( $key ) . '" ' . esc_attr( $checked ) . '>' . esc_attr( $value ) . '</label><br>';
 		}
 	}
 
-
-	function settings_render_input( $args ) {
+	/**
+	 *
+	 */
+	public function settings_render_input( $args ) {
 
 		$settings_value = get_option( $args['name'] );
 
-		echo '<input type="text" name="' . $args['name'] . '" value="' . $settings_value . '">';
+		echo '<input type="text" name="' . esc_attr( $args['name'] ) . '" value="' . esc_attr( $settings_value ) . '">';
 	}
 
 

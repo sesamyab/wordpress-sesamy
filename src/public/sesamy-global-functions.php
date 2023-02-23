@@ -20,17 +20,17 @@ function sesamy_content_container( $atts = null, $content = null ) {
 	);
 
 	// If lock mode is none, we should not wrap or do anything with the content
-	if ( $atts['lock_mode'] == 'none' ) {
+	if ( 'none' === $atts['lock_mode'] ) {
 		return $content;
 	}
 
 	$tag_content = '<div slot="preview">' . $atts['preview'] . '</div>';
 
-	if ( $atts['lock_mode'] == 'embed' ) {
+	if ( 'embed' === $atts['lock_mode'] ) {
 		$tag_content .= '<div slot="content">' . $content . '</div>';
 	}
 
-	if ( $atts['lock_mode'] !== 'signedUrl' ) {
+	if ( 'signedUrl' !== $atts['lock_mode'] ) {
 		unset( $atts['access_url'] );
 	}
 
@@ -39,7 +39,7 @@ function sesamy_content_container( $atts = null, $content = null ) {
 	$html_attributes  = array_filter(
 		$atts,
 		function ( $key ) use ( $non_display_atts ) {
-			return ! in_array( $key, $non_display_atts );
+			return ! in_array( $key, $non_display_atts, true );
 		},
 		ARRAY_FILTER_USE_KEY
 	);

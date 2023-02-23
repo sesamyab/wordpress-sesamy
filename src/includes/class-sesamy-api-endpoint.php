@@ -2,7 +2,7 @@
 
 
 
-class Sesamy_Content_Endpoint {
+class Sesamy_Api_Endpoint {
 
 
 
@@ -63,7 +63,7 @@ class Sesamy_Content_Endpoint {
 
 		$signed_url = new Sesamy_Signed_Url();
 
-		$public_signed_url = esc_url_raw( $_SERVER['HTTP_X_SESAMY_SIGNED_URL'] );
+		$public_signed_url = isset( $_SERVER['HTTP_X_SESAMY_SIGNED_URL'] ) ? esc_url_raw( wp_unslash( $_SERVER['HTTP_X_SESAMY_SIGNED_URL'] ) ) : '';
 
 		$result = $signed_url->is_valid_link( $public_signed_url );
 
@@ -120,22 +120,25 @@ class Sesamy_Content_Endpoint {
 
 		if ( preg_match( '/^\/sesamy\/v1\/posts\/[0-9]+$/m', $request->get_route() ) && isset( $result->data['data'] ) ) {
 
-			switch ( $_SERVER['HTTP_ACCEPT'] ) {
+			if ( isset($_SERVER['HTTP_ACCEPT'])  ){
+			
+				switch ( $_SERVER['HTTP_ACCEPT'] ) {
 
-				case 'text/html':
-					header( 'Content-Type: text/html; charset=' . get_option( 'blog_charset' ) );
-					echo $result->data['data'];
-					exit;
+					case 'text/html':
+						header( 'Content-Type: text/html; charset=' . get_option( 'blog_charset' ) );
+						echo $result->data['data'];
+						exit;
 
-				case 'application/xml':
-					header( 'Content-Type: application/xml; charset=' . get_option( 'blog_charset' ) );
+					case 'application/xml':
+						header( 'Content-Type: application/xml; charset=' . get_option( 'blog_charset' ) );
 
-					$xmlDoc   = new DOMDocument();
-					$response = $xmlDoc->appendChild( $xmlDoc->createElement( 'Data', $result->data['data'] ) );
+						$xmlDoc   = new DOMDocument();
+						$response = $xmlDoc->appendChild( $xmlDoc->createElement( 'Data', $result->data['data'] ) );
 
-					echo $xmlDoc->saveXML();
-					exit;
+						echo $xmlDoc->saveXML();
+						exit;
 
+				}
 			}
 		}
 

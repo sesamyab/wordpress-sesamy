@@ -26,8 +26,8 @@
  */
 
 // If this file is called directly, abort.
-if (! defined('WPINC') ) {
-    die;
+if ( ! defined( 'WPINC' ) ) {
+	die;
 }
 
 /**
@@ -35,46 +35,44 @@ if (! defined('WPINC') ) {
  * Start at version 1.0.0 and use SemVer - https://semver.org
  * Rename this for your plugin and update it as you release new versions.
  */
-define('SESAMY_VERSION', '1.0.1');
+define( 'SESAMY_VERSION', '1.0.1' );
 
 /**
  * The code that runs during plugin activation.
  * This action is documented in includes/class-sesamy-activator.php
  */
-function activate_sesamy()
-{
-    include_once plugin_dir_path(__FILE__) . 'includes/class-sesamy-activator.php';
-    Sesamy_Activator::activate();
+function activate_sesamy() {
+	include_once plugin_dir_path( __FILE__ ) . 'includes/class-sesamy-activator.php';
+	Sesamy_Activator::activate();
 }
 
 /**
  * The code that runs during plugin deactivation.
  * This action is documented in includes/class-sesamy-deactivator.php
  */
-function deactivate_sesamy()
-{
-    include_once plugin_dir_path(__FILE__) . 'includes/class-sesamy-deactivator.php';
-    Sesamy_Deactivator::deactivate();
+function deactivate_sesamy() {
+	include_once plugin_dir_path( __FILE__ ) . 'includes/class-sesamy-deactivator.php';
+	Sesamy_Deactivator::deactivate();
 }
 
-register_activation_hook(__FILE__, 'activate_sesamy');
-register_deactivation_hook(__FILE__, 'deactivate_sesamy');
+register_activation_hook( __FILE__, 'activate_sesamy' );
+register_deactivation_hook( __FILE__, 'deactivate_sesamy' );
 
 /**
  * The core plugin class that is used to define internationalization,
  * admin-specific hooks, and public-facing site hooks.
  */
-require plugin_dir_path(__FILE__) . 'includes/class-sesamy.php';
+require plugin_dir_path( __FILE__ ) . 'includes/class-sesamy.php';
 
 /**
  * Include composer packages
  */
-require plugin_dir_path(__FILE__) . 'vendor/autoload.php';
+require plugin_dir_path( __FILE__ ) . 'vendor/autoload.php';
 
 Sesamy::$instance = new Sesamy();
 Sesamy::$instance->run();
 
 
 
-define('SESAMY_PLUGIN_PATH', plugin_dir_path(__FILE__));
-define('SESAMY_PLUGIN_URL', plugin_dir_url(__FILE__));
+define( 'SESAMY_PLUGIN_PATH', plugin_dir_path( __FILE__ ) );
+define( 'SESAMY_PLUGIN_URL', plugin_dir_url( __FILE__ ) );

@@ -10,7 +10,7 @@
  * @subpackage Sesamy/includes
  */
 
-class Sesamy_ContentContainer {
+class Sesamy_Content_Container {
 
 
 
@@ -95,12 +95,12 @@ class Sesamy_ContentContainer {
 	function show_seo_paywall_data( $post ) {
 		ob_start();
 
-		$headline      = get_the_title( $post );
-		$image         = get_the_post_thumbnail_url( $post, 'full' );
-		$datePublished = get_the_date( 'c', $post );
-		$dateModified  = get_the_modified_date( 'c', $post );
-		$author        = get_the_author_meta( 'display_name', $post );
-		$description   = get_the_excerpt( $post );
+		$headline       = get_the_title( $post );
+		$image          = get_the_post_thumbnail_url( $post, 'full' );
+		$date_published = get_the_date( 'c', $post );
+		$date_modified  = get_the_modified_date( 'c', $post );
+		$author         = get_the_author_meta( 'display_name', $post );
+		$description    = get_the_excerpt( $post );
 
 		?>
 		<script type="application/ld+json">
@@ -109,8 +109,8 @@ class Sesamy_ContentContainer {
 		"@type": "NewsArticle",
 		"headline": "<?php echo $headline; ?>,
 		"image": "<?php echo esc_html( $image ); ?>",
-		"datePublished": "<?php echo esc_html( $datePublished ); ?>",
-		"dateModified": "<?php echo esc_html( $dateModified ); ?>",
+		"datePublished": "<?php echo esc_html( $date_published ); ?>",
+		"dateModified": "<?php echo esc_html( $date_modified ); ?>",
 		"author": {
 			"@type": "Person",
 			"name": "<?php echo $author; ?>"
@@ -136,7 +136,7 @@ class Sesamy_ContentContainer {
 
 		?>
 		<div class="sesamy-paywall" data-sesamy-paywall data-sesamy-item-src="<?php echo get_the_permalink( $post->ID ); ?>" data-sesamy-passes="<?php sesamy_get_passes( $post->ID ); ?>">
-			
+
 		<?php echo sesamy_login(); ?>
 		<?php
 

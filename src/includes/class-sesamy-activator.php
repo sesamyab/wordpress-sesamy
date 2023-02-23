@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Fired during plugin activation
  *
@@ -32,7 +31,7 @@ class Sesamy_Activator {
 	 */
 	public static function activate() {
 
-		// Set default endpoint to debug
+		// Set default endpoint to debug.
 		if ( get_option( 'sesamy_api_endpoint' ) === false ) {
 			add_option( 'sesamy_api_endpoint', 'develop' );
 		}

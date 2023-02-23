@@ -22,7 +22,7 @@ class Sesamy_Signed_Url {
 
 		$post = get_post( $params['sp'] );
 
-		if ( $post === null ) {
+		if ( null === $post ) {
 			return new WP_Error( 404, 'Item not found' );
 		}
 
@@ -94,7 +94,7 @@ class Sesamy_Signed_Url {
 		$jwk = get_transient( 'sesamy_public_key' );
 
 		// Use transient to avoid calling api more than needed
-		if ( $jwk === false ) {
+		if ( false === $jwk ) {
 
 			$req  = wp_remote_get( Sesamy::$instance->get_assets_url() . '/vault-jwks.json' );
 			$json = wp_remote_retrieve_body( $req );

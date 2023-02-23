@@ -97,7 +97,7 @@ class Sesamy {
 	 * Include the following files that make up the plugin:
 	 *
 	 * - Sesamy_Loader. Orchestrates the hooks of the plugin.
-	 * - Sesamy_i18n. Defines internationalization functionality.
+	 * - Sesamy_I18n. Defines internationalization functionality.
 	 * - Sesamy_Admin. Defines all hooks for the admin area.
 	 * - Sesamy_Public. Defines all hooks for the public side of the site.
 	 *
@@ -165,7 +165,7 @@ class Sesamy {
 	/**
 	 * Define the locale for this plugin for internationalization.
 	 *
-	 * Uses the Sesamy_i18n class in order to set the domain and to register the hook
+	 * Uses the Sesamy_I18n class in order to set the domain and to register the hook
 	 * with WordPress.
 	 *
 	 * @since  1.0.0
@@ -173,7 +173,7 @@ class Sesamy {
 	 */
 	private function set_locale() {
 
-		$plugin_i18n = new Sesamy_i18n();
+		$plugin_i18n = new Sesamy_I18n();
 
 		$this->loader->add_action( 'plugins_loaded', $plugin_i18n, 'load_plugin_textdomain' );
 
@@ -182,7 +182,7 @@ class Sesamy {
 
 	private function define_common_hooks() {
 
-		$this->loader->add_action( 'init', Sesamy_Passes::getInstance(), 'register_taxonomy' );
+		$this->loader->add_action( 'init', Sesamy_Passes::get_instance(), 'register_taxonomy' );
 
 		$post_properties = new Sesamy_Post_Properties();
 		$this->loader->add_action( 'init', $post_properties, 'register_post_meta' );
@@ -219,7 +219,7 @@ class Sesamy {
 		$this->loader->add_action( 'admin_menu', $plugin_admin, 'admin_menu' );
 		$this->loader->add_action( 'init', $plugin_admin, 'init' );
 
-		$this->loader->add_action( 'admin_init', Sesamy_Passes::getInstance(), 'admin_init' );
+		$this->loader->add_action( 'admin_init', Sesamy_Passes::get_instance(), 'admin_init' );
 	}
 
 	/**
@@ -240,18 +240,18 @@ class Sesamy {
 		// If the lock mode is set to 'none' we should do nothing with the content.
 		if ( get_option( 'sesamy_lock_mode' ) !== 'none' ) {
 
-			$sesamyContentContainer = new Sesamy_ContentContainer();
-			$this->loader->add_filter( 'sesamy_content', $sesamyContentContainer, 'process_content', 999, 2 );
-			$this->loader->add_filter( 'sesamy_content_container', $sesamyContentContainer, 'sesamy_content_container_wrap', 10, 1 );
+			$sesamy_content_container = new Sesamy_Content_Container();
+			$this->loader->add_filter( 'sesamy_content', $sesamy_content_container, 'process_content', 999, 2 );
+			$this->loader->add_filter( 'sesamy_content_container', $sesamy_content_container, 'sesamy_content_container_wrap', 10, 1 );
 
 			// Make sure we process sesamy after all other hooks with order 999.
-			$this->loader->add_filter( 'the_content', $sesamyContentContainer, 'process_main_content', 999 );
+			$this->loader->add_filter( 'the_content', $sesamy_content_container, 'process_main_content', 999 );
 
 		}
 
 		// Make sure we process sesamy after all other hooks with order 999.
-		$sesamyMeta = new Sesamy_Meta();
-		$this->loader->add_filter( 'wp_head', $sesamyMeta, 'add_meta_tags' );
+		$sesamy_meta = new Sesamy_Meta();
+		$this->loader->add_filter( 'wp_head', $sesamy_meta, 'add_meta_tags' );
 	}
 
 	/**
@@ -300,7 +300,7 @@ class Sesamy {
 	 */
 	public function get_assets_url() {
 		$ep = get_option( 'sesamy_api_endpoint' );
-		return ( $ep === 'production' ) ? 'https://assets.sesamy.com' : 'https://assets.sesamy.dev';
+		return ( 'production' === $ep ) ? 'https://assets.sesamy.com' : 'https://assets.sesamy.dev';
 	}
 
 }

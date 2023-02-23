@@ -24,7 +24,7 @@
  * @subpackage Sesamy/includes
  * @author     Jonas Stensved <jonas@viggeby.com>
  */
-class Sesamy_i18n {
+class Sesamy_I18n {
 
 
 

@@ -15,7 +15,7 @@ class Sesamy_Utils {
 			array_map(
 				function ( $key, $value ) {
 					if ( is_array( $value ) ) {
-						  $value = implode( ' ', $value );
+						$value = implode( ' ', $value );
 					}
 
 					return str_replace( '_', '-', $key ) . '="' . htmlspecialchars( $value ) . '"';

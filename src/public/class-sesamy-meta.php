@@ -27,7 +27,7 @@ class Sesamy_Meta {
 		if ( is_singular() ) {
 			global $post;
 
-			if ( in_array( $post->post_type, sesamy_get_enabled_post_types() ) && Sesamy_Post_Properties::is_locked( $post ) ) {
+			if ( in_array( $post->post_type, sesamy_get_enabled_post_types(), true ) && Sesamy_Post_Properties::is_locked( $post ) ) {
 
 				$price_info = Sesamy_Post_Properties::get_post_price_info( $post );
 
