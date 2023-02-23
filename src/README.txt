@@ -4,7 +4,7 @@ Tags: sesamy, paywall
 Requires at least: 5.0.1
 Requires PHP: 5.6
 Tested up to: 6.1
-Stable tag: 1.0.3
+Stable tag: 1.0.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -92,15 +92,11 @@ The following filters can be used to modify the default output from the plugin:
         return $default_seo;
     }
 
-== Screenshots ==
-
-1. This screen shot description corresponds to screenshot-1.(png|jpg|jpeg|gif). Note that the screenshot is taken from
-the /assets directory or the directory that contains the stable readme.txt (tags or trunk). Screenshots in the /assets
-directory take precedence. For example, `/assets/screenshot-1.png` would win over `/tags/4.3/screenshot-1.png`
-(or jpg, jpeg, gif).
-2. This is the second screen shot
 
 == Changelog ==
+
+= 1.0.4 =
+* Adjusted code formatting and added output escaping
 
 = 1.0.3 =
 * Sanitized output for security

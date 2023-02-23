@@ -3,9 +3,8 @@
 /**
  * Define the shortcodes
  *
- *
- * @link       https://www.viggeby.com
- * @since      1.0.0
+ * @link  https://www.viggeby.com
+ * @since 1.0.0
  *
  * @package    Sesamy
  * @subpackage Sesamy/includes
@@ -13,7 +12,6 @@
 
 /**
  * Define the shortcodes
- *
  *
  * @since      1.0.0
  * @package    Sesamy
@@ -23,10 +21,11 @@
 class Sesamy_Shortcodes {
 
 
+
 	/**
 	 * Load the plugin text domain for translation.
 	 *
-	 * @since    1.0.0
+	 * @since 1.0.0
 	 */
 	public function register() {
 
@@ -36,13 +35,13 @@ class Sesamy_Shortcodes {
 		$this->register_shortcode( 'sesamy_login' );
 		$this->register_shortcode( 'sesamy_profile' );
 		$this->register_shortcode( 'sesamy_config' );
-		
+
 	}
-	
-	public function register_shortcode($name) {
+
+	public function register_shortcode( $name ) {
 
 		// By convention the shortcodes have a corresponding public function
-		add_shortcode( $name, $name);
+		add_shortcode( $name, $name );
 	}
 
 }

@@ -8,15 +8,15 @@
  * registers the activation and deactivation functions, and defines a function
  * that starts the plugin.
  *
- * @link              https://www.viggeby.com
- * @since             1.0.0
- * @package           Sesamy
+ * @link    https://www.viggeby.com
+ * @since   1.0.0
+ * @package Sesamy
  *
  * @wordpress-plugin
  * Plugin Name:       Sesamy
  * Plugin URI:        https://sesamy.com
  * Description:       Add paywall functionality with Sesamy (sesamy.com) to your WordPress website.
- * Version:           1.0.3
+ * Version:           1.0.4
  * Author:            Sesamy AB, Jonas Stensved
  * Author URI:        https://www.viggeby.com
  * License:           GPL-2.0+
@@ -42,7 +42,7 @@ define( 'SESAMY_VERSION', '1.0.1' );
  * This action is documented in includes/class-sesamy-activator.php
  */
 function activate_sesamy() {
-	require_once plugin_dir_path( __FILE__ ) . 'includes/class-sesamy-activator.php';
+	include_once plugin_dir_path( __FILE__ ) . 'includes/class-sesamy-activator.php';
 	Sesamy_Activator::activate();
 }
 
@@ -51,7 +51,7 @@ function activate_sesamy() {
  * This action is documented in includes/class-sesamy-deactivator.php
  */
 function deactivate_sesamy() {
-	require_once plugin_dir_path( __FILE__ ) . 'includes/class-sesamy-deactivator.php';
+	include_once plugin_dir_path( __FILE__ ) . 'includes/class-sesamy-deactivator.php';
 	Sesamy_Deactivator::deactivate();
 }
 
@@ -74,5 +74,5 @@ Sesamy::$instance->run();
 
 
 
-define('SESAMY_PLUGIN_PATH', plugin_dir_path( __FILE__ ));
-define('SESAMY_PLUGIN_URL', plugin_dir_url( __FILE__ ));
+define( 'SESAMY_PLUGIN_PATH', plugin_dir_path( __FILE__ ) );
+define( 'SESAMY_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
