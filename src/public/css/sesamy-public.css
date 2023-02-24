@@ -2,3 +2,8 @@
  * All of the CSS for your public-facing functionality should be
  * included in this file.
  */
+
+ /* Hide to prevent flash of unstyled content */
+sesamy-content-container {
+    display: none;
+}
