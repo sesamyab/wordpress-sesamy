@@ -300,7 +300,7 @@ class Sesamy {
 	 */
 	public function get_assets_url() {
 		$ep = get_option( 'sesamy_api_endpoint' );
-		return ( 'production' === $ep ) ? 'https://assets.sesamy.com' : 'https://assets.sesamy.dev';
+		return defined( 'SESAMY_DEV_API' ) ? 'https://assets.sesamy.dev' : 'https://assets.sesamy.com';
 	}
 
 }
