@@ -74,22 +74,6 @@ class Sesamy_Settings_Admin {
 			)
 		);
 
-		add_settings_field(
-			'sesamy_api_endpoint',
-			__( 'API Endpoint', 'sesamy' ),
-			array( $this, 'settings_render_select' ),
-			'sesamy',
-			'sesamy_section_general',
-			array(
-				'name'      => 'sesamy_api_endpoint',
-				'options'   => array(
-					'production' => 'Production',
-					'develop'    => 'Develop',
-				),
-				'label_for' => 'sesamy_api_endpoint',
-			)
-		);
-
 	}
 
 
