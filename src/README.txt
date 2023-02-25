@@ -2,9 +2,9 @@
 Contributors: jstensved
 Tags: sesamy, paywall
 Requires at least: 5.0.1
-Requires PHP: 5.6
+Requires PHP: 7.0
 Tested up to: 6.1
-Stable tag: 1.0.4
+Stable tag: 1.0.5
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -21,6 +21,7 @@ Features:
 * Access levels to posts based on both single-purchase and Sesamy passes.
 * Set a custom price and/or pass per article
 * Ability to configure protection level based on how secure your content is
+* Ability to bulk edit paywall settings when bulk editing posts in WordPress Admin
 
 
 Please note that using this plugin requires an account with Sesamy (sesamy.com).
@@ -94,6 +95,11 @@ The following filters can be used to modify the default output from the plugin:
 
 
 == Changelog ==
+
+= 1.0.5 =
+* Added admin columns for easy overview of paywall settings
+* Added support for bulk editing paywall settings through WordPress bulk edit
+* Moved settings for endpoint from settings to check if constant SESAMY_DEV_API is set and true
 
 = 1.0.4 =
 * Adjusted code formatting and added output escaping

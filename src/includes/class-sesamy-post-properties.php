@@ -2,8 +2,6 @@
 
 class Sesamy_Post_Properties {
 
-
-
 	function register_post_meta() {
 
 		$post_types = sesamy_get_enabled_post_types();
@@ -73,6 +71,7 @@ class Sesamy_Post_Properties {
 
 	public static function is_locked( $post ) {
 
+		$post = get_post( $post );
 		return get_post_meta( $post->ID, '_sesamy_locked', true );
 	}
 
@@ -81,37 +80,26 @@ class Sesamy_Post_Properties {
 	 */
 	public static function get_post_price_info( $post ) {
 
+		$post = get_post( $post );
+
 		$info = array(
+			'enable_single_purchase' => null,
 			'price'    => null,
 			'currency' => null,
 		);
 
-		// $payment_type = get_metadata ( $post->post_type, $post->ID, '_sesamy_payment_type', true );
-
-		// if( $payment_type == 'tier' ) {
-
-		// $tiers = get_the_terms( $post->ID, 'sesamy_passes' );
-
-		// if( !isset($tiers[0]) ){
-		// TODO: Handle more gracefully
-		// wp_die('No tiers configured for post.');
-		// }
-
-		// $tier = $tiers[0];
-
-		// $tier_meta = self::get_tier_price_info( $tier );
-
-		// $info['price'] = $tier_meta['price'];
-		// $info['currency'] = $tier_meta['currency'];
-
-		// }else{
-
-		$info['price']    = get_post_meta( $post->ID, '_sesamy_price', true );
-		$info['currency'] = get_post_meta( $post->ID, '_sesamy_currency', true );
-
-		// }
+		$info['enable_single_purchase'] = get_post_meta( $post->ID, '_sesamy_enable_single_purchase', true );
+		$info['price']                  = get_post_meta( $post->ID, '_sesamy_price', true );
+		$info['currency']               = get_post_meta( $post->ID, '_sesamy_currency', true );
 
 		return $info;
+
+	}
+
+	public static function get_post_passes( $post ) {
+
+		$post = get_post( $post );
+		return get_the_terms( $post, 'sesamy_passes' );
 
 	}
 

@@ -51,4 +51,17 @@ class Sesamy_Utils {
 		return $tag;
 	}
 
+	public static function render_select( $name, $options, $field_value = null ) {
+
+		?>
+		<select name="<?php echo esc_html( $name ); ?>" id="<?php echo esc_html( $name ); ?>">
+		<?php
+		foreach ( $options as $key => $value ) {
+			echo '<option value="' . esc_html( $key ) . '"' . ( $field_value === $key ? 'selected' : '' ) . '>' . esc_html( $value ) . '</option>';
+		}
+		?>
+		</select>
+		<?php
+	}
+
 }
