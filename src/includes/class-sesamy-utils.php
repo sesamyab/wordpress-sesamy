@@ -8,7 +8,7 @@ class Sesamy_Utils {
 	/**
 	 * Remove empty values and convert array into html attributes
 	 */
-	public static function html_attributes( array $array ) {
+	public static function html_attributes( array $atts ) {
 
 		return implode(
 			' ',
@@ -20,8 +20,8 @@ class Sesamy_Utils {
 
 					return str_replace( '_', '-', $key ) . '="' . htmlspecialchars( $value ) . '"';
 				},
-				array_keys( $array ),
-				$array
+				array_keys( $atts ),
+				$atts
 			)
 		);
 	}
@@ -29,9 +29,9 @@ class Sesamy_Utils {
 	/*
 	* Remove empty values to avoid creating empty attributes
 	*/
-	public static function remove_empty_values( array $array ) {
+	public static function remove_empty_values( array $atts ) {
 		return array_filter(
-			$array,
+			$atts,
 			function ( $value ) {
 				return ! empty( $value );
 			}

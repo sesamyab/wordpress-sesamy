@@ -61,7 +61,6 @@ class Sesamy_Passes {
 
 		add_action( 'created_sesamy_passes', array( $this, 'save_fields' ) );
 		add_action( 'edited_sesamy_passes', array( $this, 'save_fields' ) );
-
 	}
 
 	public function admin_init() {
@@ -78,21 +77,20 @@ class Sesamy_Passes {
 
 		// Load our custom image trigger
 		wp_enqueue_script( 'sesamy-passes-admin', SESAMY_PLUGIN_URL . '/admin/js/sesamy-passes-admin.js', array( 'jquery' ), '1.0', false );
-
 	}
 
 
 
 	public function save_fields( $term_id ) {
 
-		// update_term_meta( $term_id, 'type', sanitize_text_field( $_POST[ 'type' ] ) );
+		wp_verify_nonce( 'update-tag_' . $term_id );
+
 		update_term_meta( $term_id, 'price', sanitize_text_field( $_POST['price'] ) );
 		update_term_meta( $term_id, 'currency', sanitize_text_field( $_POST['currency'] ) );
 		update_term_meta( $term_id, 'url', sanitize_text_field( $_POST['url'] ) );
 		update_term_meta( $term_id, 'image_id', sanitize_text_field( $_POST['image_id'] ) );
 		update_term_meta( $term_id, 'period', sanitize_text_field( $_POST['period'] ) );
 		update_term_meta( $term_id, 'time', sanitize_text_field( $_POST['time'] ) );
-
 	}
 
 
@@ -108,12 +106,12 @@ class Sesamy_Passes {
 		</style>
 
 		<div class="form-field term-group">
-			<label for="category-image-id"><?php _e( 'Image', 'sesamy' ); ?></label>
+			<label for="category-image-id"><?php echo esc_html__( 'Image', 'sesamy' ); ?></label>
 			<input type="hidden" id="taxonomy-image-id" name="image_id" class="custom_media_url" value="">
 			<div id="category-image-wrapper"></div>
 			<p>
-			<input type="button" class="button button-secondary ct_tax_media_button" id="ct_tax_media_button" name="ct_tax_media_button" value="<?php _e( 'Add Image', 'sesamy' ); ?>" />
-			<input type="button" class="button button-secondary ct_tax_media_remove" id="ct_tax_media_remove" name="ct_tax_media_remove" value="<?php _e( 'Remove Image', 'sesamy' ); ?>" />
+			<input type="button" class="button button-secondary ct_tax_media_button" id="ct_tax_media_button" name="ct_tax_media_button" value="<?php echo esc_html__( 'Add Image', 'sesamy' ); ?>" />
+			<input type="button" class="button button-secondary ct_tax_media_remove" id="ct_tax_media_remove" name="ct_tax_media_remove" value="<?php echo esc_html__( 'Remove Image', 'sesamy' ); ?>" />
 			</p>
 		</div>
 
@@ -156,7 +154,6 @@ class Sesamy_Passes {
 
 	public function edit_taxonomy_form_fields( $term ) {
 
-		// $type = get_term_meta( $term->term_id, 'type', true );
 		$price    = get_term_meta( $term->term_id, 'price', true );
 		$currency = get_term_meta( $term->term_id, 'currency', true );
 		$url      = get_term_meta( $term->term_id, 'url', true );
@@ -172,7 +169,7 @@ class Sesamy_Passes {
 
 		<tr class="form-field term-group-wrap">
 			<th scope="row">
-			<label for="taxonomy-image-id"><?php _e( 'Image', 'showcase' ); ?></label>
+			<label for="taxonomy-image-id"><?php echo esc_html__( 'Image', 'showcase' ); ?></label>
 			</th>
 			<td>
 			<input type="hidden" id="taxonomy-image-id" name="image_id" value="<?php echo esc_attr( $image_id ); ?>">
@@ -182,8 +179,8 @@ class Sesamy_Passes {
 		<?php } ?>
 			</div>
 			<p>
-				<input type="button" class="button button-secondary ct_tax_media_button" id="showcase_tax_media_button" name="showcase_tax_media_button" value="<?php _e( 'Add Image', 'showcase' ); ?>" />
-				<input type="button" class="button button-secondary ct_tax_media_remove" id="showcase_tax_media_remove" name="showcase_tax_media_remove" value="<?php _e( 'Remove Image', 'showcase' ); ?>" />
+				<input type="button" class="button button-secondary ct_tax_media_button" id="showcase_tax_media_button" name="showcase_tax_media_button" value="<?php echo esc_html__( 'Add Image', 'showcase' ); ?>" />
+				<input type="button" class="button button-secondary ct_tax_media_remove" id="showcase_tax_media_remove" name="showcase_tax_media_remove" value="<?php echo esc_html__( 'Remove Image', 'showcase' ); ?>" />
 			</p>
 			</td>
 		</tr>

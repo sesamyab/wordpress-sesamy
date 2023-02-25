@@ -4,7 +4,7 @@ class Sesamy_Post_Editor {
 
 
 
-	function init() {
+	public function init() {
 
 		add_action(
 			'enqueue_block_editor_assets',
@@ -17,10 +17,8 @@ class Sesamy_Post_Editor {
 					Sesamy::$instance->get_version(),
 					false
 				);
-
 			}
 		);
-
 	}
 
 

@@ -21,7 +21,7 @@ if ( ! current_user_can( 'manage_options' ) ) {
 
 // check if the user have submitted the settings
 // WordPress will add the "settings-updated" $_GET parameter to the url
-if ( isset( $_GET['settings-updated'] ) ) {
+if ( isset( $_GET['settings-updated'] ) ) { // phpcs:ignore
 	// add settings saved message with the class of "updated"
 	add_settings_error( 'sesamy_messages', 'sesamy_message', __( 'Settings Saved', 'sesamy' ), 'updated' );
 }

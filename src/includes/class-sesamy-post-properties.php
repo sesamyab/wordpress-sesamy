@@ -2,7 +2,7 @@
 
 class Sesamy_Post_Properties {
 
-	function register_post_meta() {
+	public function register_post_meta() {
 
 		$post_types = sesamy_get_enabled_post_types();
 
@@ -54,7 +54,6 @@ class Sesamy_Post_Properties {
 			);
 
 		}
-
 	}
 
 
@@ -65,7 +64,6 @@ class Sesamy_Post_Properties {
 			'price'    => get_term_meta( $tier->term_id, 'price', true ),
 			'currency' => get_term_meta( $tier->term_id, 'currency', true ),
 		);
-
 	}
 
 
@@ -84,23 +82,21 @@ class Sesamy_Post_Properties {
 
 		$info = array(
 			'enable_single_purchase' => null,
-			'price'    => null,
-			'currency' => null,
+			'price'                  => null,
+			'currency'               => null,
 		);
 
-		$info['enable_single_purchase'] = get_post_meta( $post->ID, '_sesamy_enable_single_purchase', true );
+		$info['enable_single_purchase'] = boolval( get_post_meta( $post->ID, '_sesamy_enable_single_purchase', true ) );
 		$info['price']                  = get_post_meta( $post->ID, '_sesamy_price', true );
 		$info['currency']               = get_post_meta( $post->ID, '_sesamy_currency', true );
 
 		return $info;
-
 	}
 
 	public static function get_post_passes( $post ) {
 
 		$post = get_post( $post );
 		return get_the_terms( $post, 'sesamy_passes' );
-
 	}
 
 }

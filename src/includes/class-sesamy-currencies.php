@@ -43,7 +43,6 @@ class Sesamy_Currencies {
 				'args'                => array(),
 			)
 		);
-
 	}
 
 
@@ -53,6 +52,5 @@ class Sesamy_Currencies {
 	public function sesamy_currencies_ep( $request ) {
 
 		return new WP_REST_Response( self::get_currencies() );
-
 	}
 }
