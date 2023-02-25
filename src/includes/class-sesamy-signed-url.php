@@ -54,7 +54,7 @@ class Sesamy_Signed_Url {
 	/**
 	 * Get parameters for the request.
 	 */
-	function get_request_parameters( $url ) {
+	public function get_request_parameters( $url ) {
 
 		$query_string = wp_parse_url( $url, PHP_URL_QUERY );
 		parse_str( $query_string, $parts );
@@ -69,7 +69,7 @@ class Sesamy_Signed_Url {
 	/**
 	 * Validate signature with
 	 */
-	function verify_signature( $url, $signature ) {
+	public function verify_signature( $url, $signature ) {
 
 		$algorithm_manager = new AlgorithmManager(
 			array(
@@ -81,7 +81,6 @@ class Sesamy_Signed_Url {
 		$jwk   = $this->get_public_key();
 
 		return $rs256->verify( $jwk, $url, $signature );
-
 	}
 
 
@@ -89,7 +88,7 @@ class Sesamy_Signed_Url {
 	/**
 	 * Get the public key
 	 */
-	function get_public_key() {
+	public function get_public_key() {
 
 		$jwk = get_transient( 'sesamy_public_key' );
 

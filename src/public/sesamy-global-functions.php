@@ -121,7 +121,6 @@ function sesamy_config( $atts, $content ) {
 
 function sesamy_get_enabled_post_types() {
 	return get_option( 'sesamy_content_types', array() );
-
 }
 
 
@@ -144,7 +143,6 @@ function sesamy_get_pass_info( $term ) {
 		'time'         => get_term_meta( $term->term_id, 'time', true ),
 		'product_type' => 'RECURRING',
 	);
-
 }
 
 /**
@@ -162,7 +160,6 @@ function sesamy_get_post_settings( $post_id ) {
 		'currency'               => $meta['_sesamy_currency'],
 		'passes'                 => is_array( $passes ) ? array_map( 'sesamy_get_pass_info', $passes ) : array(),
 	);
-
 }
 
 /**

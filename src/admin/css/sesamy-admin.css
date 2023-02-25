@@ -4,22 +4,22 @@
  */
 
 
- .edit-fields-sesamy .marginright {
-    margin-right: 0.5rem;
- }
- 
- .edit-fields-sesamy .title {
-    width: 10rem !important;
- }
- 
- .edit-fields-sesamy .sesamy-bulk-edit-price div {
-    margin-left: 10rem !important;
- }
+.edit-fields-sesamy .marginright {
+	margin-right: 0.5rem;
+}
 
- .edit-fields-sesamy .sesamy-bulk-edit-price input {
-    width: 4rem;
- }
+.edit-fields-sesamy .title {
+	width: 10rem !important;
+}
 
- .edit-fields-sesamy .sesamy-bulk-edit-price .input-text-wrap {
-    margin-left: 0 !important;
- }
+.edit-fields-sesamy .sesamy-bulk-edit-price div {
+	margin-left: 10rem !important;
+}
+
+.edit-fields-sesamy .sesamy-bulk-edit-price input {
+	width: 4rem;
+}
+
+.edit-fields-sesamy .sesamy-bulk-edit-price .input-text-wrap {
+	margin-left: 0 !important;
+}

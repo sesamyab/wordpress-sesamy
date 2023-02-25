@@ -35,7 +35,6 @@ class Sesamy_Shortcodes {
 		$this->register_shortcode( 'sesamy_login' );
 		$this->register_shortcode( 'sesamy_profile' );
 		$this->register_shortcode( 'sesamy_config' );
-
 	}
 
 	public function register_shortcode( $name ) {

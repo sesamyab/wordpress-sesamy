@@ -8,12 +8,12 @@ class Sesamy_Admin_View {
 			return;
 		}
 
-		if ( ! empty( $_GET['sesamy_enable_paywall'] ) && in_array( $_GET['sesamy_enable_paywall'], array( 'true', 'false' ) ) ) {
-			update_post_meta( $post_id, '_sesamy_locked', rest_sanitize_boolean( $_GET['sesamy_enable_paywall'] ) );
+		if ( ! empty( $_GET['sesamy_enable_paywall'] ) && in_array( $_GET['sesamy_enable_paywall'], array( 'true', 'false' ), true ) ) {
+			update_post_meta( $post_id, '_sesamy_locked', 'true' === $_GET['sesamy_enable_paywall'] );
 		}
 
-		if ( ! empty( $_GET['sesamy_enable_single_purchase'] ) && in_array( $_GET['sesamy_enable_single_purchase'], array( 'true', 'false' ) ) ) {
-			update_post_meta( $post_id, '_sesamy_enable_single_purchase', rest_sanitize_boolean( $_GET['sesamy_enable_single_purchase'] ) );
+		if ( ! empty( $_GET['sesamy_enable_single_purchase'] ) && in_array( $_GET['sesamy_enable_single_purchase'], array( 'true', 'false' ), true ) ) {
+			update_post_meta( $post_id, '_sesamy_enable_single_purchase', 'true' === $_GET['sesamy_enable_single_purchase'] );
 		}
 
 		if ( ! empty( $_GET['sesamy_single_purchase_price'] ) && is_numeric( $_GET['sesamy_single_purchase_price'] ) ) {
@@ -29,7 +29,7 @@ class Sesamy_Admin_View {
 
 			$pass_post_key = 'sesamy_passes_' . esc_attr( $pass->term_id );
 
-			if ( ! empty( $_GET[ $pass_post_key ] ) && in_array( $_GET[ $pass_post_key ], array( 'true', 'false' ) ) ) {
+			if ( ! empty( $_GET[ $pass_post_key ] ) && in_array( $_GET[ $pass_post_key ], array( 'true', 'false' ), true ) ) {
 
 				$enabled = rest_sanitize_boolean( $_GET[ $pass_post_key ] );
 
@@ -40,21 +40,20 @@ class Sesamy_Admin_View {
 				}
 			}
 		}
-
 	}
 
 	public function bulk_edit_fields( $column_name, $post_type ) {
 
 		// WordPress support for creating a nice edit experience here is very limited, hook everything into the sesamy_locked column to keep things together
-		if ( 'sesamy_locked' == $column_name ) {
+		if ( 'sesamy_locked' === $column_name ) {
 
 			?>
-			 <fieldset  class="inline-edit-col-left edit-fields-sesamy">
+			<fieldset  class="inline-edit-col-left edit-fields-sesamy">
 				<span class="inline-edit-legend">Sesamy</span>
 				<div class="inline-edit-col">
 					
 					<label class="wp-clearfix">
-						<span class="title">Enable Paywall</span>
+						<span class="title"><?php echo esc_html__( 'Enable Paywall', 'sesamy' ); ?></span>
 						<?php
 						$options = array(
 							''      => __( '&mdash; No Change &mdash;' ),
@@ -67,7 +66,7 @@ class Sesamy_Admin_View {
 							
 
 					<label class="wp-clearfix">
-						<span class="title">Enable single purchase</span>                   
+						<span class="title"><?php echo esc_html__( 'Enable single purchase', 'sesamy' ); ?></span>
 						<?php
 						$options = array(
 							''      => __( '&mdash; No Change &mdash;' ),
@@ -82,7 +81,7 @@ class Sesamy_Admin_View {
 						<span class="title">Pris</span>
 						<div>
 							<span class="input-text-wrap"><input type="number" step="0.01" min="0.01"  name="sesamy_single_purchase_price" placeholder="" /></span>
-							<p class="howto" id="inline-edit-post_tag-desc">Lämna tomt för att behålla pris oförändrat</p>
+							<p class="howto" id="inline-edit-post_tag-desc"><?php echo esc_html__( 'Leave empty to keep price unchanged.', 'sesamy' ); ?></p>
 						</div>
 					</label>
 
@@ -107,7 +106,7 @@ class Sesamy_Admin_View {
 
 						foreach ( $passes as $pass ) {
 							?>
-							  <label class="wp-clearfix">
+								<label class="wp-clearfix">
 								<span class="title"><?php echo esc_html( $pass->name ); ?></span>                 
 								<?php
 								$options = array(
@@ -148,7 +147,7 @@ class Sesamy_Admin_View {
 				if ( Sesamy_Post_Properties::is_locked( $post_id ) ) {
 
 					$post_info = Sesamy_Post_Properties::get_post_price_info( $post_id );
-					if ( true == $post_info['enable_single_purchase'] ) {
+					if ( true === $post_info['enable_single_purchase'] ) {
 						if ( ! empty( $post_info['price'] ) && ! empty( $post_info['currency'] ) ) {
 							echo esc_html( $post_info['price'] ) . ' ' . esc_html( $post_info['currency'] );
 						}
@@ -173,6 +172,5 @@ class Sesamy_Admin_View {
 				}
 				break;
 		}
-
 	}
 }

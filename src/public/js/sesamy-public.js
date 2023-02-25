@@ -15,9 +15,9 @@ Array.from( document.querySelectorAll( '[data-sesamy-paywall]' ) ).forEach(
 
 		sesamy.getEntitlement( data.sesamyItemSrc, data.sesamyPasses ? .split( ',' ) ? ? [] ).then(
 			entitlement => {
-				if (entitlement !== undefined) {
-					item.style.display = 'none';
-				}
+            if (entitlement !== undefined) {
+                item.style.display = 'none';
+            }
 			}
 		)
 

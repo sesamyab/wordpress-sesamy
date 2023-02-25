@@ -13,12 +13,11 @@ class Sesamy_Settings_Admin {
 			'sesamy',
 			array( $this, 'admin_menu_html' )
 		);
-
 	}
 
 
 	public function admin_menu_html() {
-		include plugin_dir_path( dirname( __FILE__ ) ) . 'admin/partials/sesamy-admin-display.php';
+		include plugin_dir_path( __DIR__ ) . 'admin/partials/sesamy-admin-display.php';
 	}
 
 
@@ -73,7 +72,6 @@ class Sesamy_Settings_Admin {
 				'label_for' => 'sesamy_content_types',
 			)
 		);
-
 	}
 
 

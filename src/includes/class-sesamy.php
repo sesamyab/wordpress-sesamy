@@ -87,7 +87,6 @@ class Sesamy {
 		$this->define_common_hooks();
 		$this->define_admin_hooks();
 		$this->define_public_hooks();
-
 	}
 
 
@@ -113,54 +112,53 @@ class Sesamy {
 		 * The class responsible for orchestrating the actions and filters of the
 		 * core plugin.
 		 */
-		include_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-sesamy-loader.php';
+		include_once plugin_dir_path( __DIR__ ) . 'includes/class-sesamy-loader.php';
 
 		/**
 		 * The class responsible for defining internationalization functionality
 		 * of the plugin.
 		 */
-		include_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-sesamy-i18n.php';
+		include_once plugin_dir_path( __DIR__ ) . 'includes/class-sesamy-i18n.php';
 
 		/**
 		 * The class responsible for defining all actions that occur in the admin area.
 		 */
-		include_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-sesamy-admin.php';
+		include_once plugin_dir_path( __DIR__ ) . 'admin/class-sesamy-admin.php';
 
 		/**
 		 * The class responsible for defining all actions that occur in the public-facing
 		 * side of the site.
 		 */
-		include_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-sesamy-public.php';
+		include_once plugin_dir_path( __DIR__ ) . 'public/class-sesamy-public.php';
 
 		/**
 		 * Sesamy includes
 		 */
-		include_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-sesamy-utils.php';
-		include_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-sesamy-passes.php';
-		include_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-sesamy-post-properties.php';
-		include_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-sesamy-signed-url.php';
-		include_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-sesamy-api-endpoint.php';
-		include_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-sesamy-currencies.php';
-		include_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-sesamy-settings.php';
+		include_once plugin_dir_path( __DIR__ ) . 'includes/class-sesamy-utils.php';
+		include_once plugin_dir_path( __DIR__ ) . 'includes/class-sesamy-passes.php';
+		include_once plugin_dir_path( __DIR__ ) . 'includes/class-sesamy-post-properties.php';
+		include_once plugin_dir_path( __DIR__ ) . 'includes/class-sesamy-signed-url.php';
+		include_once plugin_dir_path( __DIR__ ) . 'includes/class-sesamy-api-endpoint.php';
+		include_once plugin_dir_path( __DIR__ ) . 'includes/class-sesamy-currencies.php';
+		include_once plugin_dir_path( __DIR__ ) . 'includes/class-sesamy-settings.php';
 
 		/**
 		 * The following classes contains sesamy public
 		 */
 
-		include_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-sesamy-shortcodes.php';
-		include_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-sesamy-content-container.php';
-		include_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-sesamy-meta.php';
-		include_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/sesamy-global-functions.php';
+		include_once plugin_dir_path( __DIR__ ) . 'public/class-sesamy-shortcodes.php';
+		include_once plugin_dir_path( __DIR__ ) . 'public/class-sesamy-content-container.php';
+		include_once plugin_dir_path( __DIR__ ) . 'public/class-sesamy-meta.php';
+		include_once plugin_dir_path( __DIR__ ) . 'public/sesamy-global-functions.php';
 
 		/**
 		 * Admin includes
 		 */
-		include_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-sesamy-settings-admin.php';
-		include_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-sesamy-post-editor.php';
-		include_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-sesamy-admin-view.php';
+		include_once plugin_dir_path( __DIR__ ) . 'admin/class-sesamy-settings-admin.php';
+		include_once plugin_dir_path( __DIR__ ) . 'admin/class-sesamy-post-editor.php';
+		include_once plugin_dir_path( __DIR__ ) . 'admin/class-sesamy-admin-view.php';
 
 		$this->loader = new Sesamy_Loader();
-
 	}
 
 	/**
@@ -177,7 +175,6 @@ class Sesamy {
 		$plugin_i18n = new Sesamy_I18n();
 
 		$this->loader->add_action( 'plugins_loaded', $plugin_i18n, 'load_plugin_textdomain' );
-
 	}
 
 
@@ -200,7 +197,6 @@ class Sesamy {
 		$settings = new Sesamy_Settings();
 		$this->loader->add_action( 'init', $settings, 'register_settings' );
 		$this->loader->add_action( 'rest_api_init', $settings, 'register_route' );
-
 	}
 
 	/**
@@ -232,7 +228,6 @@ class Sesamy {
 
 		$this->loader->add_action( 'bulk_edit_custom_box', $admin_view, 'bulk_edit_fields', 10, 2 );
 		$this->loader->add_action( 'save_post', $admin_view, 'bulk_edit_save', 10, 2 );
-
 	}
 
 	/**

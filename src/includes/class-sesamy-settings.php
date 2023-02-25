@@ -24,7 +24,6 @@ class Sesamy_Settings {
 		return array(
 			'content_types' => $this->get_content_types(),
 		);
-
 	}
 
 	public function register_route() {
@@ -39,7 +38,6 @@ class Sesamy_Settings {
 				'args'                => array(),
 			)
 		);
-
 	}
 
 
@@ -49,7 +47,6 @@ class Sesamy_Settings {
 	public function sesamy_settings_ep( $request ) {
 
 		return new WP_REST_Response( $this->get_public_settings() );
-
 	}
 
 }

@@ -14,7 +14,7 @@ class Sesamy_Content_Container {
 
 
 
-	function process_main_content( $content ) {
+	public function process_main_content( $content ) {
 
 		// Using the <!-- more --> will break core if excerpt is empty as this will cause an infite loop
 		// See: https://github.com/WordPress/gutenberg/issues/5572#issuecomment-407756810
@@ -55,7 +55,7 @@ class Sesamy_Content_Container {
 	}
 
 
-	function process_content( $post, $content ) {
+	public function process_content( $post, $content ) {
 
 		$post_settings = sesamy_get_post_settings( $post->ID );
 
@@ -73,7 +73,6 @@ class Sesamy_Content_Container {
 
 		// Note: The wrapping div makes the container inherit sizes and margins by default in most themes compared to raw webpart
 		return $paywall_seo . sesamy_content_container( $atts, $content ) . apply_filters( 'sesamy_paywall', $default_paywall, $post, $post_settings );
-
 	}
 
 	/**
@@ -97,7 +96,7 @@ class Sesamy_Content_Container {
 	 * Wrap the content container. This is added to a function to be easy to opt-out of with filter
 	 * This makes the default theme and probably other themes work more nicely out of the box with sesamy component
 	 */
-	function sesamy_content_container_wrap( $content ) {
+	public function sesamy_content_container_wrap( $content ) {
 		return '<div>' . $content . '</div>';
 	}
 
@@ -105,7 +104,7 @@ class Sesamy_Content_Container {
 	 * Add SEO markup to identify paywall content
 	 * See: https://developers.google.com/search/docs/appearance/structured-data/paywalled-content
 	 */
-	function show_seo_paywall_data( $post ) {
+	public function show_seo_paywall_data( $post ) {
 		ob_start();
 
 		$headline       = get_the_title( $post );
@@ -120,15 +119,15 @@ class Sesamy_Content_Container {
 		{
 		"@context": "https://schema.org",
 		"@type": "NewsArticle",
-		"headline": "<?php echo $headline; ?>,
+		"headline": "<?php echo esc_html( $headline ); ?>,
 		"image": "<?php echo esc_html( $image ); ?>",
 		"datePublished": "<?php echo esc_html( $date_published ); ?>",
 		"dateModified": "<?php echo esc_html( $date_modified ); ?>",
 		"author": {
 			"@type": "Person",
-			"name": "<?php echo $author; ?>"
+			"name": "<?php echo esc_html( $author ); ?>"
 		},
-		"description": "<?php echo $description; ?>"",
+		"description": "<?php echo esc_html( $description ); ?>"",
 		"isAccessibleForFree": "False",
 		"hasPart":
 			{
@@ -143,14 +142,14 @@ class Sesamy_Content_Container {
 		return ob_get_clean();
 	}
 
-	function show_paywall( $post, $post_settings ) {
+	public function show_paywall( $post, $post_settings ) {
 
 		ob_start();
 
 		?>
-		<div class="sesamy-paywall" data-sesamy-paywall data-sesamy-item-src="<?php echo get_the_permalink( $post->ID ); ?>" data-sesamy-passes="<?php sesamy_get_passes( $post->ID ); ?>">
+		<div class="sesamy-paywall" data-sesamy-paywall data-sesamy-item-src="<?php the_permalink( $post->ID ); ?>" data-sesamy-passes="<?php sesamy_get_passes( $post->ID ); ?>">
 
-		<?php echo sesamy_login(); ?>
+		<?php echo esc_html( sesamy_login() ); ?>
 		<?php
 
 		if ( $post_settings['enable_single_purchase'] ) {
@@ -160,7 +159,7 @@ class Sesamy_Content_Container {
 				'currency' => $post_settings['currency'],
 				'item_src' => get_the_permalink( $post->ID ),
 			);
-			echo sesamy_button( $button_args, '' );
+			echo esc_html( sesamy_button( $button_args, '' ) );
 		}
 
 		if ( ! empty( $post_settings['passes'] ) && count( $post_settings['passes'] ) > 0 ) {
@@ -174,7 +173,7 @@ class Sesamy_Content_Container {
 					'item_src'             => $pass['url'],
 					'publisher_content_id' => $pass['id'],
 				);
-				echo sesamy_button( $button_args, '' );
+				echo esc_html( sesamy_button( $button_args, '' ) );
 			}
 		}
 		?>
@@ -190,6 +189,5 @@ class Sesamy_Content_Container {
 		<?php
 
 		return ob_get_clean();
-
 	}
 }

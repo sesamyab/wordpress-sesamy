@@ -80,7 +80,6 @@ class Sesamy_Admin {
 		 */
 
 		wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/sesamy-admin.css', array(), $this->version, 'all' );
-
 	}
 
 	/**
@@ -103,24 +102,20 @@ class Sesamy_Admin {
 		 */
 
 		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/sesamy-admin.js', array( 'jquery' ), $this->version, false );
-
 	}
 
 	public function init() {
 
 		$this->post_editor->init();
-
 	}
 
 	public function admin_init() {
 
 		$this->settings->add_settings();
-
 	}
 
 	public function admin_menu() {
 
 		$this->settings->admin_menu();
-
 	}
 }

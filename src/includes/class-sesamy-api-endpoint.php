@@ -46,13 +46,12 @@ class Sesamy_Api_Endpoint {
 				'permission_callback' => '__return_true',
 			)
 		);
-
 	}
 
 	/**
 	 * Validation callback for arguments
 	 */
-	function validate_numeric_param( $param, $request, $key ) {
+	public function validate_numeric_param( $param, $request, $key ) {
 		return is_numeric( $param );
 	}
 
@@ -69,10 +68,10 @@ class Sesamy_Api_Endpoint {
 
 		if ( is_wp_error( $result ) ) {
 			return $result;
-		} elseif ( is_bool( $result ) && true == $result ) {
+		} elseif ( is_bool( $result ) && true === $result ) {
 			$params = $signed_url->get_request_parameters( $public_signed_url );
 
-			if ( intval( $request['id'] ) != intval( $params['sp'] ) ) {
+			if ( intval( $request['id'] ) !== intval( $params['sp'] ) ) {
 				return new WP_Error( 400, 'The supplied route id does not match the sp in supplied token' );
 			}
 
@@ -83,7 +82,6 @@ class Sesamy_Api_Endpoint {
 
 			return new WP_Error( 400, 'The link is incorrect or no longer valid.' );
 		}
-
 	}
 
 
@@ -91,25 +89,14 @@ class Sesamy_Api_Endpoint {
 
 		$passes = get_terms( 'sesamy_passes', array( 'hide_empty' => false ) );
 		$data   = array_map( 'sesamy_get_pass_info', $passes );
-		return rest_ensure_response( array_values( $data ) );
-
+		return new WP_REST_Response( array_values( $data ) );
 	}
 
 	public function sesamy_passes_details_ep( $request ) {
 
 		$term_id = $request['id'];
 		$term    = get_term( $term_id, 'sesamy_passes' );
-		return rest_ensure_response( sesamy_get_pass_info( $term ) );
-
-	}
-
-	/**
-	 * Return content with applied filters
-	 */
-	function get_response( $post ) {
-
-		return new WP_REST_Response( array( 'data' => apply_filters( 'the_content', $post->post_content ) ) );
-
+		return new WP_REST_Response( sesamy_get_pass_info( $term ) );
 	}
 
 
@@ -118,30 +105,19 @@ class Sesamy_Api_Endpoint {
 	 */
 	public function format_response( $served, $result, $request, $server ) {
 
-		if ( preg_match( '/^\/sesamy\/v1\/posts\/[0-9]+$/m', $request->get_route() ) && isset( $result->data['data'] ) ) {
+		if ( 1 === preg_match( '/^\/sesamy\/v1\/.*$/m', $request->get_route() ) && isset( $result->data['data'] ) ) {
 
-			if ( isset($_SERVER['HTTP_ACCEPT'])  ){
-			
+			if ( isset( $_SERVER['HTTP_ACCEPT'] ) ) {
+
 				switch ( $_SERVER['HTTP_ACCEPT'] ) {
 
 					case 'text/html':
 						header( 'Content-Type: text/html; charset=' . get_option( 'blog_charset' ) );
-						echo $result->data['data'];
+						echo wp_kses_post( $result->data['data'], wp_allowed_protocols() );
 						exit;
-
-					case 'application/xml':
-						header( 'Content-Type: application/xml; charset=' . get_option( 'blog_charset' ) );
-
-						$xmlDoc   = new DOMDocument();
-						$response = $xmlDoc->appendChild( $xmlDoc->createElement( 'Data', $result->data['data'] ) );
-
-						echo $xmlDoc->saveXML();
-						exit;
-
 				}
 			}
 		}
-
 	}
 
 
