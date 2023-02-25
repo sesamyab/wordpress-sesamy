@@ -96,18 +96,7 @@ class Sesamy_Passes {
 	}
 
 
-	private function render_select( $name, $options, $field_value = null ) {
 
-		?>
-		<select name="<?php echo esc_html( $name ); ?>" id="<?php echo esc_html( $name ); ?>">
-		<?php
-		foreach ( $options as $key => $value ) {
-			echo '<option value="' . esc_html( $key ) . '"' . ( $field_value === $key ? 'selected' : '' ) . '>' . esc_html( $value ) . '</option>';
-		}
-		?>
-		</select>
-		<?php
-	}
 
 
 	public function add_taxonomy_form_fields( $taxonomy ) {
@@ -136,13 +125,13 @@ class Sesamy_Passes {
 		</div>
 		<div class="form-field">
 			<label for="currency">Currency</label>
-		<?php $this->render_select( 'currency', Sesamy_Currencies::get_currencies() ); ?>
+		<?php Sesamy_Utils::render_select( 'currency', Sesamy_Currencies::get_currencies() ); ?>
 			<p>Currency for this pass</p>
 		</div>
 		<div class="form-field">
 			<label for="period">Payment period</label>
 		<?php
-		$this->render_select(
+		Sesamy_Utils::render_select(
 			'period',
 			array(
 				'monthly' => 'Monthly',
@@ -209,7 +198,7 @@ class Sesamy_Passes {
 		<th><label for="currency">Payment period</label></th>
 		<td>
 		<?php
-		$this->render_select(
+		Sesamy_Utils::render_select(
 			'period',
 			array(
 				'monthly' => 'Monthly',
@@ -231,7 +220,7 @@ class Sesamy_Passes {
 		<tr class="form-field">
 		<th><label for="currency">Currency</label></th>
 		<td>
-		<?php $this->render_select( 'currency', Sesamy_Currencies::get_currencies(), $currency ); ?>
+		<?php Sesamy_Utils::render_select( 'currency', Sesamy_Currencies::get_currencies(), $currency ); ?>
 			<p>Currency for this tier</p></td>
 		</tr>
 		<th><label for="url">Public URL</label></th>

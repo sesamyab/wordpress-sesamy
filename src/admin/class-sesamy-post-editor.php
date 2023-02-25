@@ -17,6 +17,7 @@ class Sesamy_Post_Editor {
 					Sesamy::$instance->get_version(),
 					false
 				);
+
 			}
 		);
 

@@ -157,6 +157,7 @@ class Sesamy {
 		 */
 		include_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-sesamy-settings-admin.php';
 		include_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-sesamy-post-editor.php';
+		include_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-sesamy-admin-view.php';
 
 		$this->loader = new Sesamy_Loader();
 
@@ -218,8 +219,20 @@ class Sesamy {
 		$this->loader->add_action( 'admin_init', $plugin_admin, 'admin_init' );
 		$this->loader->add_action( 'admin_menu', $plugin_admin, 'admin_menu' );
 		$this->loader->add_action( 'init', $plugin_admin, 'init' );
-
 		$this->loader->add_action( 'admin_init', Sesamy_Passes::get_instance(), 'admin_init' );
+
+		$admin_view         = new Sesamy_Admin_View();
+		$enabled_post_types = sesamy_get_enabled_post_types();
+
+		$admin_view = new Sesamy_Admin_View();
+		foreach ( sesamy_get_enabled_post_types() as $enabled_post_type ) {
+			$this->loader->add_filter( 'manage_' . $enabled_post_type . '_posts_columns', $admin_view, 'add_featured_columns', 10, 2 );
+			$this->loader->add_filter( 'manage_' . $enabled_post_type . '_posts_custom_column', $admin_view, 'populate_featured_columns', 10, 2 );
+		}
+
+		$this->loader->add_action( 'bulk_edit_custom_box', $admin_view, 'bulk_edit_fields', 10, 2 );
+		$this->loader->add_action( 'save_post', $admin_view, 'bulk_edit_save', 10, 2 );
+
 	}
 
 	/**
@@ -229,6 +242,7 @@ class Sesamy {
 	 * @since  1.0.0
 	 * @access private
 	 */
+
 	private function define_public_hooks() {
 
 		$plugin_public = new Sesamy_Public( $this->get_plugin_name(), $this->get_version() );
@@ -300,7 +314,7 @@ class Sesamy {
 	 */
 	public function get_assets_url() {
 		$ep = get_option( 'sesamy_api_endpoint' );
-		return defined( 'SESAMY_DEV_API' ) ? 'https://assets.sesamy.dev' : 'https://assets.sesamy.com';
+		return ( defined( 'SESAMY_DEV_API' ) && true === SESAMY_DEV_API ) ? 'https://assets.sesamy.dev' : 'https://assets.sesamy.com';
 	}
 
 }
