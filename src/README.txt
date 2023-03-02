@@ -93,6 +93,12 @@ The following filters can be used to modify the default output from the plugin:
         return $default_seo;
     }
 
+    // The preview in the paywall
+    add_filter( 'sesamy_paywall_preview', 'my_sesamy_paywall_preview', 10, 1);
+    function my_sesamy_paywall_preview( $default_preview ) {
+        return $default_preview;
+    }
+
 
 == Changelog ==
 

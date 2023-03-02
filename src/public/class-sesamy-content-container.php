@@ -59,17 +59,13 @@ class Sesamy_Content_Container {
 
 		$post_settings = sesamy_get_post_settings( $post->ID );
 
-		// Retrieve content before <!-- more -->
-		$extended = get_extended( $post->post_content );
-
-		// If all content is in main and nothing in extended, then no <!-- more --> is provided, default to get_the_excerpt() to avoid showing all text
-		$preview = ( ! empty( $extended['main'] ) && ! empty( $extended['extended'] ) ) ? $extended['main'] : get_the_excerpt();
+		$preview = $this->extract_preview( $post );
 
 		$atts = array(
 			'publisher_content_id' => $post->ID,
 			'item_src'             => get_permalink(),
-			'preview'              => $preview,
-			'pass'                 => sesamy_get_passes( $post_settings['passes'] ), // count() > 0 ? $post_settings['passes'][0]['item_src'] : '' // TODO: Multiple?
+			'preview'              => apply_filters( 'sesamy_paywall_preview', $preview ),
+			'pass'                 => sesamy_get_passes( $post_settings['passes'] ),
 		);
 
 		$default_paywall = $this->show_paywall( $post, $post_settings );
@@ -77,6 +73,23 @@ class Sesamy_Content_Container {
 
 		// Note: The wrapping div makes the container inherit sizes and margins by default in most themes compared to raw webpart
 		return $paywall_seo . sesamy_content_container( $atts, $content ) . apply_filters( 'sesamy_paywall', $default_paywall, $post, $post_settings );
+	}
+
+	/**
+	 * Extract preview from post with logic to take more-tags into account
+	 */
+	public function extract_preview( $post ) {
+
+		// Caution: WordPress has two blocks, the original "more" and the "read-more". We support the "more" as that is intended for cutting previews.
+
+		// Retrieve content before <!-- more --> if defined, otherwise use get_the_excerpt as default.
+		$extended = get_extended( $post->post_content );
+
+		if ( ! empty( $extended['main'] ) && ! empty( $extended['extended'] ) ) {
+			return $extended['main'];
+		} else {
+			return get_the_excerpt();
+		}
 	}
 
 	/**
