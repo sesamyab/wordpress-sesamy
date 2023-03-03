@@ -65,7 +65,7 @@ class Sesamy_Content_Container {
 			'publisher_content_id' => $post->ID,
 			'item_src'             => get_permalink(),
 			'preview'              => apply_filters( 'sesamy_paywall_preview', $preview ),
-			'pass'                 => sesamy_get_passes( $post_settings['passes'] ),
+			'pass'                 => sesamy_get_passes_urls( $post_settings['passes'] ),
 		);
 
 		$default_paywall = $this->show_paywall( $post, $post_settings );
@@ -147,7 +147,7 @@ class Sesamy_Content_Container {
 		ob_start();
 
 		?>
-		<div class="sesamy-paywall" data-sesamy-paywall data-sesamy-item-src="<?php the_permalink( $post->ID ); ?>" data-sesamy-passes="<?php sesamy_get_passes( $post->ID ); ?>">
+		<div class="sesamy-paywall" data-sesamy-paywall data-sesamy-item-src="<?php the_permalink( $post->ID ); ?>" data-sesamy-passes="<?php sesamy_get_passes_urls( $post->ID ); ?>">
 
 		<?php echo esc_html( sesamy_login() ); ?>
 		<?php
@@ -170,7 +170,7 @@ class Sesamy_Content_Container {
 					'text'                 => $pass['title'],
 					'price'                => $pass['price'],
 					'currency'             => $pass['currency'],
-					'item_src'             => $pass['url'],
+					'item_src'             => $pass['item_src'],
 					'publisher_content_id' => $pass['id'],
 				);
 				echo esc_html( sesamy_button( $button_args, '' ) );

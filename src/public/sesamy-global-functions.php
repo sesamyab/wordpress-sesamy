@@ -138,7 +138,7 @@ function sesamy_get_pass_info( $term ) {
 		'currency'     => get_term_meta( $term->term_id, 'currency', true ),
 		'image'        => ! empty( $image_id ) ? wp_get_attachment_image_url( $image_id, 'full' ) : null,
 		'url'          => get_term_meta( $term->term_id, 'url', true ),
-		'item_src'     => get_site_url() . '/wp-json/sesamy/v1/passes/' . $term->term_id,
+		'item_src'     => get_site_url() . '/wp-json/sesamy/v1/passes/' . $term->slug,
 		'period'       => get_term_meta( $term->term_id, 'period', true ),
 		'time'         => get_term_meta( $term->term_id, 'time', true ),
 		'product_type' => 'RECURRING',
@@ -163,9 +163,9 @@ function sesamy_get_post_settings( $post_id ) {
 }
 
 /**
- * Return an array with the pass ids
+ * Return an array with the pass urls
  */
-function sesamy_get_passes( $post_id_or_passes ) {
+function sesamy_get_passes_urls( $post_id_or_passes, $separator = ';' ) {
 	if ( is_array( $post_id_or_passes ) ) {
 		// Array of passes
 		$passes = $post_id_or_passes;
@@ -177,12 +177,12 @@ function sesamy_get_passes( $post_id_or_passes ) {
 		$passes = sesamy_get_post_settings( $post_id_or_passes )['passes'];
 	}
 
-	$pass_names = is_array( $passes ) ? array_map(
+	$pass_api_urls = is_array( $passes ) ? array_map(
 		function ( $p ) {
-			return ! empty( $p['id'] ) ? $p['id'] : null;
+			return ! empty( $p['item_src'] ) ? $p['item_src'] : null;
 		},
 		$passes
 	) : array();
 
-	return implode( ',', $pass_names );
+	return implode( $separator, $pass_api_urls );
 }
