@@ -38,7 +38,7 @@ class Sesamy_Meta {
 				$this->make_tag( 'sesamy:currency', $price_info['currency'] );
 				$this->make_tag( 'sesamy:client-id', get_option( 'sesamy_client_id', '' ) );
 				$this->make_tag( 'sesamy:publisher-content-id', $post->ID );
-				$this->make_tag( 'sesamy:pass', sesamy_get_passes( $post ) );
+				$this->make_tag( 'sesamy:pass', sesamy_get_passes_urls( $post ) );
 			}
 		}
 	}

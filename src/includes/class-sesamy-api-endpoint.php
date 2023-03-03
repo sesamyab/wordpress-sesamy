@@ -39,11 +39,16 @@ class Sesamy_Api_Endpoint {
 
 		register_rest_route(
 			'sesamy/v1',
-			'/passes/(?P<id>\d+)',
+			'/passes/(?P<slug>[a-zA-Z0-9-]+)',
 			array(
 				'methods'             => 'GET',
 				'callback'            => array( $this, 'sesamy_passes_details_ep' ),
 				'permission_callback' => '__return_true',
+				'args'                => array(
+					'slug' => array(
+						'type' => 'string',
+					),
+				),
 			)
 		);
 	}
@@ -94,9 +99,13 @@ class Sesamy_Api_Endpoint {
 
 	public function sesamy_passes_details_ep( $request ) {
 
-		$term_id = $request['id'];
-		$term    = get_term( $term_id, 'sesamy_passes' );
-		return new WP_REST_Response( sesamy_get_pass_info( $term ) );
+		$term_slug = sanitize_text_field( $request['slug'] );
+		$term      = get_term_by( 'slug', $term_slug, 'sesamy_passes' );
+		if ( false === $term ) {
+			return new WP_Error( 'sesamy_pass_not_found', __( 'Pass not found', 'sesamy' ), array( 'status' => 404 ) );
+		} else {
+			return new WP_REST_Response( sesamy_get_pass_info( $term ) );
+		}
 	}
 
 
