@@ -141,7 +141,8 @@ function sesamy_get_pass_info( $term ) {
 		'item_src'     => get_site_url() . '/wp-json/sesamy/v1/passes/' . $term->slug,
 		'period'       => get_term_meta( $term->term_id, 'period', true ),
 		'time'         => get_term_meta( $term->term_id, 'time', true ),
-		'product_type' => 'RECURRING',
+		'product_type' => 'PASS',
+		'payment_type' => 'RECURRING',
 	);
 }
 
