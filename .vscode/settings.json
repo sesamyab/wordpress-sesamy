@@ -1,0 +1,12 @@
+{
+    "phpcbf.onsave": true,
+    "phpcbf.debug": true,
+    "phpcbf.standard": "WordPress-Core,WordPress-Extra",
+    "phpcs.standard": "WordPress-Core,WordPress-Extra",
+    "phpcs.ignorePatterns": [
+        "*/vendor/*,*js"
+    ],
+    "phpcs.executablePath": "./vendor/bin/phpcs.bat",
+    "phpcs.showSources": true,
+    "phpcbf.documentFormattingProvider": true
+}

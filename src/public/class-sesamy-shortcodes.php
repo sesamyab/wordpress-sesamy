@@ -39,8 +39,8 @@ class Sesamy_Shortcodes {
 
 	public function register_shortcode( $name ) {
 
-		// By convention the shortcodes have a corresponding public function
-		add_shortcode( $name, $name );
+		// By convention the shortcodes have a corresponding public function with prefix get_
+		add_shortcode( $name, 'get_' . $name );
 	}
 
 }

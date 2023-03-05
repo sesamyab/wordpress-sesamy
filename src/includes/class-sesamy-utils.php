@@ -10,20 +10,11 @@ class Sesamy_Utils {
 	 */
 	public static function html_attributes( array $atts ) {
 
-		return implode(
-			' ',
-			array_map(
-				function ( $key, $value ) {
-					if ( is_array( $value ) ) {
-						$value = implode( ' ', $value );
-					}
+		$non_empty_atts = self::remove_empty_values( $atts );
 
-					return str_replace( '_', '-', $key ) . '="' . htmlspecialchars( $value ) . '"';
-				},
-				array_keys( $atts ),
-				$atts
-			)
-		);
+		foreach ( $non_empty_atts as $key => $value ) {
+			echo esc_attr( str_replace( '_', '-', $key ) ) . '="' . esc_attr( $value ) . '" ';
+		}
 	}
 
 	/*
@@ -39,16 +30,27 @@ class Sesamy_Utils {
 	}
 
 	/**
+	 * Same ase make_tag but return the content
+	 */
+	public static function get_tag( $name, $atts, $content, $self_close = true ) {
+
+		ob_start();
+		self::make_tag( $name, $atts, $content, $self_close );
+		return ob_get_clean();
+	}
+
+	/**
 	 * Generate tag, empty content will generate a self-closing tag unless $self_close is false
 	 */
-	public static function make_tag( $name, $atts, $content, $self_close = true ) {
+	public static function make_tag( $name, $atts, $content, $self_close = true, $return = false ) {
 
-		$a = self::html_attributes( self::remove_empty_values( $atts ) );
+		echo '<' . esc_attr( $name ) . ( count( $atts ) > 0 ? ' ' : '' );
 
-		$tag  = "<$name" . ( ! empty( $a ) ? " $a" : '' );
-		$tag .= ( empty( $content ) && $self_close ) ? '/>' : ">$content</$name>";
+		self::html_attributes( $atts );
 
-		return $tag;
+		echo '>';
+
+		echo ( empty( $content ) && $self_close ) ? '/>' : wp_kses_post( $content ) . '</' . esc_attr( $name ) . '>';
 	}
 
 	public static function render_select( $name, $options, $field_value = null ) {

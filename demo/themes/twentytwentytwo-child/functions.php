@@ -7,7 +7,7 @@ function show_paywall( $default_paywall, $post, $post_settings ) {
 	ob_start();
 
 	?>
-	<div class="sesamy-paywall" data-sesamy-paywall data-sesamy-item-src="<?php echo get_the_permalink( $post->ID ); ?>" data-sesamy-passes="<?php sesamy_get_passes_urls( $post->ID ); ?>">
+	<div class="sesamy-paywall" data-sesamy-paywall data-sesamy-item-src="<?php the_permalink( $post->ID ); ?>" data-sesamy-passes="<?php sesamy_get_passes_urls( $post->ID ); ?>">
 
 
 		<div class="sesamy-login">
@@ -27,10 +27,10 @@ function show_paywall( $default_paywall, $post, $post_settings ) {
 
 					<div class="sesamy-pass">
 
-						<h3 class="pass-name"><?php echo $pass['title']; ?></h3>
+						<h3 class="pass-name"><?php echo esc_html( $pass['title'] ); ?></h3>
 
 						<?php if ( ! empty( $pass['description'] ) ) : ?>
-							<p><?php echo $pass['description']; ?></p>
+							<p><?php echo esc_html( $pass['description'] ); ?></p>
 						<?php endif; ?>
 
 						<?php
@@ -41,7 +41,7 @@ function show_paywall( $default_paywall, $post, $post_settings ) {
 							'item_src'             => $pass['item_src'],
 							'publisher_content_id' => $pass['id'],
 						);
-						echo sesamy_button( $button_args, '' );
+						sesamy_button( $button_args, '' );
 						?>
 					</div>
 					<?php
@@ -61,7 +61,7 @@ function show_paywall( $default_paywall, $post, $post_settings ) {
 						'currency' => $post_settings['currency'],
 						'item_src' => get_the_permalink( $post->ID ),
 					);
-					echo sesamy_button( $button_args, '' );
+					sesamy_button( $button_args, '' );
 
 					?>
 				</div>
