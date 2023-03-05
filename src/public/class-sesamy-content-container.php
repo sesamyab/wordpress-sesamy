@@ -71,8 +71,7 @@ class Sesamy_Content_Container {
 		$default_paywall = $this->show_paywall( $post, $post_settings );
 		$paywall_seo     = apply_filters( 'sesamy_paywall_seo', $this->show_seo_paywall_data( $post ), $post );
 
-		// Note: The wrapping div makes the container inherit sizes and margins by default in most themes compared to raw webpart
-		return $paywall_seo . sesamy_content_container( $atts, $content ) . apply_filters( 'sesamy_paywall', $default_paywall, $post, $post_settings );
+		return $paywall_seo . get_sesamy_content_container( $atts, $content ) . apply_filters( 'sesamy_paywall', $default_paywall, $post, $post_settings );
 	}
 
 	/**
@@ -149,7 +148,7 @@ class Sesamy_Content_Container {
 		?>
 		<div class="sesamy-paywall" data-sesamy-paywall data-sesamy-item-src="<?php the_permalink( $post->ID ); ?>" data-sesamy-passes="<?php sesamy_get_passes_urls( $post->ID ); ?>">
 
-		<?php echo esc_html( sesamy_login() ); ?>
+		<?php sesamy_login(); ?>
 		<?php
 
 		if ( $post_settings['enable_single_purchase'] ) {
@@ -159,7 +158,7 @@ class Sesamy_Content_Container {
 				'currency' => $post_settings['currency'],
 				'item_src' => get_the_permalink( $post->ID ),
 			);
-			echo esc_html( sesamy_button( $button_args, '' ) );
+			sesamy_button( $button_args, null );
 		}
 
 		if ( ! empty( $post_settings['passes'] ) && count( $post_settings['passes'] ) > 0 ) {
@@ -173,7 +172,7 @@ class Sesamy_Content_Container {
 					'item_src'             => $pass['item_src'],
 					'publisher_content_id' => $pass['id'],
 				);
-				echo esc_html( sesamy_button( $button_args, '' ) );
+				sesamy_button( $button_args, null );
 			}
 		}
 		?>

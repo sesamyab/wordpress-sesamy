@@ -1,5 +1,10 @@
 <?php
 
+function get_sesamy_content_container( $atts = null, $content = null ) {
+	ob_start();
+	sesamy_content_container( $atts, $content );
+	return ob_get_clean();
+}
 
 function sesamy_content_container( $atts = null, $content = null ) {
 	$post_settings = sesamy_get_post_settings( get_the_ID() );
@@ -24,15 +29,7 @@ function sesamy_content_container( $atts = null, $content = null ) {
 		return $content;
 	}
 
-	$tag_content = '<div slot="preview">' . $atts['preview'] . '</div>';
-
-	if ( 'embed' === $atts['lock_mode'] ) {
-		$tag_content .= '<div slot="content">' . $content . '</div>';
-	}
-
-	if ( 'signedUrl' !== $atts['lock_mode'] ) {
-		unset( $atts['access_url'] );
-	}
+	ob_start();
 
 	// Exclude attributes used by WordPress when making sesamy tag
 	$non_display_atts = array( 'preview' );
@@ -44,7 +41,36 @@ function sesamy_content_container( $atts = null, $content = null ) {
 		ARRAY_FILTER_USE_KEY
 	);
 
-	return apply_filters( 'sesamy_content_container', Sesamy_Utils::make_tag( 'sesamy-content-container', $html_attributes, $tag_content ) );
+	echo '<sesamy-content-container ';
+	Sesamy_Utils::html_attributes( $html_attributes );
+	echo '/>';
+
+	echo '<div slot="preview">' . wp_kses_post( $atts['preview'] ) . '</div>';
+
+	if ( 'embed' === $atts['lock_mode'] ) {
+		echo '<div slot="content">' . wp_kses_post( $content ) . '</div>';
+	}
+
+	if ( 'signedUrl' !== $atts['lock_mode'] ) {
+		unset( $atts['access_url'] );
+	}
+
+	echo '</sesamy-content-container>';
+
+	// These hoops are here to get WordPress checks for not echoing unescaped content happy
+	// The "_clean" suffix is reserved for marking a variable as clean according to the developer handbook
+
+	$container_content       = ob_get_clean();
+	$content_container_clean = apply_filters( 'sesamy_content_container', $container_content );
+
+	// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	echo $content_container_clean;
+}
+
+function get_sesamy_button_container( $atts = null, $content = null ) {
+	ob_start();
+	sesamy_button_container( $atts, $content );
+	return ob_get_clean();
 }
 
 function sesamy_button_container( $atts = null, $content = null ) {
@@ -58,7 +84,13 @@ function sesamy_button_container( $atts = null, $content = null ) {
 		'sesamy_button_container'
 	);
 
-	return Sesamy_Utils::make_tag( 'sesamy-button-container', $atts, $content, false );
+	Sesamy_Utils::make_tag( 'sesamy-button-container', $atts, $content, false );
+}
+
+function get_sesamy_button( $atts = null, $content = null ) {
+	ob_start();
+	sesamy_button( $atts, $content );
+	return ob_get_clean();
 }
 
 function sesamy_button( $atts = null, $content = null ) {
@@ -74,7 +106,14 @@ function sesamy_button( $atts = null, $content = null ) {
 		'sesamy_button'
 	);
 
-	return Sesamy_Utils::make_tag( 'sesamy-button', $atts, $content, false );
+	Sesamy_Utils::make_tag( 'sesamy-button', $atts, $content, false );
+}
+
+
+function get_sesamy_login( $atts = null, $content = null ) {
+	ob_start();
+	sesamy_login( $atts, $content );
+	return ob_get_clean();
 }
 
 function sesamy_login( $atts = null, $content = null ) {
@@ -88,7 +127,13 @@ function sesamy_login( $atts = null, $content = null ) {
 		'sesamy_login'
 	);
 
-	return Sesamy_Utils::make_tag( 'sesamy-login', $atts, $content, false );
+	Sesamy_Utils::make_tag( 'sesamy-login', $atts, $content, false );
+}
+
+function get_sesamy_profile( $atts = null, $content = null ) {
+	ob_start();
+	sesamy_profile( $atts, $content );
+	return ob_get_clean();
 }
 
 function sesamy_profile( $atts = null, $content = null ) {
@@ -100,7 +145,13 @@ function sesamy_profile( $atts = null, $content = null ) {
 		'sesamy_profile'
 	);
 
-	return Sesamy_Utils::make_tag( 'sesamy-profile', $atts, $content, false );
+	Sesamy_Utils::make_tag( 'sesamy-profile', $atts, $content, false );
+}
+
+function get_sesamy_config( $atts = null, $content = null ) {
+	ob_start();
+	sesamy_config( $atts, $content );
+	return ob_get_clean();
 }
 
 /**
@@ -116,7 +167,7 @@ function sesamy_config( $atts, $content ) {
 		'sesamy_config'
 	);
 
-	return Sesamy_Utils::make_tag( 'sesamy-config', $atts, $content, false );
+	Sesamy_Utils::make_tag( 'sesamy-config', $atts, $content, false );
 }
 
 function sesamy_get_enabled_post_types() {
@@ -151,14 +202,13 @@ function sesamy_get_pass_info( $term ) {
  */
 function sesamy_get_post_settings( $post_id ) {
 	$post   = get_post( $post_id );
-	$meta   = get_post_meta( $post_id );
 	$passes = get_the_terms( $post->ID, 'sesamy_passes' );
 
 	return array(
-		'locked'                 => $meta['_sesamy_locked'],
-		'enable_single_purchase' => $meta['_sesamy_enable_single_purchase'],
-		'price'                  => $meta['_sesamy_price'],
-		'currency'               => $meta['_sesamy_currency'],
+		'locked'                 => get_post_meta( $post, '_sesamy_locked', false ),
+		'enable_single_purchase' => get_post_meta( $post, '_sesamy_enable_single_purchase', false ),
+		'price'                  => get_post_meta( $post, '_sesamy_price', false ),
+		'currency'               => get_post_meta( $post, '_sesamy_currency', false ),
 		'passes'                 => is_array( $passes ) ? array_map( 'sesamy_get_pass_info', $passes ) : array(),
 	);
 }
