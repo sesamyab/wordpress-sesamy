@@ -193,7 +193,7 @@ function sesamy_get_pass_info( $term ) {
 		'period'       => get_term_meta( $term->term_id, 'period', true ),
 		'time'         => get_term_meta( $term->term_id, 'time', true ),
 		'product_type' => 'PASS',
-		'payment_type' => 'RECURRING',
+		'purchase_type' => 'RECURRING',
 	);
 }
 
