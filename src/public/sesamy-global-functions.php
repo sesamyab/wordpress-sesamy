@@ -205,10 +205,10 @@ function sesamy_get_post_settings( $post_id ) {
 	$passes = get_the_terms( $post->ID, 'sesamy_passes' );
 
 	return array(
-		'locked'                 => get_post_meta( $post, '_sesamy_locked', false ),
-		'enable_single_purchase' => get_post_meta( $post, '_sesamy_enable_single_purchase', false ),
-		'price'                  => get_post_meta( $post, '_sesamy_price', false ),
-		'currency'               => get_post_meta( $post, '_sesamy_currency', false ),
+		'locked'                 => get_post_meta( $post->ID, '_sesamy_locked', true ),
+		'enable_single_purchase' => get_post_meta( $post->ID, '_sesamy_enable_single_purchase', true ),
+		'price'                  => get_post_meta( $post->ID, '_sesamy_price', true ),
+		'currency'               => get_post_meta( $post->ID, '_sesamy_currency', true ),
 		'passes'                 => is_array( $passes ) ? array_map( 'sesamy_get_pass_info', $passes ) : array(),
 	);
 }
