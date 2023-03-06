@@ -213,6 +213,12 @@ function sesamy_get_post_settings( $post_id ) {
 	);
 }
 
+
+function sesamy_get_passes( $post_id_or_passes, $separator = ';' ) {
+
+	return sesamy_get_passes_urls( $post_id_or_passes, $separator );
+}
+
 /**
  * Return an array with the pass urls
  */
