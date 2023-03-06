@@ -161,7 +161,7 @@ class Sesamy_Content_Container {
 			sesamy_button( $button_args, null );
 		}
 
-		if ( ! empty( $post_settings['passes'] ) && count( $post_settings['passes'] ) > 0 ) {
+		if ( count( $post_settings['passes'] ) > 0 ) {
 
 			foreach ( $post_settings['passes'] as $pass ) {
 
