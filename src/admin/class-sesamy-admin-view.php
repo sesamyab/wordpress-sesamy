@@ -4,7 +4,7 @@ class Sesamy_Admin_View {
 
 	public function bulk_edit_save( $post_id ) {
 
-		if ( ! wp_verify_nonce( $_REQUEST['_wpnonce'], 'bulk-posts' ) ) {
+		if ( ! isset( $_REQUEST['_wpnonce'] ) || ! wp_verify_nonce( $_REQUEST['_wpnonce'], 'bulk-posts' ) ) {
 			return;
 		}
 
