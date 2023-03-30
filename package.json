@@ -15,7 +15,10 @@
       "master"
     ],
     "tagFormat": "${version}",
+    "changelog": "changelog.md",
     "plugins": [
+      "@semantic-release/commit-analyzer",
+      "@semantic-release/changelog",
       "@semantic-release/commit-analyzer",
       "@semantic-release/release-notes-generator",
       [
@@ -50,6 +53,7 @@
     "@commitlint/cli": "^17.3.0",
     "@commitlint/config-conventional": "^17.3.0",
     "@commitlint/prompt-cli": "^17.3.0",
+    "@semantic-release/changelog": "^6.0.3",
     "@semantic-release/git": "^10.0.1",
     "husky": "^8.0.2",
     "semantic-release": "^19.0.5"
