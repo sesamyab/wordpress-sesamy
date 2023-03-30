@@ -6,31 +6,31 @@ use Jose\Component\Signature\Algorithm\RS256;
 
 class Sesamy_Signed_Url {
 
+	public static function is_public_url_or_pass_url_for_post( $post_id, $url ) {
+
+		$re = '/.*\/sesamy\/v1\/passes\/(.*)\?.*/m';
+
+		if ( preg_match_all( $re, $url, $matches, PREG_SET_ORDER, 0 ) != 0 ) {
+
+		} else {
+
+		}
+	}
 
 	/**
 	 * Main function to test if a signed link is valid
+	 *
+	 * @param [type] $url
+	 * @return boolean
 	 */
-	public function is_valid_link( $url ) {
+	public static function is_valid_link( $url ) {
 
-		$params = $this->get_request_parameters( $url );
+		$params = self::get_request_parameters( $url );
 
-		$expected_keys = array( 'sp', 'se', 'ss' );
+		$expected_keys = array( 'se', 'ss' );
 
 		if ( count( array_intersect( array_keys( $params ), $expected_keys ) ) !== count( $expected_keys ) ) {
 			return new WP_Error( 404, 'Missing request parameters' );
-		}
-
-		$post = get_post( $params['sp'] );
-
-		if ( null === $post ) {
-			return new WP_Error( 404, 'Item not found' );
-		}
-
-		// Check if post is locked, if not, just return content
-		$is_locked = get_post_meta( $post->ID, '_sesamy_locked', true );
-
-		if ( ! $is_locked ) {
-			return true;
 		}
 
 		// Verify expiration
@@ -44,7 +44,7 @@ class Sesamy_Signed_Url {
 		$ss  = $url[1];
 
 		// Verify signature
-		if ( $this->verify_signature( $params['signed_url'], base64_decode( $ss ) ) ) {
+		if ( self::verify_signature( $params['signed_url'], base64_decode( $ss ) ) ) {
 			return true;
 		} else {
 			return new WP_Error( 400, 'The signature is invalid.' );
@@ -54,7 +54,7 @@ class Sesamy_Signed_Url {
 	/**
 	 * Get parameters for the request.
 	 */
-	public function get_request_parameters( $url ) {
+	public static function get_request_parameters( $url ) {
 
 		$query_string = wp_parse_url( $url, PHP_URL_QUERY );
 		parse_str( $query_string, $parts );
@@ -69,7 +69,7 @@ class Sesamy_Signed_Url {
 	/**
 	 * Validate signature with
 	 */
-	public function verify_signature( $url, $signature ) {
+	public static function verify_signature( $url, $signature ) {
 
 		$algorithm_manager = new AlgorithmManager(
 			array(
@@ -78,17 +78,15 @@ class Sesamy_Signed_Url {
 		);
 
 		$rs256 = $algorithm_manager->get( 'RS256' );
-		$jwk   = $this->get_public_key();
+		$jwk   = self::get_public_key();
 
 		return $rs256->verify( $jwk, $url, $signature );
 	}
 
-
-
 	/**
 	 * Get the public key
 	 */
-	public function get_public_key() {
+	public static function get_public_key() {
 
 		$jwk = get_transient( 'sesamy_public_key' );
 
@@ -105,5 +103,4 @@ class Sesamy_Signed_Url {
 
 		return $jwk;
 	}
-
 }

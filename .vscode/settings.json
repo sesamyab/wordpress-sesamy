@@ -6,7 +6,7 @@
     "phpcs.ignorePatterns": [
         "*/vendor/*,*js,*/node_modules/*"
     ],
-    "phpcs.executablePath": "./vendor/bin/phpcs.bat",
+    "phpcs.executablePath": "./vendor/bin/phpcs",
     "phpcs.showSources": true,
     "phpcbf.documentFormattingProvider": true
 }

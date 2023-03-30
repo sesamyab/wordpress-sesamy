@@ -55,8 +55,13 @@ function deactivate_sesamy() {
 	Sesamy_Deactivator::deactivate();
 }
 
-register_activation_hook( __FILE__, 'activate_sesamy' );
-register_deactivation_hook( __FILE__, 'deactivate_sesamy' );
+if ( function_exists( 'register_activation_hook' ) ) {
+	register_activation_hook( __FILE__, 'activate_sesamy' );
+}
+
+if ( function_exists( 'register_deactivation_hook' ) ) {
+	register_deactivation_hook( __FILE__, 'deactivate_sesamy' );
+}
 
 /**
  * The core plugin class that is used to define internationalization,

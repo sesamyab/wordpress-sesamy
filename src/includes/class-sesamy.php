@@ -266,4 +266,21 @@ class Sesamy {
 		return ( defined( 'SESAMY_DEV_API' ) && true === SESAMY_DEV_API ) ? 'https://assets.sesamy.dev' : 'https://assets.sesamy.com';
 	}
 
+	/**
+	 * True if the post is locked by sesamy
+	 *
+	 * @param int|WP_Post $post
+	 * @return boolean
+	 */
+	public static function is_locked( $post ) {
+
+		$post = get_post( $post );
+
+		if ( null === $post ) {
+			return new WP_Error( 404, 'Item not found' );
+		}
+
+		// Check if post is locked, if not, just return content
+		return get_post_meta( $post->ID, '_sesamy_locked', true ) ?? false;
+	}
 }
