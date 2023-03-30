@@ -19,9 +19,6 @@ class Sesamy_Api_Endpoint {
 					'se' => array(
 						'validate_callback' => array( $this, 'validate_numeric_param' ),
 					),
-					'sp' => array(
-						'validate_callback' => array( $this, 'validate_numeric_param' ),
-					),
 					'ss' => array(),
 				),
 			)
@@ -65,23 +62,21 @@ class Sesamy_Api_Endpoint {
 	 */
 	public function sesamy_post_ep( $request ) {
 
-		$signed_url = new Sesamy_Signed_Url();
+		$post = get_post( $request['id'] );
+
+		// Check that post actually exists
+		if ( is_wp_error( $post ) ) {
+			return $post;
+		}
 
 		$public_signed_url = isset( $_SERVER['HTTP_X_SESAMY_SIGNED_URL'] ) ? esc_url_raw( wp_unslash( $_SERVER['HTTP_X_SESAMY_SIGNED_URL'] ) ) : '';
 
-		$result = $signed_url->is_valid_link( $public_signed_url );
+		// Always allow fetching if post is unlocked
+		$result = Sesamy::is_locked( $post ) ? Sesamy_Signed_Url::is_valid_link( $public_signed_url ) : true;
 
 		if ( is_wp_error( $result ) ) {
 			return $result;
 		} elseif ( is_bool( $result ) && true === $result ) {
-			$params = $signed_url->get_request_parameters( $public_signed_url );
-
-			if ( intval( $request['id'] ) !== intval( $params['sp'] ) ) {
-				return new WP_Error( 400, 'The supplied route id does not match the sp in supplied token' );
-			}
-
-			$post = get_post( $params['sp'] );
-
 			return new WP_REST_Response( array( 'data' => apply_filters( 'the_content', $post->post_content ) ) );
 		} else {
 

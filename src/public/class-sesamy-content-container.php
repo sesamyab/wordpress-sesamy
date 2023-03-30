@@ -27,9 +27,7 @@ class Sesamy_Content_Container {
 
 			global $post;
 
-			$locked = get_post_meta( $post->ID, '_sesamy_locked', true );
-
-			if ( $locked ) {
+			if ( Sesamy::is_locked( $post ) ) {
 
 				$link_has_valid_sign = false;
 
@@ -37,10 +35,8 @@ class Sesamy_Content_Container {
 				if ( isset( $_GET['ss'] ) ) {
 
 					global $wp;
-					$current_url = home_url( add_query_arg( $_GET, $wp->request ) );
-					$signed_url  = new Sesamy_Signed_Url();
-
-					$link_has_valid_sign = ( true === $signed_url->is_valid_link( $current_url ) );
+					$current_url         = home_url( add_query_arg( $_GET, $wp->request ) );
+					$link_has_valid_sign = ( true === Sesamy_Signed_Url::is_valid_link( $current_url ) );
 
 				}
 
