@@ -35,8 +35,9 @@ class Sesamy_Content_Container {
 				if ( isset( $_GET['ss'] ) ) {
 
 					global $wp;
+					$sesamy_signed_url   = new Sesamy_Signed_Url();
 					$current_url         = home_url( add_query_arg( $_GET, $wp->request ) );
-					$link_has_valid_sign = ( true === Sesamy_Signed_Url::is_valid_link( $current_url ) );
+					$link_has_valid_sign = ( true === $sesamy_signed_url->is_valid_url( $post, $current_url ) );
 
 				}
 

@@ -283,4 +283,5 @@ class Sesamy {
 		// Check if post is locked, if not, just return content
 		return get_post_meta( $post->ID, '_sesamy_locked', true ) ?? false;
 	}
+
 }

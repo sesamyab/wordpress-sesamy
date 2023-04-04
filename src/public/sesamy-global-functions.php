@@ -181,6 +181,9 @@ function sesamy_get_enabled_post_types() {
  * Return information about a pass in sesamy in a easily accessible way
  */
 function sesamy_get_pass_info( $term ) {
+
+	$term = get_term( $term, 'sesamy_passes' );
+
 	$image_id = get_term_meta( $term->term_id, 'image_id', true );
 
 	return array(

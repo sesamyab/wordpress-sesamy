@@ -1,21 +1,40 @@
 <?php
-use Jose\Component\Core\JWK;
-use Jose\Component\Core\AlgorithmManager;
-use Jose\Component\Signature\Algorithm\RS256;
-
+use phpseclib3\Crypt\PublicKeyLoader;
+use phpseclib3\Crypt\RSA;
 
 class Sesamy_Signed_Url {
 
-	public static function is_public_url_or_pass_url_for_post( $post_id, $url ) {
+	/**
+	 * True if the url is signed and valid for the post
+	 *
+	 * @param WP_POST | int $post
+	 * @param str $url
+	 * @return boolean
+	 */
+	public function is_valid_url( $post, $url ) {
 
-		$re = '/.*\/sesamy\/v1\/passes\/(.*)\?.*/m';
+		$post          = get_post( $post );
+		$post_settings = sesamy_get_post_settings( $post );
+		$permalink     = get_permalink( $post );
 
-		if ( preg_match_all( $re, $url, $matches, PREG_SET_ORDER, 0 ) != 0 ) {
-
+		// Do a quick regex to see if it is a post url to avoid expensive loop if not
+		if ( substr( $url, 0, strlen( $permalink ) ) === $permalink  ) {
+			return $this->has_valid_url_signature( $url );
 		} else {
 
+			// Test if the url is for a pass assigned to this post
+			foreach ( $post_settings['passes'] as $pass ) {
+
+				// Check if url starts with pass API url (in PHP < 8 comaptible way)
+				if ( $pass['item_src'] === substr( $url, 0, strlen( $pass['item_src'] ) ) ) {
+					return $this->has_valid_url_signature( $url );
+				}
+			}
 		}
+
+		return false;
 	}
+
 
 	/**
 	 * Main function to test if a signed link is valid
@@ -23,38 +42,34 @@ class Sesamy_Signed_Url {
 	 * @param [type] $url
 	 * @return boolean
 	 */
-	public static function is_valid_link( $url ) {
+	public function has_valid_url_signature( $url ): bool {
 
-		$params = self::get_request_parameters( $url );
+		$params = $this::get_request_parameters( $url );
 
 		$expected_keys = array( 'se', 'ss' );
 
 		if ( count( array_intersect( array_keys( $params ), $expected_keys ) ) !== count( $expected_keys ) ) {
-			return new WP_Error( 404, 'Missing request parameters' );
+			return false;
 		}
 
 		// Verify expiration
-		if ( $params['se'] < time() ) {
-			return new WP_Error( 400, 'The link is expired' );
+		if ( intval( $params['se'] ) < time() ) {
+			return false;
 		}
 
-		// Fix for not having an urlencoded ss
+		// Split instead of looking at parsed url since we do not have the ss urlencoded properly
 
 		$url = explode( 'ss=', $url );
 		$ss  = $url[1];
 
 		// Verify signature
-		if ( self::verify_signature( $params['signed_url'], base64_decode( $ss ) ) ) {
-			return true;
-		} else {
-			return new WP_Error( 400, 'The signature is invalid.' );
-		}
+		return $this::verify_signature( $params['signed_url'], base64_decode( $ss ) );
 	}
 
 	/**
 	 * Get parameters for the request.
 	 */
-	public static function get_request_parameters( $url ) {
+	public function get_request_parameters( $url ) {
 
 		$query_string = wp_parse_url( $url, PHP_URL_QUERY );
 		parse_str( $query_string, $parts );
@@ -69,38 +84,31 @@ class Sesamy_Signed_Url {
 	/**
 	 * Validate signature with
 	 */
-	public static function verify_signature( $url, $signature ) {
+	public function verify_signature( $data, $signature ) {
+		return $this::get_rsa()->verify( $data, $signature );
+	}
 
-		$algorithm_manager = new AlgorithmManager(
-			array(
-				new RS256(),
-			)
-		);
 
-		$rs256 = $algorithm_manager->get( 'RS256' );
-		$jwk   = self::get_public_key();
-
-		return $rs256->verify( $jwk, $url, $signature );
+	public function get_sesamy_jwks() {
+		$req = wp_remote_get( Sesamy::$instance->get_assets_url() . '/vault-jwks.json' );
+		$jwk = wp_remote_retrieve_body( $req );
 	}
 
 	/**
-	 * Get the public key
+	 * Get the public RSA object
 	 */
-	public static function get_public_key() {
+	public function get_rsa() {
 
-		$jwk = get_transient( 'sesamy_public_key' );
+		$jwk = get_transient( 'sesamy_public_jwk' );
 
 		// Use transient to avoid calling api more than needed
 		if ( false === $jwk ) {
 
-			$req  = wp_remote_get( Sesamy::$instance->get_assets_url() . '/vault-jwks.json' );
-			$json = wp_remote_retrieve_body( $req );
-
-			$jwk = JWK::createFromJson( $json );
-			set_transient( 'sesamy_public_key', $jwk, 3600 );
+			$jwk = $this->get_sesamy_jwks();
+			set_transient( 'sesamy_public_jwk', $jwk, 3600 );
 
 		}
 
-		return $jwk;
+		return PublicKeyLoader::load( $jwk )->getPublicKey();
 	}
 }

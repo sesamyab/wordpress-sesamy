@@ -13,5 +13,14 @@
                 "/var/www/html/wp-content/plugins/sesamy": "${workspaceFolder}/src",
             }
         },
+        {
+            "name": "Tests: Listen on Docker for Xdebug",
+            "type": "php",
+            "request": "launch",
+            "port": 9003,
+            "pathMappings": {
+                "/wordpress/wp-content/plugins/sesamy": "${workspaceFolder}/src",
+            }
+        }
     ]
 }

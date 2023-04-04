@@ -8,5 +8,11 @@
     ],
     "phpcs.executablePath": "./vendor/bin/phpcs",
     "phpcs.showSources": true,
-    "phpcbf.documentFormattingProvider": true
+    "phpcbf.documentFormattingProvider": true,
+    "phpunit.command": "docker compose run --rm test",
+    "phpunit.php": "",
+    "phpunit.phpunit": "",
+    "phpunit.paths": {
+        "${workspaceFolder}": "/wordpress/wp-content/plugins/sesamy/",
+    }
 }
