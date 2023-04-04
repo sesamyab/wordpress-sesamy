@@ -85,12 +85,12 @@ class Sesamy_Passes {
 
 		wp_verify_nonce( 'update-tag_' . $term_id );
 
-		update_term_meta( $term_id, 'price', sanitize_text_field( $_POST['price'] ) );
-		update_term_meta( $term_id, 'currency', sanitize_text_field( $_POST['currency'] ) );
-		update_term_meta( $term_id, 'url', sanitize_text_field( $_POST['url'] ) );
-		update_term_meta( $term_id, 'image_id', sanitize_text_field( $_POST['image_id'] ) );
-		update_term_meta( $term_id, 'period', sanitize_text_field( $_POST['period'] ) );
-		update_term_meta( $term_id, 'time', sanitize_text_field( $_POST['time'] ) );
+		update_term_meta( $term_id, 'price', sanitize_text_field( isset( $_POST['price'] ) ? $_POST['price'] : '' ) );
+		update_term_meta( $term_id, 'currency', sanitize_text_field( isset( $_POST['currency'] ) ? $_POST['currency'] : '' ) );
+		update_term_meta( $term_id, 'url', sanitize_text_field( isset( $_POST['url'] ) ? $_POST['url'] : '' ) );
+		update_term_meta( $term_id, 'image_id', sanitize_text_field( isset( $_POST['image_id'] ) ? $_POST['image_id'] : '' ) );
+		update_term_meta( $term_id, 'period', sanitize_text_field( isset( $_POST['period'] ) ? $_POST['period'] : '' ) );
+		update_term_meta( $term_id, 'time', sanitize_text_field( isset( $_POST['time'] ) ? $_POST['time'] : '' ) );
 	}
 
 
