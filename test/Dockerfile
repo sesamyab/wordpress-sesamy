@@ -31,4 +31,7 @@ COPY --chmod=755 test/install-wp-tests.sh /usr/local/bin/
 # Run install script but skip db creation to have all files in the image for quick startup
 RUN /usr/local/bin/install-wp-tests.sh sesamy_test root root db latest true
 
+# Copy entrypoint to image
+COPY --chmod=755  test/entrypoint.sh /usr/local/bin/entrypoint.sh
+
 ENTRYPOINT [ "/usr/local/bin/entrypoint.sh" ]

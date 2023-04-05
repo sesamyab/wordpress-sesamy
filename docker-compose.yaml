@@ -45,7 +45,6 @@ services:
       dockerfile: ./test/Dockerfile
     volumes:
       - ./src:/wordpress/wp-content/plugins/sesamy/
-      - ./test/entrypoint.sh:/usr/local/bin/entrypoint.sh
       - ./xdebug.ini:/usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
     environment:
         WORDPRESS_DB_HOST: db:3306
