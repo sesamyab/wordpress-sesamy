@@ -3,3 +3,4 @@ vendor/*
 docker-compose.prod.yml
 dist/*
 node_modules
+*.cache
