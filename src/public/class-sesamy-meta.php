@@ -21,8 +21,15 @@
 class Sesamy_Meta {
 
 
-
+	/**
+	 * Render sesamy meta_tags in head tag
+	 *
+	 * @return void
+	 */
 	public function add_meta_tags() {
+
+		// client-id should be present on all pages
+		$this->make_tag( 'sesamy:client-id', get_option( 'sesamy_client_id', '' ) );
 
 		if ( is_singular() ) {
 			global $post;
@@ -36,7 +43,6 @@ class Sesamy_Meta {
 				$this->make_tag( 'sesamy:image', get_the_post_thumbnail_url( $post ) );
 				$this->make_tag( 'sesamy:price', $price_info['price'] );
 				$this->make_tag( 'sesamy:currency', $price_info['currency'] );
-				$this->make_tag( 'sesamy:client-id', get_option( 'sesamy_client_id', '' ) );
 				$this->make_tag( 'sesamy:publisher-content-id', $post->ID );
 				$this->make_tag( 'sesamy:pass', sesamy_get_passes_urls( $post ) );
 			}
@@ -44,7 +50,11 @@ class Sesamy_Meta {
 	}
 
 	/**
-	 * Generate tag
+	 * Generate meta tag
+	 *
+	 * @param string $name
+	 * @param string $content
+	 * @return void
 	 */
 	public function make_tag( $name, $content ) {
 		$content = wp_strip_all_tags( $content );
