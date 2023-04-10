@@ -53,6 +53,30 @@ class Sesamy_Post_Properties {
 				)
 			);
 
+			register_post_meta(
+				$post_type,
+				'_sesamy_locked_from',
+				array(
+					'show_in_rest'  => true,
+					'single'        => true,
+					'type'          => 'integer',
+					'auth_callback' => '__return_true',
+					'default'       => -1,
+				)
+			);
+
+			register_post_meta(
+				$post_type,
+				'_sesamy_locked_until',
+				array(
+					'show_in_rest'  => true,
+					'single'        => true,
+					'type'          => 'integer',
+					'auth_callback' => '__return_true',
+					'default'       => -1,
+				)
+			);
+
 		}
 	}
 
@@ -70,7 +94,7 @@ class Sesamy_Post_Properties {
 	public static function is_locked( $post ) {
 
 		$post = get_post( $post );
-		return get_post_meta( $post->ID, '_sesamy_locked', true );
+		return (bool) ( get_post_meta( $post->ID, '_sesamy_locked', true ) ?? false );
 	}
 
 	/**
@@ -97,6 +121,27 @@ class Sesamy_Post_Properties {
 
 		$post = get_post( $post );
 		return get_the_terms( $post, 'sesamy_passes' );
+	}
+
+	/**
+	 * Return information about sesamy settings for a post in an easy accessible way
+	 *
+	 * @param int $post_id
+	 * @return Array
+	 */
+	public static function get_post_settings( $post_id ) {
+		$post   = get_post( $post_id );
+		$passes = get_the_terms( $post->ID, 'sesamy_passes' );
+
+		return array(
+			'locked'                 => (bool) get_post_meta( $post->ID, '_sesamy_locked', true ),
+			'enable_single_purchase' => (bool) get_post_meta( $post->ID, '_sesamy_enable_single_purchase', true ),
+			'price'                  => get_post_meta( $post->ID, '_sesamy_price', true ),
+			'currency'               => get_post_meta( $post->ID, '_sesamy_currency', true ),
+			'passes'                 => is_array( $passes ) ? array_map( 'sesamy_get_pass_info', $passes ) : array(),
+			'locked_from'            => (int) get_post_meta( $post->ID, '_sesamy_locked_from', true ),
+			'locked_until'           => (int) get_post_meta( $post->ID, '_sesamy_locked_until', true ),
+		);
 	}
 
 }

@@ -65,6 +65,11 @@ class Sesamy {
 	protected $version;
 
 
+	public $scheduling;
+	public $admin_view;
+	public $meta;
+	public $content_container;
+
 	/**
 	 * Define the core functionality of the plugin.
 	 *
@@ -82,6 +87,12 @@ class Sesamy {
 		}
 		$this->plugin_name = 'sesamy';
 
+		// Define class instances. All classes are autoloaded with composer
+		$this->admin_view        = new Sesamy_Admin_View();
+		$this->scheduling        = new Sesamy_Scheduling();
+		$this->meta              = new Sesamy_Meta();
+		$this->content_container = new Sesamy_Content_Container();
+
 		$this->load_dependencies();
 		$this->set_locale();
 		$this->define_common_hooks();
@@ -93,12 +104,6 @@ class Sesamy {
 	/**
 	 * Load the required dependencies for this plugin.
 	 *
-	 * Include the following files that make up the plugin:
-	 *
-	 * - Sesamy_Loader. Orchestrates the hooks of the plugin.
-	 * - Sesamy_I18n. Defines internationalization functionality.
-	 * - Sesamy_Admin. Defines all hooks for the admin area.
-	 * - Sesamy_Public. Defines all hooks for the public side of the site.
 	 *
 	 * Create an instance of the loader which will be used to register the hooks
 	 * with WordPress.
@@ -107,57 +112,6 @@ class Sesamy {
 	 * @access private
 	 */
 	private function load_dependencies() {
-
-		/**
-		 * The class responsible for orchestrating the actions and filters of the
-		 * core plugin.
-		 */
-		include_once plugin_dir_path( __DIR__ ) . 'includes/class-sesamy-loader.php';
-
-		/**
-		 * The class responsible for defining internationalization functionality
-		 * of the plugin.
-		 */
-		include_once plugin_dir_path( __DIR__ ) . 'includes/class-sesamy-i18n.php';
-
-		/**
-		 * The class responsible for defining all actions that occur in the admin area.
-		 */
-		include_once plugin_dir_path( __DIR__ ) . 'admin/class-sesamy-admin.php';
-
-		/**
-		 * The class responsible for defining all actions that occur in the public-facing
-		 * side of the site.
-		 */
-		include_once plugin_dir_path( __DIR__ ) . 'public/class-sesamy-public.php';
-
-		/**
-		 * Sesamy includes
-		 */
-		include_once plugin_dir_path( __DIR__ ) . 'includes/class-sesamy-utils.php';
-		include_once plugin_dir_path( __DIR__ ) . 'includes/class-sesamy-passes.php';
-		include_once plugin_dir_path( __DIR__ ) . 'includes/class-sesamy-post-properties.php';
-		include_once plugin_dir_path( __DIR__ ) . 'includes/class-sesamy-signed-url.php';
-		include_once plugin_dir_path( __DIR__ ) . 'includes/class-sesamy-api-endpoint.php';
-		include_once plugin_dir_path( __DIR__ ) . 'includes/class-sesamy-currencies.php';
-		include_once plugin_dir_path( __DIR__ ) . 'includes/class-sesamy-settings.php';
-
-		/**
-		 * The following classes contains sesamy public
-		 */
-
-		include_once plugin_dir_path( __DIR__ ) . 'public/class-sesamy-shortcodes.php';
-		include_once plugin_dir_path( __DIR__ ) . 'public/class-sesamy-content-container.php';
-		include_once plugin_dir_path( __DIR__ ) . 'public/class-sesamy-meta.php';
-		include_once plugin_dir_path( __DIR__ ) . 'public/sesamy-global-functions.php';
-
-		/**
-		 * Admin includes
-		 */
-		include_once plugin_dir_path( __DIR__ ) . 'admin/class-sesamy-settings-admin.php';
-		include_once plugin_dir_path( __DIR__ ) . 'admin/class-sesamy-post-editor.php';
-		include_once plugin_dir_path( __DIR__ ) . 'admin/class-sesamy-admin-view.php';
-
 		$this->loader = new Sesamy_Loader();
 	}
 
@@ -217,17 +171,18 @@ class Sesamy {
 		$this->loader->add_action( 'init', $plugin_admin, 'init' );
 		$this->loader->add_action( 'admin_init', Sesamy_Passes::get_instance(), 'admin_init' );
 
-		$admin_view         = new Sesamy_Admin_View();
 		$enabled_post_types = sesamy_get_enabled_post_types();
 
-		$admin_view = new Sesamy_Admin_View();
 		foreach ( sesamy_get_enabled_post_types() as $enabled_post_type ) {
-			$this->loader->add_filter( 'manage_' . $enabled_post_type . '_posts_columns', $admin_view, 'add_featured_columns', 10, 2 );
-			$this->loader->add_filter( 'manage_' . $enabled_post_type . '_posts_custom_column', $admin_view, 'populate_featured_columns', 10, 2 );
+			$this->loader->add_filter( 'manage_' . $enabled_post_type . '_posts_columns', $this->admin_view, 'add_featured_columns', 10, 2 );
+			$this->loader->add_filter( 'manage_' . $enabled_post_type . '_posts_custom_column', $this->admin_view, 'populate_featured_columns', 10, 2 );
 		}
 
-		$this->loader->add_action( 'bulk_edit_custom_box', $admin_view, 'bulk_edit_fields', 10, 2 );
-		$this->loader->add_action( 'save_post', $admin_view, 'bulk_edit_save', 10, 2 );
+		$this->loader->add_action( 'bulk_edit_custom_box', $this->admin_view, 'bulk_edit_fields', 10, 2 );
+		$this->loader->add_action( 'save_post', $this->admin_view, 'bulk_edit_save', 10, 2 );
+
+		// Use wp_insert_post to allow WP to save meta first
+		$this->loader->add_action( 'wp_after_insert_post', $this->scheduling, 'after_insert_post', 99, 4 );
 	}
 
 	/**
@@ -249,18 +204,17 @@ class Sesamy {
 		// If the lock mode is set to 'none' we should do nothing with the content.
 		if ( get_option( 'sesamy_lock_mode' ) !== 'none' ) {
 
-			$sesamy_content_container = new Sesamy_Content_Container();
-			$this->loader->add_filter( 'sesamy_content', $sesamy_content_container, 'process_content', 999, 2 );
-			$this->loader->add_filter( 'sesamy_content_container', $sesamy_content_container, 'sesamy_content_container_wrap', 10, 1 );
+			$this->loader->add_filter( 'sesamy_content', $this->content_container, 'process_content', 999, 2 );
+			$this->loader->add_filter( 'sesamy_content_container', $this->content_container, 'sesamy_content_container_wrap', 10, 1 );
 
 			// Make sure we process sesamy after all other hooks with order 999.
-			$this->loader->add_filter( 'the_content', $sesamy_content_container, 'process_main_content', 999 );
-
+			$this->loader->add_filter( 'the_content', $this->content_container, 'process_main_content', 999 );
 		}
 
+		$this->loader->add_action( 'sesamy_lock_schedule', $this->scheduling, 'post_lock_callback', 10, 2 );
+
 		// Make sure we process sesamy after all other hooks with order 999.
-		$sesamy_meta = new Sesamy_Meta();
-		$this->loader->add_filter( 'wp_head', $sesamy_meta, 'add_meta_tags' );
+		$this->loader->add_filter( 'wp_head', $this->meta, 'add_meta_tags' );
 	}
 
 	/**

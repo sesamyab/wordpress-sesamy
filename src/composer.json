@@ -1,4 +1,21 @@
 {
+    "autoload": {
+        "classmap": [
+            "admin/",
+            "includes/",
+            "public/"
+        ],
+        "files": [
+            "public/sesamy-global-functions.php"
+        ],
+        "prefixes": {
+            "class-": [
+                "admin/",
+                "includes/",
+                "public/"
+            ]
+        }
+    },
     "require": {
         "web-token/jwt-signature": "2.2.11",
         "web-token/jwt-signature-algorithm-rsa": "2.2.11"

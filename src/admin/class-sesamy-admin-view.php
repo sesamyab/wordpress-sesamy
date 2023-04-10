@@ -140,8 +140,24 @@ class Sesamy_Admin_View {
 
 		switch ( $column_name ) {
 			case 'sesamy_locked':
-				$sesamy_locked = Sesamy_Post_Properties::is_locked( $post_id );
-				echo esc_html( isset( $sesamy_locked ) && true === boolval( $sesamy_locked ) ? __( 'Enabled', 'sesamy' ) : __( 'Not enabled', 'sesamy' ) );
+				$post_properties = Sesamy_Post_Properties::get_post_settings( $post_id );
+				$sesamy_locked   = Sesamy_Post_Properties::is_locked( $post_id );
+				echo esc_html( isset( $sesamy_locked ) && true === boolval( $sesamy_locked ) ? __( 'Locked now', 'sesamy' ) : __( 'Not locked now', 'sesamy' ) );
+
+				if ( ! empty( $post_properties['locked_from'] ) && $post_properties['locked_from'] > 0 ) {
+					echo '<p>';
+					// Translators: Time when post is locked from
+					printf( esc_html__( 'Locked from: %s', 'sesamy' ), esc_html( date_i18n( 'Y-m-d H:i', $post_properties['locked_from'] + ( get_option( 'gmt_offset' ) * HOUR_IN_SECONDS ) ) ) );
+					echo '</p>';
+				}
+
+				if ( ! empty( $post_properties['locked_until'] ) && $post_properties['locked_until'] > 0 ) {
+					echo '<p>';
+					// Translators: Time when post is locked until
+					printf( esc_html__( 'Locked until: %s', 'sesamy' ), esc_html( date_i18n( 'Y-m-d H:i', $post_properties['locked_until'] + ( get_option( 'gmt_offset' ) * HOUR_IN_SECONDS ) ) ) );
+					echo '</p>';
+				}
+
 				break;
 			case 'sesamy_single_purchase':
 				if ( Sesamy_Post_Properties::is_locked( $post_id ) ) {

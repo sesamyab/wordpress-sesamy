@@ -24,11 +24,11 @@ Run the following command to enable codesniffer
 
 Install VS Code plugin here https://marketplace.visualstudio.com/items?itemName=shevaua.phpcs or run manually:
 
-    ./vendor/bin/phpcs ./src/*  --ignore=*/vendor/*,*.js --standard=WordPress-Core,WordPress-Extra
+    ./vendor/bin/phpcs ./src/*  --ignore=*/vendor/*,*.js,*node_modules* --standard=WordPress-Core,WordPress-Extra
 
 You can also run automatic fixes according to standards like this
 
-    ./vendor/bin/phpcbf ./src/*  --ignore=*/vendor/*,*.js --standard=WordPress-Core,WordPress-Extra
+    ./vendor/bin/phpcbf ./src/*  --ignore=*/vendor/*,*.js,*node_modules* --standard=WordPress-Core,WordPress-Extra
 
 # Plugin configuration
 

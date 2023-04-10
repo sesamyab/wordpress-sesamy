@@ -182,17 +182,17 @@ function sesamy_get_pass_info( $term ) {
 	$image_id = get_term_meta( $term->term_id, 'image_id', true );
 
 	return array(
-		'id'           => $term->slug,
-		'title'        => $term->name,
-		'description'  => $term->description,
-		'price'        => get_term_meta( $term->term_id, 'price', true ),
-		'currency'     => get_term_meta( $term->term_id, 'currency', true ),
-		'image'        => ! empty( $image_id ) ? wp_get_attachment_image_url( $image_id, 'full' ) : null,
-		'url'          => get_term_meta( $term->term_id, 'url', true ),
-		'item_src'     => get_site_url() . '/wp-json/sesamy/v1/passes/' . $term->slug,
-		'period'       => get_term_meta( $term->term_id, 'period', true ),
-		'time'         => get_term_meta( $term->term_id, 'time', true ),
-		'product_type' => 'PASS',
+		'id'            => $term->slug,
+		'title'         => $term->name,
+		'description'   => $term->description,
+		'price'         => get_term_meta( $term->term_id, 'price', true ),
+		'currency'      => get_term_meta( $term->term_id, 'currency', true ),
+		'image'         => ! empty( $image_id ) ? wp_get_attachment_image_url( $image_id, 'full' ) : null,
+		'url'           => get_term_meta( $term->term_id, 'url', true ),
+		'item_src'      => get_site_url() . '/wp-json/sesamy/v1/passes/' . $term->slug,
+		'period'        => get_term_meta( $term->term_id, 'period', true ),
+		'time'          => get_term_meta( $term->term_id, 'time', true ),
+		'product_type'  => 'PASS',
 		'purchase_type' => 'RECURRING',
 	);
 }
@@ -201,16 +201,7 @@ function sesamy_get_pass_info( $term ) {
  * Return information about sesamy settings for a post in an easy accessible way
  */
 function sesamy_get_post_settings( $post_id ) {
-	$post   = get_post( $post_id );
-	$passes = get_the_terms( $post->ID, 'sesamy_passes' );
-
-	return array(
-		'locked'                 => get_post_meta( $post->ID, '_sesamy_locked', true ),
-		'enable_single_purchase' => get_post_meta( $post->ID, '_sesamy_enable_single_purchase', true ),
-		'price'                  => get_post_meta( $post->ID, '_sesamy_price', true ),
-		'currency'               => get_post_meta( $post->ID, '_sesamy_currency', true ),
-		'passes'                 => is_array( $passes ) ? array_map( 'sesamy_get_pass_info', $passes ) : array(),
-	);
+	return Sesamy_Post_Properties::get_post_settings( $post_id );
 }
 
 

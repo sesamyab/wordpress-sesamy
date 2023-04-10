@@ -23,3 +23,7 @@
 .edit-fields-sesamy .sesamy-bulk-edit-price .input-text-wrap {
 	margin-left: 0 !important;
 }
+
+.sesamy-editor-panel h3 {
+	margin-top: 0.5rem;
+}
