@@ -101,6 +101,8 @@ function sesamy_button( $atts = null, $content = null ) {
 			'currency'             => '',
 			'item_src'             => '',
 			'publisher_content_id' => '',
+			'hide_price'           => '',
+			'hide_logo'            => '',
 		),
 		$atts,
 		'sesamy_button'
