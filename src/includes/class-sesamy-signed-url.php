@@ -18,7 +18,7 @@ class Sesamy_Signed_Url {
 		$permalink     = get_permalink( $post );
 
 		// Do a quick regex to see if it is a post url to avoid expensive loop if not
-		if ( substr( $url, 0, strlen( $permalink ) ) === $permalink  ) {
+		if ( substr( $url, 0, strlen( $permalink ) ) === $permalink ) {
 			return $this->has_valid_url_signature( $url );
 		} else {
 
@@ -91,7 +91,7 @@ class Sesamy_Signed_Url {
 
 	public function get_sesamy_jwks() {
 		$req = wp_remote_get( Sesamy::$instance->get_assets_url() . '/vault-jwks.json' );
-		$jwk = wp_remote_retrieve_body( $req );
+		return wp_remote_retrieve_body( $req );
 	}
 
 	/**
@@ -102,13 +102,13 @@ class Sesamy_Signed_Url {
 		$jwk = get_transient( 'sesamy_public_jwk' );
 
 		// Use transient to avoid calling api more than needed
-		if ( false === $jwk ) {
+		if ( false === $jwk || empty( $jwk ) ) {
 
 			$jwk = $this->get_sesamy_jwks();
 			set_transient( 'sesamy_public_jwk', $jwk, 3600 );
 
 		}
 
-		return PublicKeyLoader::load( $jwk )->getPublicKey();
+		return PublicKeyLoader::load( $jwk );
 	}
 }
