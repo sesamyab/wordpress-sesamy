@@ -80,14 +80,14 @@ class Sesamy_Scheduling {
 
 		$post_settings = sesamy_get_post_settings( $post_id );
 
-		if ( ! empty( $post_settings['locked_from'] ) && $post_settings['locked_from'] < time() ) {
+		if ( ! empty( $post_settings['locked_from'] ) && $post_settings['locked_from'] < time() && $post_settings['locked_from'] > 0 ) {
 			update_post_meta( $post_id, '_sesamy_locked', true );
-			update_post_meta( $post_id, '_sesamy_locked_from', null );
+			update_post_meta( $post_id, '_sesamy_locked_from', -1 );
 		}
 
-		if ( ! empty( $post_settings['locked_until'] ) && $post_settings['locked_until'] < time() ) {
+		if ( ! empty( $post_settings['locked_until'] ) && $post_settings['locked_until'] < time() && $post_settings['locked_until'] > 0 ) {
 			update_post_meta( $post_id, '_sesamy_locked', false );
-			update_post_meta( $post_id, '_sesamy_locked_until', null );
+			update_post_meta( $post_id, '_sesamy_locked_until', -1 );
 		}
 	}
 
