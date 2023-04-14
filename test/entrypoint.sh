@@ -11,8 +11,13 @@ rm -f wp-config.php
 sudo -u www-data wp config create --dbhost=db:3306 --dbname=sesamy_test --dbuser=root --dbpass=root --locale=sv_SE >> /dev/null
 sudo -u www-data wp core install --url=localhost:8001 --title="Sesamy Test" --admin_name=test --admin_password=test --admin_email=test@sesamy.com >> /dev/null
 
+# Move into plugin folder
+cd ./wp-content/plugins/sesamy/
+
+# Make sure we have dev dependencies
+composer update --working-dir=/wordpress/wp-content/plugins/sesamy/
+
 echo "Running phpunit..."
 
 # Run phpunit with CMD as arg, make sure to be in sesamy folder to get phpunit config files
-cd ./wp-content/plugins/sesamy/
 ./vendor/bin/phpunit "$@"
