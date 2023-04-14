@@ -57,7 +57,7 @@ class Test_Sesamy_Signed_Url extends WP_UnitTestCase {
 
 		// Arrange
 		$signed_url    = self::sign_url( 'https://localhost/test-article' );
-		$jwk           = file_get_contents( __DIR__ . '/test_jwk.json' );
+		$jwk           = file_get_contents( __DIR__ . '/test_jwk_public.json' );
 		$signedUrlMock = \Mockery::mock( Sesamy_Signed_Url::class )->makePartial();
 		$signedUrlMock->shouldReceive( 'get_sesamy_jwks' )->andReturn( $jwk );
 
@@ -105,7 +105,7 @@ class Test_Sesamy_Signed_Url extends WP_UnitTestCase {
 		wp_set_object_terms( $post_id, $term_id, 'sesamy_passes', true );
 
 		$signed_url    = self::sign_url( $pass_info['item_src'] );
-		$jwk           = file_get_contents( __DIR__ . '/test_jwk.json' );
+		$jwk           = file_get_contents( __DIR__ . '/test_jwk_public.json' );
 		$signedUrlMock = \Mockery::mock( Sesamy_Signed_Url::class )->makePartial();
 		$signedUrlMock->shouldReceive( 'get_sesamy_jwks' )->andReturn( $jwk );
 
@@ -134,7 +134,7 @@ class Test_Sesamy_Signed_Url extends WP_UnitTestCase {
 		);
 
 		$signed_url    = self::sign_url( get_permalink( $post_id ) );
-		$jwk           = file_get_contents( __DIR__ . '/test_jwk.json' );
+		$jwk           = file_get_contents( __DIR__ . '/test_jwk_public.json' );
 		$signedUrlMock = \Mockery::mock( Sesamy_Signed_Url::class )->makePartial();
 		$signedUrlMock->shouldReceive( 'get_sesamy_jwks' )->andReturn( $jwk );
 

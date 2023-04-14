@@ -61,19 +61,19 @@ class Sesamy_Api_Endpoint {
 	 * Endpoint for validating request and returning the content
 	 */
 	public function sesamy_post_ep( $request ) {
-	
+
 		$post = get_post( $request['id'] );
 
 		// Check that post actually exists
-		if ( is_wp_error( $post ) ) {
-			return $post;
+		if ( null == $post ) {
+			return new WP_Error( 404, 'Post not found.' );
 		}
 
 		$public_signed_url = isset( $_SERVER['HTTP_X_SESAMY_SIGNED_URL'] ) ? esc_url_raw( wp_unslash( $_SERVER['HTTP_X_SESAMY_SIGNED_URL'] ) ) : '';
 
 		// Always allow fetching if post is unlocked
 		$sesamy_signed_url = new Sesamy_Signed_Url();
-		$result = Sesamy::is_locked( $post ) ? $sesamy_signed_url->is_valid_link( $post, $public_signed_url ) : true;
+		$result            = Sesamy::is_locked( $post ) ? $sesamy_signed_url->is_valid_url( $post, $public_signed_url ) : true;
 
 		if ( is_wp_error( $result ) ) {
 			return $result;
