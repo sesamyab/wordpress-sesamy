@@ -103,6 +103,7 @@ function sesamy_button( $atts = null, $content = null ) {
 			'publisher_content_id' => '',
 			'hide_price'           => '',
 			'hide_logo'            => '',
+			'checkout_version'     => '2',
 		),
 		$atts,
 		'sesamy_button'
