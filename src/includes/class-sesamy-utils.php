@@ -3,8 +3,6 @@
 
 class Sesamy_Utils {
 
-
-
 	/**
 	 * Remove empty values and convert array into html attributes
 	 */
