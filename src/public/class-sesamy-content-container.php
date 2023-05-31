@@ -115,7 +115,7 @@ class Sesamy_Content_Container {
 		{
 		"@context": "https://schema.org",
 		"@type": "NewsArticle",
-		"headline": "<?php echo esc_html( $headline ); ?>,
+		"headline": "<?php echo esc_html( $headline ); ?>",
 		"image": "<?php echo esc_html( $image ); ?>",
 		"datePublished": "<?php echo esc_html( $date_published ); ?>",
 		"dateModified": "<?php echo esc_html( $date_modified ); ?>",
@@ -123,7 +123,7 @@ class Sesamy_Content_Container {
 			"@type": "Person",
 			"name": "<?php echo esc_html( $author ); ?>"
 		},
-		"description": "<?php echo esc_html( $description ); ?>"",
+		"description": "<?php echo esc_html( $description ); ?>",
 		"isAccessibleForFree": "False",
 		"hasPart":
 			{
