@@ -11,4 +11,4 @@ jobs:
       - name: WPCS check
         uses: 10up/wpcs-action@stable
         with:
-          standard: "WordPress-Core|WordPress-Extra"
+          standard: "WordPress-Core,WordPress-Extra"
