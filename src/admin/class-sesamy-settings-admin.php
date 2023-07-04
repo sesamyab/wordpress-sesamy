@@ -65,6 +65,7 @@ class Sesamy_Settings_Admin {
 				'name'      => 'sesamy_lock_mode',
 				'options'   => array(
 					'embed'     => 'Embed',
+					'encode'     => 'Encode',
 					'signedUrl' => 'Signed URL',
 					'event'     => 'Event',
 					'none'      => 'None',
