@@ -52,7 +52,7 @@ function sesamy_content_container( $atts = null, $content = null ) {
 	}
 
 	if ( 'encode' === $atts['lock_mode'] ) {
-		echo '<div slot="content">' . wp_kses_post( base64_decode( $content ) ) . '</div>';
+		echo '<div slot="content">' . wp_kses_post( base64_encode( $content ) ) . '</div>';
 	}
 
 	if ( 'signedUrl' !== $atts['lock_mode'] ) {
