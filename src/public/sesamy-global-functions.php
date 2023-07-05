@@ -51,6 +51,10 @@ function sesamy_content_container( $atts = null, $content = null ) {
 		echo '<div slot="content">' . wp_kses_post( $content ) . '</div>';
 	}
 
+	if ( 'encode' === $atts['lock_mode'] ) {
+		echo '<div slot="content">' . wp_kses_post( base64_encode( $content ) ) . '</div>';
+	}
+
 	if ( 'signedUrl' !== $atts['lock_mode'] ) {
 		unset( $atts['access_url'] );
 	}
