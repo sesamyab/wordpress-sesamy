@@ -1,7 +1,7 @@
 FROM wordpress:latest
 
-# RUN pecl install xdebug \
-#     && docker-php-ext-enable xdebug
+RUN pecl install xdebug \
+    && docker-php-ext-enable xdebug
 
 # Uncomment for production/demo run
 
