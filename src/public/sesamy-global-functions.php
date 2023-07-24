@@ -178,7 +178,8 @@ function sesamy_config( $atts, $content ) {
 }
 
 function sesamy_get_enabled_post_types() {
-	return get_option( 'sesamy_content_types', array() );
+	$content_types = get_option( 'sesamy_content_types', array() );
+	return ($content_types && is_array($content_types)) ? $content_types : array();
 }
 
 
