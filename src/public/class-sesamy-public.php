@@ -111,5 +111,54 @@ class Sesamy_Public {
 		$shortcodes->register();
 	}
 
+	/**
+	 * Transition post status
+	 * Fires a webhook to Sesamy when a post is published
+	 */
+	public function transition_post_status( $new_status, $old_status, $post ) {
+
+		// Only run for enabled post types
+		if ( ! in_array( $post->post_type, sesamy_get_enabled_post_types(), true ) ) {
+			return;
+		}
+
+		// Only run when post is published
+		if ( 'publish' === $new_status && 'publish' !== $old_status ) {
+
+			// Get the client id
+			$client_id = get_option( 'sesamy_client_id' );
+
+			// Bail if no client id is set
+			if ( empty( $client_id ) ) {
+				return;
+			}
+
+			// Get the post url
+			$post_url = get_permalink( $post->ID );
+
+			// Build the request
+			$request = array(
+				'url' => $post_url,
+			);
+
+			// Send the request
+			$response = wp_remote_post(
+				'https://api.sesamy.com/suppliers/hooks/article/' . $client_id,
+				array(
+					'headers' => array(
+						'Content-Type' => 'application/json',
+					),
+					'body'    => wp_json_encode( $request ),
+				)
+			);
+
+			// If the response code is not 200, log an error.
+			if ( $response['response']['code'] !== 200 ) {
+				error_log( 'Sesamy: Failed to send webhook');
+				error_log(print_r($response, true));
+			}
+		}
+	}
+
 
 }
