@@ -34,7 +34,7 @@ class Sesamy_Meta {
 		if ( is_singular() ) {
 			global $post;
 
-			if ( in_array( $post->post_type, sesamy_get_enabled_post_types(), true ) && Sesamy_Post_Properties::is_locked( $post ) ) {
+			if ( in_array( $post->post_type, sesamy_get_enabled_post_types(), true ) ) {
 
 				$price_info = Sesamy_Post_Properties::get_post_price_info( $post );
 
@@ -45,6 +45,52 @@ class Sesamy_Meta {
 				$this->make_tag( 'sesamy:currency', $price_info['currency'] );
 				$this->make_tag( 'sesamy:publisher-content-id', $post->ID );
 				$this->make_tag( 'sesamy:pass', sesamy_get_passes_urls( $post ) );
+
+				// Published time in 2022-10-31T20:30:02Z format
+				$this->make_Tag( 'sesamy:published_time', get_the_date( 'Y-m-d\TH:i:s\Z', $post->ID ) );
+
+				// Get the name of the primary category (Yoast SEO) and set the sesamy:section tag
+				if (function_exists('yoast_get_primary_term_id')) {
+					$primary_term = yoast_get_primary_term_id( 'category', $post->ID );
+					if ( $primary_term ) {
+						$term = get_term( $primary_term, 'category' );
+						if ( $term ) {
+							$sesamy_primary_category = apply_filters('sesamy_post_primary_category', $term->name, $post );
+							if ( ! empty( $sesamy_primary_category ) ) {
+								$this->make_tag( 'sesamy:section', $sesamy_primary_category );
+								$this->make_tag( 'article:section', $sesamy_primary_category );
+							}
+						}
+					}
+				}
+
+				// Loop through all the taxonomies and set the sesamy:tags tag
+				$taxonomies = get_object_taxonomies( $post->post_type, 'objects' );
+				$tags = array();
+				foreach ( $taxonomies as $taxonomy ) {
+					$terms = get_the_terms( $post->ID, $taxonomy->name );
+					if ( $terms && ! is_wp_error( $terms ) ) {
+						foreach ( $terms as $term ) {
+
+							// Check that it's not the "uncategorized" category
+							if ( 'category' === $term->taxonomy && 1 === $term->term_id ) {
+								continue;
+							}
+
+							$tags[] = $term->name;
+						}
+					}
+				}
+
+				$tags = apply_filters( 'sesamy_post_tags', $tags, $post );
+
+				if ( ! empty( $tags ) ) {
+					foreach( $tags as $tag ) {
+						$this->make_tag( 'sesamy:tag', $tag );
+						$this->make_tag( 'article:tag', $tag );
+					}
+				}
+
 			}
 		}
 	}

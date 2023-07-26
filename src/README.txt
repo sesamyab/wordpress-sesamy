@@ -99,6 +99,19 @@ The following filters can be used to modify the default output from the plugin:
         return $default_preview;
     }
 
+    // The sesamy:tags
+    add_filter('sesamy_post_tags', 'my_sesamy_post_tags', 10, 2);
+    function my_sesamy_post_tags($tags, $post) {
+        return $tags;
+    }
+
+    // If you have Yoast installed, then you may filter the primary category tag (sesamy:section) with this filter. 
+    // Set this to null if you wish to remove it.
+    add_filter('sesamy_post_primary_category', 'my_primary_sesamy_category_tag', 10, 2);
+    function my_primary_sesamy_category_tag($category_name, $post) {
+        return $category_name;
+    }
+
 
 == Changelog ==
 
