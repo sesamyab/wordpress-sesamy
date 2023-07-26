@@ -69,6 +69,7 @@ class Sesamy {
 	public $admin_view;
 	public $meta;
 	public $content_container;
+	public $bundler;
 
 	/**
 	 * Define the core functionality of the plugin.
@@ -92,6 +93,7 @@ class Sesamy {
 		$this->scheduling        = new Sesamy_Scheduling();
 		$this->meta              = new Sesamy_Meta();
 		$this->content_container = new Sesamy_Content_Container();
+		$this->bundler           = new Sesamy_Bundler();
 
 		$this->load_dependencies();
 		$this->set_locale();
@@ -183,6 +185,9 @@ class Sesamy {
 
 		// Use wp_insert_post to allow WP to save meta first
 		$this->loader->add_action( 'wp_after_insert_post', $this->scheduling, 'after_insert_post', 99, 4 );
+
+		// Clear the bundle transient when saving settings
+		$this->loader->add_action( 'admin_post_sesamy_clear_bundle_transient', $this->bundler, 'clear_bundle_transient' );
 	}
 
 	/**
@@ -215,6 +220,9 @@ class Sesamy {
 
 		// Make sure we process sesamy after all other hooks with order 999.
 		$this->loader->add_filter( 'wp_head', $this->meta, 'add_meta_tags' );
+
+		// Load the bundle with wp_head
+		$this->loader->add_action( 'wp_head', $this->bundler, 'load_bundle' );
 	}
 
 	/**

@@ -42,5 +42,15 @@ settings_errors( 'sesamy_messages' );
 		submit_button( 'Save Settings' );
 		?>
 	</form>
+
+	<h2>Clear transients</h2>
+	<p>Clear the transient that caches the bundle script.</p>
+	<form action="<?php echo admin_url( 'admin-post.php' ); ?>" method="post">
+		<input type="hidden" name="action" value="sesamy_clear_bundle_transient">
+		<?php
+		submit_button( 'Clear transients' );
+		?>
+	</form>
+
 </div>
 <?php

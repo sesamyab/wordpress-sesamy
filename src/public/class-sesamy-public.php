@@ -95,7 +95,6 @@ class Sesamy_Public {
 		 * class.
 		 */
 
-		wp_enqueue_script( 'sesamy-scripts', Sesamy::$instance->get_assets_url() . '/scripts/web-components/sesamy-bundle.min.js', array(), $this->version, true );
 		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/sesamy-public.js', array( 'jquery', 'sesamy-scripts' ), $this->version, true );
 	}
 
