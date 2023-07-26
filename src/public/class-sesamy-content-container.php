@@ -62,7 +62,6 @@ class Sesamy_Content_Container {
 			'item_src'             => get_permalink(),
 			'preview'              => apply_filters( 'sesamy_paywall_preview', $preview ),
 			'pass'                 => sesamy_get_passes_urls( $post_settings['passes'] ),
-			'locked'               => $isLocked ? 'true' : 'false',
 		);
 
 		$default_paywall = $this->show_paywall( $post, $post_settings );

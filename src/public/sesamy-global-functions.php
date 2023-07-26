@@ -19,11 +19,15 @@ function sesamy_content_container( $atts = null, $content = null ) {
 			'lock_mode'            => get_option( 'sesamy_lock_mode' ),
 			'access_url'           => get_site_url() . '/wp-json/sesamy/v1/posts/' . $atts['publisher_content_id'],
 			'pass'                 => '',
-			'locked'               => '',
 		),
 		$atts,
 		'sesamy_content_container'
 	);
+
+	// If the article isn't locked, then add the "public" attribute to the container
+	if ( ! Sesamy_Post_Properties::is_locked( get_the_ID() ) ) {
+		$atts['public'] = 'true';
+	}
 
 	ob_start();
 
@@ -41,7 +45,7 @@ function sesamy_content_container( $atts = null, $content = null ) {
 	Sesamy_Utils::html_attributes( $html_attributes );
 	echo '/>';
 
-	if ($atts['locked'] == 'true') {
+	if (!isset($atts['public'])) {
 		echo '<div slot="preview">' . wp_kses_post( $atts['preview'] ) . '</div>';
 	}
 

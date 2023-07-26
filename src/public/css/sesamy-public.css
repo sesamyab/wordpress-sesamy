@@ -4,6 +4,6 @@
  */
 
 /* Hide to prevent flash of unstyled content */
-sesamy-content-container:not([locked='false']) {
+sesamy-content-container {
 	display: none;
 }
