@@ -202,14 +202,11 @@ class Sesamy {
 		$this->loader->add_action( 'init', $plugin_public, 'register_shortcodes' );
 
 		// If the lock mode is set to 'none' we should do nothing with the content.
-		if ( get_option( 'sesamy_lock_mode' ) !== 'none' ) {
+		$this->loader->add_filter( 'sesamy_content', $this->content_container, 'process_content', 999, 2 );
+		$this->loader->add_filter( 'sesamy_content_container', $this->content_container, 'sesamy_content_container_wrap', 10, 1 );
 
-			$this->loader->add_filter( 'sesamy_content', $this->content_container, 'process_content', 999, 2 );
-			$this->loader->add_filter( 'sesamy_content_container', $this->content_container, 'sesamy_content_container_wrap', 10, 1 );
-
-			// Make sure we process sesamy after all other hooks with order 999.
-			$this->loader->add_filter( 'the_content', $this->content_container, 'process_main_content', 999 );
-		}
+		// Make sure we process sesamy after all other hooks with order 999.
+		$this->loader->add_filter( 'the_content', $this->content_container, 'process_main_content', 999 );
 
 		$this->loader->add_action( 'sesamy_lock_schedule', $this->scheduling, 'post_lock_callback', 10, 2 );
 

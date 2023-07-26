@@ -27,24 +27,21 @@ class Sesamy_Content_Container {
 
 			global $post;
 
-			if ( Sesamy::is_locked( $post ) ) {
+			$link_has_valid_sign = false;
 
-				$link_has_valid_sign = false;
+			// Check if current request has a valid signed link
+			if ( isset( $_GET['ss'] ) ) {
 
-				// Check if current request has a valid signed link
-				if ( isset( $_GET['ss'] ) ) {
+				global $wp;
+				$sesamy_signed_url   = new Sesamy_Signed_Url();
+				$current_url         = home_url( add_query_arg( $_GET, $wp->request ) );
+				$link_has_valid_sign = ( true === $sesamy_signed_url->is_valid_url( $post, $current_url ) );
 
-					global $wp;
-					$sesamy_signed_url   = new Sesamy_Signed_Url();
-					$current_url         = home_url( add_query_arg( $_GET, $wp->request ) );
-					$link_has_valid_sign = ( true === $sesamy_signed_url->is_valid_url( $post, $current_url ) );
+			}
 
-				}
-
-				// Apply content container if current url is not signed
-				if ( ! $link_has_valid_sign ) {
-					return apply_filters( 'sesamy_content', $post, $content );
-				}
+			// Apply content container if current url is not signed
+			if ( ! $link_has_valid_sign ) {
+				return apply_filters( 'sesamy_content', $post, $content );
 			}
 		}
 
@@ -58,15 +55,23 @@ class Sesamy_Content_Container {
 
 		$preview = $this->extract_preview( $post );
 
+		$isLocked = Sesamy_Post_Properties::is_locked( $post->ID );
+
 		$atts = array(
 			'publisher_content_id' => $post->ID,
 			'item_src'             => get_permalink(),
 			'preview'              => apply_filters( 'sesamy_paywall_preview', $preview ),
 			'pass'                 => sesamy_get_passes_urls( $post_settings['passes'] ),
+			'locked'               => $isLocked ? 'true' : 'false',
 		);
 
 		$default_paywall = $this->show_paywall( $post, $post_settings );
 		$paywall_seo     = apply_filters( 'sesamy_paywall_seo', $this->show_seo_paywall_data( $post ), $post );
+
+		// Check if the post is unlocked. If so, only return the content container.
+		if ( !$isLocked ) {
+			return $paywall_seo . get_sesamy_content_container( $atts, $content );
+		}
 
 		return $paywall_seo . get_sesamy_content_container( $atts, $content ) . apply_filters( 'sesamy_paywall', $default_paywall, $post, $post_settings );
 	}
@@ -75,6 +80,11 @@ class Sesamy_Content_Container {
 	 * Extract preview from post with logic to take more-tags into account
 	 */
 	public function extract_preview( $post ) {
+
+		// If the post isn't locked, we don't need to extract a preview
+		if ( ! Sesamy_Post_Properties::is_locked( $post->ID ) ) {
+			return null;
+		}
 
 		// Caution: WordPress has two blocks, the original "more" and the "read-more". We support the "more" as that is intended for cutting previews.
 
@@ -109,6 +119,7 @@ class Sesamy_Content_Container {
 		$date_modified  = get_the_modified_date( 'c', $post );
 		$author         = get_the_author_meta( 'display_name', $post );
 		$description    = get_the_excerpt( $post );
+		$isAccessibleForFree   = Sesamy_Post_Properties::is_locked( $post->ID ) ? 'False' : 'True';
 
 		?>
 		<script type="application/ld+json">
@@ -124,11 +135,11 @@ class Sesamy_Content_Container {
 			"name": "<?php echo esc_html( $author ); ?>"
 		},
 		"description": "<?php echo esc_html( $description ); ?>",
-		"isAccessibleForFree": "False",
+		"isAccessibleForFree": "<?php echo esc_html( $isAccessibleForFree ); ?>",
 		"hasPart":
 			{
 			"@type": "WebPageElement",
-			"isAccessibleForFree": "False",
+			"isAccessibleForFree": "<?php echo esc_html( $isAccessibleForFree ); ?>",
 			"cssSelector" : "sesamy-content-container"
 			}
 		}

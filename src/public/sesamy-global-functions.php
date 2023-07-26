@@ -19,15 +19,11 @@ function sesamy_content_container( $atts = null, $content = null ) {
 			'lock_mode'            => get_option( 'sesamy_lock_mode' ),
 			'access_url'           => get_site_url() . '/wp-json/sesamy/v1/posts/' . $atts['publisher_content_id'],
 			'pass'                 => '',
+			'locked'               => '',
 		),
 		$atts,
 		'sesamy_content_container'
 	);
-
-	// If lock mode is none, we should not wrap or do anything with the content
-	if ( 'none' === $atts['lock_mode'] ) {
-		return $content;
-	}
 
 	ob_start();
 
@@ -45,7 +41,9 @@ function sesamy_content_container( $atts = null, $content = null ) {
 	Sesamy_Utils::html_attributes( $html_attributes );
 	echo '/>';
 
-	echo '<div slot="preview">' . wp_kses_post( $atts['preview'] ) . '</div>';
+	if ($atts['locked'] == 'true') {
+		echo '<div slot="preview">' . wp_kses_post( $atts['preview'] ) . '</div>';
+	}
 
 	if ( 'embed' === $atts['lock_mode'] ) {
 		echo '<div slot="content">' . wp_kses_post( $content ) . '</div>';
