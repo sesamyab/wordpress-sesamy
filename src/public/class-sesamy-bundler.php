@@ -31,7 +31,8 @@ class Sesamy_Bundler {
                 $bundle_script_url_transient = $bundle_script_url_transient['body'];
             }
 
-            set_transient( 'sesamy_bundle_script_url', $bundle_script_url_transient, 60 * 60 * 24 );
+            // Set transient for 5 minutes
+            set_transient( 'sesamy_bundle_script_url', $bundle_script_url_transient, 5 * MINUTE_IN_SECONDS );
         }
 
         ?>
