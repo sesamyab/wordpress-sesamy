@@ -24,9 +24,9 @@ function sesamy_content_container( $atts = null, $content = null ) {
 		'sesamy_content_container'
 	);
 
-	// If lock mode is none, we should not wrap or do anything with the content
-	if ( 'none' === $atts['lock_mode'] ) {
-		return $content;
+	// If the article isn't locked, then add the "public" attribute to the container
+	if ( ! Sesamy_Post_Properties::is_locked( get_the_ID() ) ) {
+		$atts['public'] = 'true';
 	}
 
 	ob_start();
@@ -45,7 +45,9 @@ function sesamy_content_container( $atts = null, $content = null ) {
 	Sesamy_Utils::html_attributes( $html_attributes );
 	echo '/>';
 
-	echo '<div slot="preview">' . wp_kses_post( $atts['preview'] ) . '</div>';
+	if (!isset($atts['public'])) {
+		echo '<div slot="preview">' . wp_kses_post( $atts['preview'] ) . '</div>';
+	}
 
 	if ( 'embed' === $atts['lock_mode'] ) {
 		echo '<div slot="content">' . wp_kses_post( $content ) . '</div>';

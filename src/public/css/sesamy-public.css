@@ -4,6 +4,6 @@
  */
 
 /* Hide to prevent flash of unstyled content */
-sesamy-content-container {
+sesamy-content-container:not([public]) {
 	display: none;
 }
