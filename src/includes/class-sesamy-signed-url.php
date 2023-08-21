@@ -1,114 +1,48 @@
 <?php
-use phpseclib3\Crypt\PublicKeyLoader;
-use phpseclib3\Crypt\RSA;
+use Jose\Component\Core\JWK;
+use Jose\Component\Core\JWKSet;
 
-class Sesamy_Signed_Url {
+class Sesamy_JWT_Helper {
 
 	/**
 	 * True if the url is signed and valid for the post
 	 *
-	 * @param WP_POST | int $post
-	 * @param str $url
+	 * @param str $jwtToken
 	 * @return boolean
 	 */
-	public function is_valid_url( $post, $url ) {
+	public function verify( $jwt ) {
 
-		$post          = get_post( $post );
-		$post_settings = sesamy_get_post_settings( $post );
-		$permalink     = get_permalink( $post );
+		// Get the public key from sesamy vault
+		$jwks = $this->get_sesamy_jwks();
 
-		// Do a quick regex to see if it is a post url to avoid expensive loop if not
-		if ( substr( $url, 0, strlen( $permalink ) ) === $permalink ) {
-			return $this->has_valid_url_signature( $url );
-		} else {
+		// Decode the JWKS
+		$jwks = json_decode($jwks, true);
 
-			// Test if the url is for a pass assigned to this post
-			foreach ( $post_settings['passes'] as $pass ) {
+		// Strip Bearer from token
+		$jwt = str_replace('Bearer ', '', $jwt);
 
-				// Check if url starts with pass API url (in PHP < 8 comaptible way)
-				if ( $pass['item_src'] === substr( $url, 0, strlen( $pass['item_src'] ) ) ) {
-					return $this->has_valid_url_signature( $url );
-				}
-			}
-		}
+		// Parse JWKS to create a JWKSet object
+		$JWKSet = JOSE_JWK::decode($jwks);
+		
+		// Create a JWS object from the JWT
+		$JWS = JOSE_JWT::decode($jwt);
 
-		return false;
-	}
+		try {
+			// Verify the signature
+			$verified = $JWS->verify($JWKSet);
 
+			if ($verified)
+				return true;
+			else
+				return false;
 
-	/**
-	 * Main function to test if a signed link is valid
-	 *
-	 * @param [type] $url
-	 * @return boolean
-	 */
-	public function has_valid_url_signature( $url ): bool {
-
-		$params = $this::get_request_parameters( $url );
-
-		$expected_keys = array( 'se', 'ss' );
-
-		if ( count( array_intersect( array_keys( $params ), $expected_keys ) ) !== count( $expected_keys ) ) {
+		} catch (Exception $e) {
 			return false;
 		}
-
-		// Verify expiration
-		if ( intval( $params['se'] ) < time() ) {
-			return false;
-		}
-
-		// Split instead of looking at parsed url since we do not have the ss urlencoded properly
-
-		$url = explode( 'ss=', $url );
-		$ss  = $url[1];
-
-		// Verify signature
-		return $this::verify_signature( $params['signed_url'], base64_decode( $ss ) );
 	}
-
-	/**
-	 * Get parameters for the request.
-	 */
-	public function get_request_parameters( $url ) {
-
-		$query_string = wp_parse_url( $url, PHP_URL_QUERY );
-		parse_str( $query_string, $parts );
-		array_flip( $parts );
-
-		// Get the url part without signature part
-		$split_url = explode( '&ss=', $url );
-
-		return array_merge( array( 'signed_url' => $split_url[0] ), $parts );
-	}
-
-	/**
-	 * Validate signature with
-	 */
-	public function verify_signature( $data, $signature ) {
-		return $this::get_rsa()->verify( $data, $signature );
-	}
-
 
 	public function get_sesamy_jwks() {
 		$req = wp_remote_get( Sesamy::$instance->get_assets_url() . '/vault-jwks.json' );
 		return wp_remote_retrieve_body( $req );
-	}
-
-	/**
-	 * Get the public RSA object
-	 */
-	public function get_rsa() {
-
-		$jwk = get_transient( 'sesamy_public_jwk' );
-
-		// Use transient to avoid calling api more than needed
-		if ( false === $jwk || empty( $jwk ) ) {
-
-			$jwk = $this->get_sesamy_jwks();
-			set_transient( 'sesamy_public_jwk', $jwk, 3600 );
-
-		}
-
-		return PublicKeyLoader::load( $jwk );
 	}
 }

@@ -69,18 +69,18 @@ class Sesamy_Api_Endpoint {
 			return new WP_Error( 404, 'Post not found.' );
 		}
 
-		$public_signed_url = isset( $_SERVER['HTTP_X_SESAMY_SIGNED_URL'] ) ? esc_url_raw( wp_unslash( $_SERVER['HTTP_X_SESAMY_SIGNED_URL'] ) ) : '';
+		// Get JWT token from the authorization header
+		$jwt = isset( $_SERVER['HTTP_AUTHORIZATION'] ) ? $_SERVER['HTTP_AUTHORIZATION'] : '';
 
-		// Always allow fetching if post is unlocked
-		$sesamy_signed_url = new Sesamy_Signed_Url();
-		$result            = Sesamy::is_locked( $post ) ? $sesamy_signed_url->is_valid_url( $post, $public_signed_url ) : true;
+		// If the post is locked, verify the JWT token. If not, just return the content.
+		$Sesamy_JWT_Helper = new Sesamy_JWT_Helper();
+		$result            = Sesamy::is_locked( $post ) ? $Sesamy_JWT_Helper->verify( $jwt ) : true;
 
 		if ( is_wp_error( $result ) ) {
 			return $result;
 		} elseif ( is_bool( $result ) && true === $result ) {
 			return new WP_REST_Response( array( 'data' => apply_filters( 'the_content', $post->post_content ) ) );
 		} else {
-
 			return new WP_Error( 400, 'The link is incorrect or no longer valid.' );
 		}
 	}

@@ -24,25 +24,8 @@ class Sesamy_Content_Container {
 
 		// Check if we're inside the main loop for any of the enabled post types
 		if ( is_singular( sesamy_get_enabled_post_types() ) && in_the_loop() && is_main_query() ) {
-
 			global $post;
-
-			$link_has_valid_sign = false;
-
-			// Check if current request has a valid signed link
-			if ( isset( $_GET['ss'] ) ) {
-
-				global $wp;
-				$sesamy_signed_url   = new Sesamy_Signed_Url();
-				$current_url         = home_url( add_query_arg( $_GET, $wp->request ) );
-				$link_has_valid_sign = ( true === $sesamy_signed_url->is_valid_url( $post, $current_url ) );
-
-			}
-
-			// Apply content container if current url is not signed
-			if ( ! $link_has_valid_sign ) {
-				return apply_filters( 'sesamy_content', $post, $content );
-			}
+			return apply_filters( 'sesamy_content', $post, $content );
 		}
 
 		return $content;
@@ -62,6 +45,7 @@ class Sesamy_Content_Container {
 			'item_src'             => get_permalink(),
 			'preview'              => apply_filters( 'sesamy_paywall_preview', $preview ),
 			'pass'                 => sesamy_get_passes_urls( $post_settings['passes'] ),
+			'locked'               => $isLocked ? 'true' : 'false',
 		);
 
 		$default_paywall = $this->show_paywall( $post, $post_settings );
