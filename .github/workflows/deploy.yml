@@ -28,6 +28,7 @@ jobs:
         SVN_USERNAME: ${{ secrets.SVN_USERNAME }}
         SVN_PASSWORD: ${{ secrets.SVN_PASSWORD }}
         SLUG: sesamy
+        VERSION: 1.0.4
 
     - name: Upload release asset
       uses: actions/upload-release-asset@v1
