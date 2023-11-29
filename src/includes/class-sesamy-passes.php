@@ -61,6 +61,8 @@ class Sesamy_Passes {
 
 		add_action( 'created_sesamy_passes', array( $this, 'save_fields' ) );
 		add_action( 'edited_sesamy_passes', array( $this, 'save_fields' ) );
+
+		add_filter( 'pre_insert_term', array( $this, 'prevent_add_term' ), 20, 2 );
 	}
 
 	public function admin_init() {
@@ -79,6 +81,19 @@ class Sesamy_Passes {
 		wp_enqueue_script( 'sesamy-passes-admin', SESAMY_PLUGIN_URL . '/admin/js/sesamy-passes-admin.js', array( 'jquery' ), '1.0', false );
 	}
 
+	/**
+	 * Check Invalid URL before add new sesamy passes
+	 */
+	public function prevent_add_term( $term, $taxonomy ) {
+
+	  if( $taxonomy == 'sesamy_passes' && isset( $_POST['url'] ) && ! empty( $_POST['url'] ) ) {
+	  	if ( wp_http_validate_url( $_POST['url'] ) == FALSE ) {
+		    $term = new WP_Error( 'invalid_term', 'Please enter valid Public URL.' ); 
+		}
+	  }
+	  return $term;
+
+	}
 
 
 	public function save_fields( $term_id ) {
@@ -146,7 +161,7 @@ class Sesamy_Passes {
 		</div>
 		<div class="form-field">
 			<label for="cb_custom_meta_data_url">Public URL</label>
-			<input type="text" name="url" id="cb_custom_meta_data_url" />
+			<input type="url" name="url" id="cb_custom_meta_data_url" />
 			<p>Url where a visitor can read more about the pass. Also used as the item-src identifier with Sesamy.</p>
 		</div>
 		<?php
@@ -221,7 +236,7 @@ class Sesamy_Passes {
 			<p>Currency for this tier</p></td>
 		</tr>
 		<th><label for="url">Public URL</label></th>
-		<td><input type="text" name="url" id="url" value="<?php echo esc_url( $url ); ?>" />
+		<td><input type="url" name="url" id="url" value="<?php echo esc_url( $url ); ?>" />
 			<p>Url where a visitor can read more about the pass. Also used as the item-src identifier with Sesamy.</p></td>
 		</div>
 		<?php
