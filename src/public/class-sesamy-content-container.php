@@ -146,7 +146,7 @@ class Sesamy_Content_Container {
 
 			$button_args = array(
 				'price'    => $post_settings['price'],
-				'currency' => $post_settings['currency'],
+				'currency' => get_option('sesamy_gloabl_currency'),
 				'item_src' => get_the_permalink( $post->ID ),
 			);
 			sesamy_button( $button_args, null );
@@ -159,7 +159,7 @@ class Sesamy_Content_Container {
 				$button_args = array(
 					'text'                 => $pass['title'],
 					'price'                => $pass['price'],
-					'currency'             => $pass['currency'],
+					'currency'             => get_option('sesamy_gloabl_currency'),
 					'item_src'             => $pass['item_src'],
 					'publisher_content_id' => $pass['id'],
 				);

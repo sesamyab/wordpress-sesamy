@@ -17,6 +17,12 @@ class Sesamy_Post_Editor {
 					Sesamy::$instance->get_version(),
 					false
 				);
+
+				wp_localize_script( 'sesamy-post-editor', 'sesamy_block_obj',
+					array( 
+						'home' => get_site_url(),
+					)
+				);
 			}
 		);
 	}

@@ -199,7 +199,7 @@ function sesamy_get_pass_info( $term ) {
 		'title'         => $term->name,
 		'description'   => $term->description,
 		'price'         => get_term_meta( $term->term_id, 'price', true ),
-		'currency'      => get_term_meta( $term->term_id, 'currency', true ),
+		'currency'      => get_option('sesamy_gloabl_currency'),
 		'image'         => ! empty( $image_id ) ? wp_get_attachment_image_url( $image_id, 'full' ) : null,
 		'url'           => get_term_meta( $term->term_id, 'url', true ),
 		'item_src'      => get_site_url() . '/wp-json/sesamy/v1/passes/' . $term->slug,

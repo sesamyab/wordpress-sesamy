@@ -23,7 +23,7 @@ export default () => {
   // Load settings
   useEffect(() => {
 
-    fetch('/wp-json/sesamy/v1/settings')
+    fetch( sesamy_block_obj.home + '/wp-json/sesamy/v1/settings' )
       .then((response) => response.json())
       .then((data) => setSettings(data));
 
@@ -60,7 +60,7 @@ const SesamyPostEditor = () => {
   // Load currencies
   useEffect(() => {
 
-    fetch('/wp-json/sesamy/v1/currencies')
+    fetch( sesamy_block_obj.home + '/wp-json/sesamy/v1/currencies' )
       .then((response) => response.json())
       .then((data) => setCurrencies(Object.keys(data)));
 
@@ -144,12 +144,6 @@ const SesamyPostEditor = () => {
       return;
     }
 
-
-    // Set first currency as default
-    if (!meta['_sesamy_currency'] && currencies && currencies.length > 0) {
-      setMeta({ '_sesamy_currency': currencies[0] });
-    }
-
   }, [meta['_sesamy_locked'], currencies]);
 
 
@@ -212,16 +206,6 @@ const SesamyPostEditor = () => {
             onChange={(value) => {
               setMeta({ '_sesamy_price': value })
             }}
-          />
-
-          <SelectControl
-            label={__('Currency', 'sesamy')}
-            value={meta['_sesamy_currency']}
-            min={1}
-            step={'0.01'}
-            options={currencies && currencies.map(x => ({ label: x, value: x }))}
-            onChange={(value) => setMeta({ '_sesamy_currency': value })}
-            __nextHasNoMarginBottom
           />
 
         </>}

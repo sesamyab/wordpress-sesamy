@@ -6,6 +6,7 @@ class Sesamy_Settings {
 
 	public function register_settings() {
 		register_setting( 'sesamy', 'sesamy_lock_mode' );
+		register_setting( 'sesamy', 'sesamy_gloabl_currency' );
 		register_setting( 'sesamy', 'sesamy_content_types' );
 		register_setting( 'sesamy', 'sesamy_client_id' );
 	}
