@@ -73,6 +73,19 @@ class Sesamy_Settings_Admin {
 				'label_for' => 'sesamy_content_types',
 			)
 		);
+
+		add_settings_field(
+			'sesamy_gloabl_currency',
+			esc_html__( 'Currency', 'sesamy' ),
+			array( $this, 'settings_render_select' ),
+			'sesamy',
+			'sesamy_section_general',
+			array(
+				'name'      => 'sesamy_gloabl_currency',
+				'options'   => Sesamy_Currencies::get_currencies(),
+				'label_for' => 'sesamy_content_types',
+			)
+		);
 	}
 
 

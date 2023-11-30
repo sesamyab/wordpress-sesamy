@@ -20,10 +20,6 @@ class Sesamy_Admin_View {
 			update_post_meta( $post_id, '_sesamy_price', floatval( $_GET['sesamy_single_purchase_price'] ) );
 		}
 
-		if ( ! empty( $_GET['sesamy_single_purchase_currency'] ) ) {
-			update_post_meta( $post_id, '_sesamy_currency', sanitize_text_field( wp_unslash( $_GET['sesamy_single_purchase_currency'] ) ) );
-		}
-
 		$passes = get_terms( 'sesamy_passes', array( 'hide_empty' => false ) );
 		foreach ( $passes as $pass ) {
 
@@ -164,8 +160,8 @@ class Sesamy_Admin_View {
 
 					$post_info = Sesamy_Post_Properties::get_post_price_info( $post_id );
 					if ( true === $post_info['enable_single_purchase'] ) {
-						if ( ! empty( $post_info['price'] ) && ! empty( $post_info['currency'] ) ) {
-							echo esc_html( $post_info['price'] ) . ' ' . esc_html( $post_info['currency'] );
+						if ( ! empty( $post_info['price'] ) && ! empty( get_option('sesamy_gloabl_currency') ) ) {
+							echo esc_html( $post_info['price'] ) . ' ' . esc_html( get_option('sesamy_gloabl_currency') );
 						}
 					} else {
 						echo esc_html( __( 'Disabled', 'sesamy' ) );

@@ -101,7 +101,6 @@ class Sesamy_Passes {
 		wp_verify_nonce( 'update-tag_' . $term_id );
 
 		update_term_meta( $term_id, 'price', sanitize_text_field( isset( $_POST['price'] ) ? $_POST['price'] : '' ) );
-		update_term_meta( $term_id, 'currency', sanitize_text_field( isset( $_POST['currency'] ) ? $_POST['currency'] : '' ) );
 		update_term_meta( $term_id, 'url', sanitize_text_field( isset( $_POST['url'] ) ? $_POST['url'] : '' ) );
 		update_term_meta( $term_id, 'image_id', sanitize_text_field( isset( $_POST['image_id'] ) ? $_POST['image_id'] : '' ) );
 		update_term_meta( $term_id, 'period', sanitize_text_field( isset( $_POST['period'] ) ? $_POST['period'] : '' ) );
@@ -136,11 +135,7 @@ class Sesamy_Passes {
 			<input type="number" step="0.01" min="0.01"  name="price" required />
 			<p>Price for this pass</p>
 		</div>
-		<div class="form-field">
-			<label for="currency">Currency</label>
-		<?php Sesamy_Utils::render_select( 'currency', Sesamy_Currencies::get_currencies() ); ?>
-			<p>Currency for this pass</p>
-		</div>
+		
 		<div class="form-field">
 			<label for="period">Payment period</label>
 		<?php
@@ -170,7 +165,7 @@ class Sesamy_Passes {
 	public function edit_taxonomy_form_fields( $term ) {
 
 		$price    = get_term_meta( $term->term_id, 'price', true );
-		$currency = get_term_meta( $term->term_id, 'currency', true );
+		$currency = get_option('sesamy_gloabl_currency');
 		$url      = get_term_meta( $term->term_id, 'url', true );
 		$image_id = get_term_meta( $term->term_id, 'image_id', true );
 		$period   = get_term_meta( $term->term_id, 'period', true );
@@ -201,48 +196,44 @@ class Sesamy_Passes {
 		</tr>
 
 		<tr class="form-field">
-		<th><label for="price">Price</label></th>
-		<td><input type="number" step="0.01" min="0.01" name="price" id="price" value="<?php echo esc_html( $price ); ?>" required />
-			<p>Price for this tier</p></td>
-		</div>
-
-		<tr class="form-field">
-		<th><label for="currency">Payment period</label></th>
-		<td>
-		<?php
-		Sesamy_Utils::render_select(
-			'period',
-			array(
-				'monthly' => 'Monthly',
-				'yearly'  => 'Yearly',
-			),
-			$period
-		);
-		?>
-			<p>Payment period for this pass</p>
+			<th><label for="price">Price</label></th>
+			<td>
+				<input type="number" step="0.01" min="0.01" name="price" id="price" value="<?php echo esc_html( $price ); ?>" required />
+				<p>Price for this tier</p>
+			</td>
 		</tr>
 
 		<tr class="form-field">
-		<th><label for="currency">Payment time</label></th>
-		<td>
-			<input type="number" step="1" min="1"  name="time" value="<?php echo esc_html( $time ); ?>" required />
-			<p>Payment time for this pass. Ex 1 for every month, 3 for every third month.</p>
+			<th><label for="currency">Payment period</label></th>
+			<td>
+				<?php
+				Sesamy_Utils::render_select(
+					'period',
+					array(
+						'monthly' => 'Monthly',
+						'yearly'  => 'Yearly',
+					),
+					$period
+				);
+				?>
+				<p>Payment period for this pass</p>
+			</td>
 		</tr>
 
 		<tr class="form-field">
-		<th><label for="currency">Currency</label></th>
-		<td>
-		<?php Sesamy_Utils::render_select( 'currency', Sesamy_Currencies::get_currencies(), $currency ); ?>
-			<p>Currency for this tier</p></td>
+			<th><label for="currency">Payment time</label></th>
+			<td>
+				<input type="number" step="1" min="1"  name="time" value="<?php echo esc_html( $time ); ?>" required />
+				<p>Payment time for this pass. Ex 1 for every month, 3 for every third month.</p>
+			</td>
 		</tr>
-		<th><label for="url">Public URL</label></th>
-		<td><input type="url" name="url" id="url" value="<?php echo esc_url( $url ); ?>" />
-			<p>Url where a visitor can read more about the pass. Also used as the item-src identifier with Sesamy.</p></td>
-		</div>
+
+		<tr class="form-field">
+			<th><label for="url">Public URL</label></th>
+			<td><input type="url" name="url" id="url" value="<?php echo esc_url( $url ); ?>" />
+				<p>Url where a visitor can read more about the pass. Also used as the item-src identifier with Sesamy.</p>
+			</td>
+		</tr>
 		<?php
 	}
-
-
-
-
 }
