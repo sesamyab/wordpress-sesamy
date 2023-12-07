@@ -3,6 +3,17 @@
  * included in this file.
  */
 
+/* Classic editor support CSS Start */
+.classic-fields-sesamy label{
+	font-weight: bold;
+}
+
+.sesamy-classic-locked-active, .sesamy-classic-locked-inactive{
+	margin-top: 10px;
+}
+
+.block-container{margin-top: 10px;}
+/* Classic editor support CSS End */
 
 .edit-fields-sesamy .marginright {
 	margin-right: 0.5rem;
