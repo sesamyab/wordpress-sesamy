@@ -38,8 +38,67 @@ class Sesamy_Admin_View {
 		}
 	}
 
-	public function bulk_edit_fields( $column_name, $post_type ) {
+	// Function to save meta data on save_post action with classic editor
+	public function sesamy_postmeta_edit_save( $post_id ) {
 
+		// Check if this is an autosave or a revision
+	    if ( defined('DOING_AUTOSAVE') && DOING_AUTOSAVE || defined('REST_REQUEST') && REST_REQUEST ) {
+	        return;
+	    }
+
+	    // if our nonce isn't there, or we can't verify it, bail
+    	if( !isset( $_POST['post_meta_box_nonce'] ) || !wp_verify_nonce( $_POST['post_meta_box_nonce'], 'sesamy_post_meta_box_nonce' ) ) return;
+
+	    // Check if the current user has permission to edit the post
+	    if (!current_user_can('edit_post', $post_id)) {
+	        return;
+	    }
+		
+	    // Save or update the custom meta data
+	    $locked = ( isset( $_POST['sesamy_enable_locked'] ) ) ? 1 : 0;
+	    update_post_meta( $post_id, '_sesamy_locked', $locked );
+
+	    // Save From date and time
+	    if ( isset($_POST['locked_from_date']) ) {
+	    	$fromdate = sanitize_text_field($_POST['locked_from_date']);
+
+	        // Convert combined datetime string to timestamp
+	        $from_timestamp = strtotime('-6 hours 30 minutes',strtotime($fromdate));
+	    	update_post_meta( $post_id, '_sesamy_locked_from', $from_timestamp );
+	    }else{
+	    	update_post_meta( $post_id, '_sesamy_locked_from', -1 );
+	    }
+
+	    // Save Untill date and time
+	    if ( isset($_POST['locked_until_date']) ) {
+	    	$untilldate = sanitize_text_field($_POST['locked_until_date']);
+
+	        // Convert combined datetime string to timestamp
+	        $untill_timestamp = strtotime('-6 hours 30 minutes',strtotime($untilldate));
+	    	update_post_meta( $post_id, '_sesamy_locked_until', $untill_timestamp );
+	    }else{
+	    	update_post_meta( $post_id, '_sesamy_locked_until', -1 );
+	    }
+
+	    // Save single purchase
+	    $enable_single_purchase = ( isset( $_POST['sesamy_enable_single_purchase'] ) ) ? 1 : 0;
+	    update_post_meta( $post_id, '_sesamy_enable_single_purchase', $enable_single_purchase );
+
+	    // Save Sesamy passes
+	    if (isset($_POST['sesamy-post-passes'])) {
+	    	// Set the term for the post
+        	wp_set_object_terms($post_id, $_POST['sesamy-post-passes'], 'sesamy_passes');
+	    }
+
+	    // Save Price
+	    if (isset($_POST['sesamy_single_purchase_price'])) {
+	        update_post_meta( $post_id, '_sesamy_price', $_POST['sesamy_single_purchase_price'] );
+	    }
+	}
+
+
+	public function bulk_edit_fields( $column_name, $post_type ) {
+		
 		// WordPress support for creating a nice edit experience here is very limited, hook everything into the sesamy_locked column to keep things together
 		if ( 'sesamy_locked' === $column_name ) {
 
@@ -185,4 +244,118 @@ class Sesamy_Admin_View {
 				break;
 		}
 	}
+
+	/* Add meta boxes when classic editor activated */
+	// Function to add custom meta box to the post sidebar
+	public function sesamy_post_sidebar_meta_box() {
+  		add_meta_box(
+			'sesamy_add_custom_meta_box',
+			__( 'Sesamy', 'sesamy' ),
+			array( $this, 'sesamy_add_class_meta_box' ),
+			'post',
+			'side',
+			'default'
+		);
+	}
+
+	// Callback function to render the content of the meta box
+	public function sesamy_add_class_meta_box( $post ) {
+
+	    $post_properties = Sesamy_Post_Properties::get_post_settings( $post->ID );
+		$sesamy_locked   = Sesamy_Post_Properties::is_locked( $post->ID ); 
+
+		$locked_checked = ( $sesamy_locked == 1 ) ? 'checked="checked"' : '';
+
+		// We'll use this nonce field later on when saving.
+    	wp_nonce_field( 'sesamy_post_meta_box_nonce', 'post_meta_box_nonce' );
+
+		?>
+
+		<fieldset  class="classic-fields-sesamy">
+			<input type="checkbox" name="sesamy_enable_locked" <?php echo $locked_checked; ?> class="sesamy-classic-locked">
+			<label class="wp-clearfix sesamy-bulk-edit-price">
+				<span class="title"><b><?php echo esc_html( __( 'Locked now', 'sesamy' ) ); ?></b></span>
+			</label> 
+
+			<div class="sesamy-classic-locked-active">
+				<div class="block-container">
+					<?php 
+
+						// Add UTC+5:30 (in seconds) to the current timestamp
+						$from_modified_timestamp = strtotime('+5 hours 30 minutes', $post_properties['locked_from']);
+
+						$locked_date_from = ( $post_properties['locked_from'] >= 1 ) ? esc_html( date_i18n( 'Y-m-d H:i', $from_modified_timestamp ) ) : ''; 
+					?>				
+					<label class="wp-clearfix">
+						<span class="title"><?php echo esc_html( __( 'LOCKED FROM', 'sesamy' ) ); ?></span>
+					</label>
+					<input type="datetime-local" name="locked_from_date" value="<?php echo $locked_date_from; ?>">
+				</div>
+			</div>
+
+			<div class="sesamy-classic-locked-inactive">
+
+				<?php
+
+					// Add UTC+5:30 (in seconds) to the current timestamp
+					$untill_modified_timestamp = strtotime('+5 hours 30 minutes', $post_properties['locked_until']);
+
+					$locked_date_until = ( $post_properties['locked_until'] >= 1 ) ? esc_html( date_i18n( 'Y-m-d H:i', $untill_modified_timestamp ) ) : ''; 
+				?>
+				<div class="block-container">
+					<label class="wp-clearfix sesamy-bulk-edit-price">
+						<span class="title"><?php echo esc_html( __( 'LOCKED UNTIL', 'sesamy' ) ); ?></span>
+					</label>
+					<input type="datetime-local" name="locked_until_date" value="<?php echo $locked_date_until; ?>">
+				</div>
+
+				<div class="block-container">
+					<?php 
+						$enable_single_purchase = ( $post_properties['enable_single_purchase'] == 1 ) ? 'checked="checked"' : ''; ?>
+					<label class="wp-clearfix sesamy-bulk-edit-price">
+						<span class="title"><?php echo esc_html( __( 'SINGLE PURCHASE', 'sesamy' ) ); ?></span>
+					</label>
+
+					<div class="sesamy-classic-purchase-container">
+						<input type="checkbox" name="sesamy_enable_single_purchase" <?php echo $enable_single_purchase; ?> class="sesamy-classic-single-purchase"><?php echo esc_html( __( 'Enable Single Purchase', 'sesamy' ) ); ?>
+					</div>
+				</div>
+
+				<div class="sesamy-classic-locked-price block-container">
+					<label class="wp-clearfix sesamy-bulk-edit-price">
+						<span class="title"><?php echo esc_html( __( 'Price', 'sesamy' ) ); ?></span>
+					</label>
+											
+					<input type="number" name="sesamy_single_purchase_price" value="<?php echo $post_properties['price']; ?>">
+				</div>
+
+				<div class="block-container">
+					<label class="wp-clearfix sesamy-bulk-edit-price">
+						<span class="title"><?php echo esc_html( __( 'SESAMY PASSES', 'sesamy' ) ); ?></span>
+					</label>
+
+					<?php	
+
+					$passes = Sesamy_Post_Properties::get_post_passes( $post->ID );
+
+					$args = array(
+				        'taxonomy'   => 'sesamy_passes', // Replace 'your_custom_taxonomy' with your actual custom taxonomy slug
+				        'hide_empty' => false, // Set to true to hide empty categories
+				        // Add more parameters as needed
+				    );
+
+					// Get sesamy_passes categories
+					$categories = get_terms( $args );
+
+				    // Output category checkboxes
+				    foreach ($categories as $category) {
+				        $checked = in_array($category->term_id, wp_list_pluck($passes, 'term_id')) ? 'checked' : '';
+				        echo '<input type="checkbox" name="sesamy-post-passes[]" value="' . $category->name . '" ' . $checked . '>';
+				        echo esc_html($category->name);
+						echo '<br>';
+				    } ?>
+				</div>	    
+			</div>
+		</fieldset>
+	<?php }
 }
