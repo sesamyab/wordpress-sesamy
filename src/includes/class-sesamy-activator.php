@@ -31,5 +31,4 @@ class Sesamy_Activator {
 	 */
 	public static function activate() {
 	}
-
 }

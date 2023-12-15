@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Define the shortcodes
  *
@@ -19,16 +18,16 @@
  * @author     Jonas Stensved <jonas@viggeby.com>
  */
 class Sesamy_Meta {
-
-
 	/**
-	 * Render sesamy meta_tags in head tag
+	 * Add meta tags
 	 *
+	 * @since 1.0.0
+	 * @package    Sesamy
 	 * @return void
 	 */
 	public function add_meta_tags() {
 
-		// client-id should be present on all pages
+		// client-id should be present on all pages.
 		$this->make_tag( 'sesamy:client-id', get_option( 'sesamy_client_id', '' ) );
 
 		if ( is_singular() ) {
@@ -42,20 +41,20 @@ class Sesamy_Meta {
 				$this->make_tag( 'sesamy:description', wp_strip_all_tags( $post->post_excerpt ) );
 				$this->make_tag( 'sesamy:image', get_the_post_thumbnail_url( $post ) );
 				$this->make_tag( 'sesamy:price', $price_info['price'] );
-				$this->make_tag( 'sesamy:currency', get_option('sesamy_gloabl_currency') );
+				$this->make_tag( 'sesamy:currency', get_option( 'sesamy_gloabl_currency' ) );
 				$this->make_tag( 'sesamy:publisher-content-id', $post->ID );
 				$this->make_tag( 'sesamy:pass', sesamy_get_passes_urls( $post ) );
-				
-				// Published time
+
+				// Published time.
 				$this->make_Tag( 'sesamy:published_time', get_the_date( 'Y-m-d\TH:i:s\Z', $post->ID ) );
 
-				// Get the name of the primary category (Yoast SEO) and set the sesamy:section tag
-				if (function_exists('yoast_get_primary_term_id')) {
+				// Get the name of the primary category (Yoast SEO) and set the sesamy:section tag.
+				if ( function_exists( 'yoast_get_primary_term_id' ) ) {
 					$primary_term = yoast_get_primary_term_id( 'category', $post->ID );
 					if ( $primary_term ) {
 						$term = get_term( $primary_term, 'category' );
 						if ( $term ) {
-							$sesamy_primary_category = apply_filters('sesamy_post_primary_category', $term->name, $post );
+							$sesamy_primary_category = apply_filters( 'sesamy_post_primary_category', $term->name, $post );
 							if ( ! empty( $sesamy_primary_category ) ) {
 								$this->make_tag( 'sesamy:section', $sesamy_primary_category );
 								$this->make_tag( 'article:section', $sesamy_primary_category );
@@ -64,7 +63,7 @@ class Sesamy_Meta {
 					}
 				}
 
-				// Loop through all the taxonomies and set the sesamy:tags tag
+				// Loop through all the taxonomies and set the sesamy:tags tag.
 				$taxonomies = get_object_taxonomies( $post->post_type, 'objects' );
 				$tags = array();
 				foreach ( $taxonomies as $taxonomy ) {
@@ -72,7 +71,7 @@ class Sesamy_Meta {
 					if ( $terms && ! is_wp_error( $terms ) ) {
 						foreach ( $terms as $term ) {
 
-							// Check that it's not the "uncategorized" category
+							// Check that it's not the "uncategorized" category.
 							if ( 'category' === $term->taxonomy && 1 === $term->term_id ) {
 								continue;
 							}
@@ -85,12 +84,11 @@ class Sesamy_Meta {
 				$tags = apply_filters( 'sesamy_post_tags', $tags, $post );
 
 				if ( ! empty( $tags ) ) {
-					foreach( $tags as $tag ) {
+					foreach ( $tags as $tag ) {
 						$this->make_tag( 'sesamy:tag', $tag );
 						$this->make_tag( 'article:tag', $tag );
 					}
 				}
-
 			}
 		}
 	}
@@ -98,14 +96,12 @@ class Sesamy_Meta {
 	/**
 	 * Generate meta tag
 	 *
-	 * @param string $name
-	 * @param string $content
+	 * @param string $name Meta name.
+	 * @param string $content Meta content.
 	 * @return void
 	 */
 	public function make_tag( $name, $content ) {
 		$content = wp_strip_all_tags( $content );
 		echo '<meta property="' . esc_attr( $name ) . '" content="' . esc_attr( $content ) . '" />' . "\n";
 	}
-
-
 }

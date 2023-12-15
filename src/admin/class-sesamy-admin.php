@@ -1,5 +1,4 @@
 <?php
-
 /**
  * The admin-specific functionality of the plugin.
  *
@@ -41,8 +40,22 @@ class Sesamy_Admin {
 	 */
 	private $version;
 
-
+	/**
+	 * Admin settings.
+	 *
+	 * @var array $Settings Admin settings.
+	 * @since  1.0.0
+	 * @access private
+	 */
 	private $settings;
+
+	/**
+	 * Admin settings.
+	 *
+	 * @var array $post_editor Post Editor.
+	 * @since  1.0.0
+	 * @access private
+	 */
 	private $post_editor;
 
 	/**
@@ -104,16 +117,31 @@ class Sesamy_Admin {
 		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/sesamy-admin.js', array( 'jquery' ), $this->version, true );
 	}
 
+	/**
+	 * Function work on page init.
+	 *
+	 * @since 1.0.0
+	 */
 	public function init() {
 
 		$this->post_editor->init();
 	}
 
+	/**
+	 * Function work on page admin init.
+	 *
+	 * @since 1.0.0
+	 */
 	public function admin_init() {
 
 		$this->settings->add_settings();
 	}
 
+	/**
+	 * Admin menu function.
+	 *
+	 * @since 1.0.0
+	 */
 	public function admin_menu() {
 
 		$this->settings->admin_menu();

@@ -20,8 +20,6 @@
  * @author     Jonas Stensved <jonas@viggeby.com>
  */
 class Sesamy_Deactivator {
-
-
 	/**
 	 * Short Description. (use period)
 	 *
@@ -31,5 +29,4 @@ class Sesamy_Deactivator {
 	 */
 	public static function deactivate() {
 	}
-
 }

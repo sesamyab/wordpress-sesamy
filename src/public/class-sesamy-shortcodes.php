@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Define the shortcodes
  *
@@ -19,13 +18,11 @@
  * @author     Jonas Stensved <jonas@viggeby.com>
  */
 class Sesamy_Shortcodes {
-
-
-
 	/**
 	 * Load the plugin text domain for translation.
 	 *
 	 * @since 1.0.0
+	 * @package    Sesamy
 	 */
 	public function register() {
 
@@ -37,10 +34,16 @@ class Sesamy_Shortcodes {
 		$this->register_shortcode( 'sesamy_config' );
 	}
 
+	/**
+	 * Register Shortcode
+	 *
+	 * @since 1.0.0
+	 * @package    Sesamy
+	 * @param string $name Shortcode name.
+	 */
 	public function register_shortcode( $name ) {
 
-		// By convention the shortcodes have a corresponding public function with prefix get_
+		// By convention the shortcodes have a corresponding public function with prefix get_.
 		add_shortcode( $name, 'get_' . $name );
 	}
-
 }

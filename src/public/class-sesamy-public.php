@@ -1,5 +1,4 @@
 <?php
-
 /**
  * The public-facing functionality of the plugin.
  *
@@ -21,8 +20,6 @@
  * @author     Jonas Stensved <jonas@viggeby.com>
  */
 class Sesamy_Public {
-
-
 	/**
 	 * The ID of this plugin.
 	 *
@@ -114,34 +111,40 @@ class Sesamy_Public {
 	/**
 	 * Transition post status
 	 * Fires a webhook to Sesamy when a post is published
+	 *
+	 * @since 1.0.0
+	 * @package    Sesamy
+	 * @param string $new_status New Post status.
+	 * @param string $old_status Old Post status.
+	 * @param array  $post Post Object.
 	 */
 	public function transition_post_status( $new_status, $old_status, $post ) {
 
-		// Only run for enabled post types
+		// Only run for enabled post types.
 		if ( ! in_array( $post->post_type, sesamy_get_enabled_post_types(), true ) ) {
 			return;
 		}
 
-		// Only run when post is published
+		// Only run when post is published.
 		if ( 'publish' === $new_status && 'publish' !== $old_status ) {
 
-			// Get the client id
+			// Get the client id.
 			$client_id = get_option( 'sesamy_client_id' );
 
-			// Bail if no client id is set
+			// Bail if no client id is set.
 			if ( empty( $client_id ) ) {
 				return;
 			}
 
-			// Get the post url
+			// Get the post url.
 			$post_url = get_permalink( $post->ID );
 
-			// Build the request
+			// Build the request.
 			$request = array(
 				'url' => $post_url,
 			);
 
-			// Send the request
+			// Send the request.
 			$response = wp_remote_post(
 				'https://api.sesamy.com/suppliers/hooks/article/' . $client_id,
 				array(
@@ -153,12 +156,9 @@ class Sesamy_Public {
 			);
 
 			// If the response code is not 200, log an error.
-			if ( $response['response']['code'] !== 200 ) {
-				error_log( 'Sesamy: Failed to send webhook');
-				error_log(print_r($response, true));
+			if ( 200 !== $response['response']['code'] ) {
+				error_log( 'Sesamy: Failed to send webhook' );
 			}
 		}
 	}
-
-
 }
