@@ -1,9 +1,30 @@
 <?php
+/**
+ * The admin settings functionality of the plugin.
+ *
+ * @link  https://www.viggeby.com
+ * @since 1.0.0
+ *
+ * @package    Sesamy
+ * @subpackage Sesamy/admin
+ */
 
+/**
+ * The admin settings functionality of the plugin.
+ *
+ * Admin settings fields and admin menu
+ *
+ * @package    Sesamy
+ * @subpackage Sesamy/admin
+ * @author     Jonas Stensved <jonas@viggeby.com>
+ */
 class Sesamy_Settings_Admin {
-
-
-
+	/**
+	 * Admin menu Sesamy
+	 *
+	 * @since 1.0.0
+	 * @package    Sesamy
+	 */
 	public function admin_menu() {
 
 		add_menu_page(
@@ -15,12 +36,22 @@ class Sesamy_Settings_Admin {
 		);
 	}
 
-
+	/**
+	 * Menu Html file include.
+	 *
+	 * @since 1.0.0
+	 * @package    Sesamy
+	 */
 	public function admin_menu_html() {
 		include plugin_dir_path( __DIR__ ) . 'admin/partials/sesamy-admin-display.php';
 	}
 
-
+	/**
+	 * Admin settings
+	 *
+	 * @since 1.0.0
+	 * @package    Sesamy
+	 */
 	public function add_settings() {
 
 		add_settings_section(
@@ -88,48 +119,71 @@ class Sesamy_Settings_Admin {
 		);
 	}
 
-
+	/**
+	 * General Section callback.
+	 *
+	 * @since 1.0.0
+	 * @package    Sesamy
+	 */
 	public function sesamy_section_general_callback() {
-		// Add if needed
+		// Add if needed.
 	}
 
+	/**
+	 * Select field render
+	 *
+	 * @param array $args Arguments of select fields.
+	 * @since 1.0.0
+	 * @package    Sesamy
+	 */
 	public function settings_render_select( $args ) {
 
-		$settings_value = get_option( $args['name'] );
-
-		echo '<select name="' . esc_attr( $args['name'] ) . '">';
-		foreach ( $args['options'] as $key => $value ) {
-			$selected = $key === $settings_value ? 'selected' : '';
-			echo '<option value="' . esc_attr( $key ) . '"' . esc_attr( $selected ) . '>' . esc_html( $value ) . '</option>';
-		}
-		echo '</select>';
-	}
-
-
-	public function settings_render_checkboxlist( $args ) {
-
-		$options = get_option( $args['name'] );
-
-		if ( ! is_array( $options ) ) {
-			$options = array();
-		}
-
-		foreach ( $args['options'] as $key => $value ) {
-			$checked = in_array( $key, $options, true ) ? 'checked' : '';
-			echo '<label><input type="checkbox" name="' . esc_attr( $args['name'] ) . '[]" value="' . esc_attr( $key ) . '" ' . esc_attr( $checked ) . '>' . esc_attr( $value ) . '</label><br>';
+		if ( ! empty( $args ) && isset( $args['name'] ) ) {
+			$settings_value = get_option( $args['name'] );
+			echo '<select name="' . esc_attr( $args['name'] ) . '">';
+			foreach ( $args['options'] as $key => $value ) {
+				$selected = $key === $settings_value ? 'selected' : '';
+				echo '<option value="' . esc_attr( $key ) . '"' .  $selected  . '>' . esc_html( $value ) . '</option>';
+			}
+			echo '</select>';
 		}
 	}
 
 	/**
+	 * Checkbox field render
 	 *
+	 * @param array $args Arguments of checkbox fields.
+	 * @since 1.0.0
+	 * @package    Sesamy
 	 */
-	public function settings_render_input( $args ) {
+	public function settings_render_checkboxlist( $args ) {
 
-		$settings_value = get_option( $args['name'] );
+		if ( ! empty( $args ) ) {
+			$options = get_option( $args['name'] );
 
-		echo '<input type="text" name="' . esc_attr( $args['name'] ) . '" value="' . esc_attr( $settings_value ) . '">';
+			if ( ! is_array( $options ) ) {
+				$options = array();
+			}
+
+			foreach ( $args['options'] as $key => $value ) {
+				$checked = in_array( $key, $options, true ) ? 'checked' : '';
+				echo '<label><input type="checkbox" name="' . esc_attr( $args['name'] ) . '[]" value="' . esc_attr( $key ) . '" ' . esc_attr( $checked ) . '>' . esc_attr( $value ) . '</label><br>';
+			}
+		}
 	}
 
+	/**
+	 * Text field render
+	 *
+	 * @param array $args Arguments of text fields.
+	 * @since 1.0.0
+	 * @package    Sesamy
+	 */
+	public function settings_render_input( $args ) {
+		if ( ! empty( $args ) ) {
+			$settings_value = get_option( $args['name'] );
 
+			echo '<input type="text" name="' . esc_attr( $args['name'] ) . '" value="' . esc_attr( $settings_value ) . '">';
+		}
+	}
 }
-

@@ -1,96 +1,130 @@
 <?php
+/**
+ * Post properties
+ *
+ * @link  https://www.viggeby.com
+ * @since 1.0.0
+ *
+ * @package    Sesamy
+ * @subpackage Sesamy/includes
+ */
 
+/**
+ * Taxonomy and add form fields.
+ *
+ * @package    Sesamy
+ * @subpackage Sesamy/includes
+ * @author     Jonas Stensved <jonas@viggeby.com>
+ */
 class Sesamy_Post_Properties {
-
+	/**
+	 * Register post meta
+	 *
+	 * @since  1.0.0
+	 * @package    Sesamy
+	 */
 	public function register_post_meta() {
-
 		$post_types = sesamy_get_enabled_post_types();
 
-		foreach ( $post_types as $post_type ) {
+		if ( $post_types ) {
+			foreach ( $post_types as $post_type ) {
 
-			register_post_meta(
-				$post_type,
-				'_sesamy_locked',
-				array(
-					'show_in_rest'  => true,
-					'single'        => true,
-					'type'          => 'boolean',
-					'default'       => false,
-					'auth_callback' => '__return_true',
-				)
-			);
+				register_post_meta(
+					$post_type,
+					'_sesamy_locked',
+					array(
+						'show_in_rest'  => true,
+						'single'        => true,
+						'type'          => 'boolean',
+						'default'       => false,
+						'auth_callback' => '__return_true',
+					)
+				);
 
-			register_post_meta(
-				$post_type,
-				'_sesamy_enable_single_purchase',
-				array(
-					'show_in_rest'  => true,
-					'single'        => true,
-					'type'          => 'boolean', // string to allow empty
-					'auth_callback' => '__return_true',
-				)
-			);
+				register_post_meta(
+					$post_type,
+					'_sesamy_enable_single_purchase',
+					array(
+						'show_in_rest'  => true,
+						'single'        => true,
+						'type'          => 'boolean', // string to allow empty.
+						'auth_callback' => '__return_true',
+					)
+				);
 
-			register_post_meta(
-				$post_type,
-				'_sesamy_price',
-				array(
-					'show_in_rest'  => true,
-					'single'        => true,
-					'type'          => 'string', // string to allow empty
-					'auth_callback' => '__return_true',
-				)
-			);
+				register_post_meta(
+					$post_type,
+					'_sesamy_price',
+					array(
+						'show_in_rest'  => true,
+						'single'        => true,
+						'type'          => 'string', // string to allow empty.
+						'auth_callback' => '__return_true',
+					)
+				);
 
-			register_post_meta(
-				$post_type,
-				'_sesamy_currency',
-				array(
-					'show_in_rest'  => true,
-					'single'        => true,
-					'type'          => 'string',
-					'auth_callback' => '__return_true',
-				)
-			);
+				register_post_meta(
+					$post_type,
+					'_sesamy_currency',
+					array(
+						'show_in_rest'  => true,
+						'single'        => true,
+						'type'          => 'string',
+						'auth_callback' => '__return_true',
+					)
+				);
 
-			register_post_meta(
-				$post_type,
-				'_sesamy_locked_from',
-				array(
-					'show_in_rest'  => true,
-					'single'        => true,
-					'type'          => 'integer',
-					'auth_callback' => '__return_true',
-					'default'       => -1,
-				)
-			);
+				register_post_meta(
+					$post_type,
+					'_sesamy_locked_from',
+					array(
+						'show_in_rest'  => true,
+						'single'        => true,
+						'type'          => 'integer',
+						'auth_callback' => '__return_true',
+						'default'       => -1,
+					)
+				);
 
-			register_post_meta(
-				$post_type,
-				'_sesamy_locked_until',
-				array(
-					'show_in_rest'  => true,
-					'single'        => true,
-					'type'          => 'integer',
-					'auth_callback' => '__return_true',
-					'default'       => -1,
-				)
-			);
+				register_post_meta(
+					$post_type,
+					'_sesamy_locked_until',
+					array(
+						'show_in_rest'  => true,
+						'single'        => true,
+						'type'          => 'integer',
+						'auth_callback' => '__return_true',
+						'default'       => -1,
+					)
+				);
 
+			}
 		}
 	}
 
-
+	/**
+	 * Price info
+	 *
+	 * @since  1.0.0
+	 * @package    Sesamy
+	 * @param array $tier term Object.
+	 */
 	public static function get_tier_price_info( $tier ) {
 
 		return array(
 			'type'     => get_term_meta( $tier->term_id, 'type', true ),
 			'price'    => get_term_meta( $tier->term_id, 'price', true ),
-			'currency' => get_option('sesamy_gloabl_currency'),
+			'currency' => get_option( 'sesamy_gloabl_currency' ),
 		);
 	}
 
-
+	/**
+	 * Locked post check
+	 *
+	 * @since  1.0.0
+	 * @package    Sesamy
+	 * @param array $post post Object.
+	 */
 	public static function is_locked( $post ) {
 
 		$post = get_post( $post );
@@ -98,7 +132,11 @@ class Sesamy_Post_Properties {
 	}
 
 	/**
-	 * Returns price info with applied ruleset and logic
+	 * Returns post price info with applied ruleset and logic
+	 *
+	 * @since  1.0.0
+	 * @package    Sesamy
+	 * @param array $post post Object.
 	 */
 	public static function get_post_price_info( $post ) {
 
@@ -112,11 +150,18 @@ class Sesamy_Post_Properties {
 
 		$info['enable_single_purchase'] = boolval( get_post_meta( $post->ID, '_sesamy_enable_single_purchase', true ) );
 		$info['price']                  = get_post_meta( $post->ID, '_sesamy_price', true );
-		$info['currency']               = get_option('sesamy_gloabl_currency');
+		$info['currency']               = get_option( 'sesamy_gloabl_currency' );
 
 		return $info;
 	}
 
+	/**
+	 * Post passes
+	 *
+	 * @since  1.0.0
+	 * @package    Sesamy
+	 * @param array $post post Object.
+	 */
 	public static function get_post_passes( $post ) {
 
 		$post = get_post( $post );
@@ -126,7 +171,7 @@ class Sesamy_Post_Properties {
 	/**
 	 * Return information about sesamy settings for a post in an easy accessible way
 	 *
-	 * @param int $post_id
+	 * @param  int $post_id post ID.
 	 * @return Array
 	 */
 	public static function get_post_settings( $post_id ) {
@@ -142,5 +187,4 @@ class Sesamy_Post_Properties {
 			'locked_until'           => (int) get_post_meta( $post->ID, '_sesamy_locked_until', true ),
 		);
 	}
-
 }

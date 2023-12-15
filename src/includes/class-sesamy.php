@@ -1,5 +1,4 @@
 <?php
-
 /**
  * The file that defines the core plugin class
  *
@@ -28,11 +27,12 @@
  * @author     Jonas Stensved <jonas@viggeby.com>
  */
 class Sesamy {
-
-
-
 	/**
 	 * The instance of the plugin
+	 *
+	 * @since  1.0.0
+	 * @access public
+	 * @var    instance    $loader  The instance of the plugin.
 	 */
 	public static $instance;
 
@@ -64,10 +64,40 @@ class Sesamy {
 	 */
 	protected $version;
 
-
+	/**
+	 * The Scheduling
+	 *
+	 * @since  1.0.0
+	 * @access public
+	 * @var    string    $scheduling scheduling.
+	 */
 	public $scheduling;
+
+	/**
+	 * Admin View
+	 *
+	 * @since  1.0.0
+	 * @access public
+	 * @var    string    $admin_view Admin View.
+	 */
 	public $admin_view;
+
+	/**
+	 * Metas
+	 *
+	 * @since  1.0.0
+	 * @access public
+	 * @var    string    $meta Meta.
+	 */
 	public $meta;
+
+	/**
+	 * The Content Container
+	 *
+	 * @since  1.0.0
+	 * @access public
+	 * @var    string    $scheduling content_container.
+	 */
 	public $content_container;
 
 	/**
@@ -87,7 +117,7 @@ class Sesamy {
 		}
 		$this->plugin_name = 'sesamy';
 
-		// Define class instances. All classes are autoloaded with composer
+		// Define class instances. All classes are autoloaded with composer.
 		$this->admin_view        = new Sesamy_Admin_View();
 		$this->scheduling        = new Sesamy_Scheduling();
 		$this->meta              = new Sesamy_Meta();
@@ -104,8 +134,7 @@ class Sesamy {
 	/**
 	 * Load the required dependencies for this plugin.
 	 *
-	 *
-	 * Create an instance of the loader which will be used to register the hooks
+	 * Create an instance of the loader which will be used to register the hooks.
 	 * with WordPress.
 	 *
 	 * @since  1.0.0
@@ -118,7 +147,7 @@ class Sesamy {
 	/**
 	 * Define the locale for this plugin for internationalization.
 	 *
-	 * Uses the Sesamy_I18n class in order to set the domain and to register the hook
+	 * Uses the Sesamy_I18n class in order to set the domain and to register the hook.
 	 * with WordPress.
 	 *
 	 * @since  1.0.0
@@ -131,7 +160,12 @@ class Sesamy {
 		$this->loader->add_action( 'plugins_loaded', $plugin_i18n, 'load_plugin_textdomain' );
 	}
 
-
+	/**
+	 * Common Hooks
+	 *
+	 * @since  1.0.0
+	 * @package    Sesamy
+	 */
 	private function define_common_hooks() {
 
 		$this->loader->add_action( 'init', Sesamy_Passes::get_instance(), 'register_taxonomy' );
@@ -158,7 +192,7 @@ class Sesamy {
 	 * of the plugin.
 	 *
 	 * @since  1.0.0
-	 * @access private
+	 * @package    Sesamy
 	 */
 	private function define_admin_hooks() {
 
@@ -181,25 +215,23 @@ class Sesamy {
 		$this->loader->add_action( 'bulk_edit_custom_box', $this->admin_view, 'bulk_edit_fields', 10, 2 );
 		$this->loader->add_action( 'save_post', $this->admin_view, 'bulk_edit_save', 10, 2 );
 
-		// Check if Classic Editor is active		
+		// Check if Classic Editor is active.		
 		if( $this->sesamy_is_classic_editor() ) {
 			$this->loader->add_action( 'add_meta_boxes', $this->admin_view, 'sesamy_post_sidebar_meta_box', 10, 1 );
 		}
 		$this->loader->add_action( 'save_post', $this->admin_view, 'sesamy_postmeta_edit_save', 10, 1 );
 
 
-		// Use wp_insert_post to allow WP to save meta first
+		// Use wp_insert_post to allow WP to save meta first.
 		$this->loader->add_action( 'wp_after_insert_post', $this->scheduling, 'after_insert_post', 99, 4 );
 	}
 
 	/**
 	 * Register all of the hooks related to the public-facing functionality
-	 * of the plugin.
 	 *
 	 * @since  1.0.0
-	 * @access private
+	 * @package    Sesamy
 	 */
-
 	private function define_public_hooks() {
 
 		$plugin_public = new Sesamy_Public( $this->get_plugin_name(), $this->get_version() );
@@ -264,7 +296,7 @@ class Sesamy {
 
 
 	/**
-	 * Return URL for assets based on admin settings
+	 * Return URL for assets based on admin settings.
 	 */
 	public function get_assets_url() {
 		$ep = get_option( 'sesamy_api_endpoint' );
@@ -272,9 +304,9 @@ class Sesamy {
 	}
 
 	/**
-	 * True if the post is locked by sesamy
+	 * True if the post is locked by sesamy.
 	 *
-	 * @param int|WP_Post $post
+	 * @param int|WP_Post $post POST Object.
 	 * @return boolean
 	 */
 	public static function is_locked( $post ) {
@@ -285,7 +317,7 @@ class Sesamy {
 			return new WP_Error( 404, 'Item not found' );
 		}
 
-		// Check if post is locked, if not, just return content
+		// Check if post is locked, if not, just return content.
 		return get_post_meta( $post->ID, '_sesamy_locked', true ) ?? false;
 	}
 
@@ -295,12 +327,10 @@ class Sesamy {
 	 * @return boolean
 	 */
 	public function sesamy_is_classic_editor() {
-		
 		if( isset( $_GET['classic-editor'] ) ) {
 			return true;
 		}
 
-		return false;				
+		return false;
 	}
-
 }

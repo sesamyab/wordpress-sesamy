@@ -45,26 +45,12 @@ const SesamyPostEditor = () => {
   const sesamyTiersTaxonomy = wp.data.select('core').getEntityRecords('taxonomy', 'sesamy_passes');
   const currentPost = useSelect(select => select('core/editor').getCurrentPost());
   const sesamy_passes = useSelect(select => select('core/editor').getEditedPostAttribute('sesamy_passes'));
-  const [currencies, setCurrencies] = useState();
-
-
-
 
   const dispatch = useDispatch();
 
   const setMeta = (meta) => {
     dispatch('core/editor').editPost({ meta });
   }
-
-
-  // Load currencies
-  useEffect(() => {
-
-    fetch( sesamy_block_obj.home + '/wp-json/sesamy/v1/currencies' )
-      .then((response) => response.json())
-      .then((data) => setCurrencies(Object.keys(data)));
-
-  }, []);
 
 
   const setTier = (tier, included) => {
@@ -136,15 +122,6 @@ const SesamyPostEditor = () => {
 
     return new Date(unixTimestampUTC * 1000);
   }
-
-
-  useEffect(() => {
-
-    if (!meta || meta['_sesamy_locked'] !== true) {
-      return;
-    }
-
-  }, [meta['_sesamy_locked'], currencies]);
 
 
   const minLockedFrom = new Date();

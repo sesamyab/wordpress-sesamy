@@ -1,11 +1,29 @@
 <?php
+/**
+ * API Endpoint
+ *
+ * @link  https://www.viggeby.com
+ * @since 1.0.0
+ *
+ * @package    Sesamy
+ * @subpackage Sesamy/includes
+ */
 
-
-
+/**
+ * This class Register API Endpoints.
+ *
+ * @since      1.0.0
+ * @package    Sesamy
+ * @subpackage Sesamy/includes
+ * @author     Jonas Stensved <jonas@viggeby.com>
+ */
 class Sesamy_Api_Endpoint {
-
-
-
+	/**
+	 * Register API Endpoints.
+	 *
+	 * @since      1.0.0
+	 * @package    Sesamy
+	 */
 	public function register_route() {
 
 		register_rest_route(
@@ -51,7 +69,13 @@ class Sesamy_Api_Endpoint {
 	}
 
 	/**
-	 * Validation callback for arguments
+	 * Validation callback for arguments.
+	 *
+	 * @since      1.0.0
+	 * @package    Sesamy
+	 * @param string $param Parameters.
+	 * @param string $request Request method.
+	 * @param string $key Validate Key.
 	 */
 	public function validate_numeric_param( $param, $request, $key ) {
 		return is_numeric( $param );
@@ -59,45 +83,70 @@ class Sesamy_Api_Endpoint {
 
 	/**
 	 * Endpoint for validating request and returning the content
+	 *
+	 * @since      1.0.0
+	 * @package    Sesamy
+	 * @param string $request Request method.
 	 */
 	public function sesamy_post_ep( $request ) {
 
 		$post = get_post( $request['id'] );
 
-		// Check that post actually exists
-		if ( null == $post ) {
-			return new WP_Error( 404, 'Post not found.' );
+		print_r($post); exit;
+
+		// Check that post actually exists.
+		if ( null === $post ) {
+			return new WP_Error( 404, __( 'Post not found.', 'sesamy' ) );
 		}
 
-		// Get JWT token from the authorization header
-		$jwt = isset( $_SERVER['HTTP_AUTHORIZATION'] ) ? $_SERVER['HTTP_AUTHORIZATION'] : '';
+		// Get JWT token from the authorization header.
+		$jwt = isset( $_SERVER['HTTP_AUTHORIZATION'] ) ? sanitize_text_field( wp_unslash( $_SERVER['HTTP_AUTHORIZATION'] ) ) : '';
 
 		// If the post is locked, verify the JWT token. If not, just return the content.
-		$Sesamy_JWT_Helper = new Sesamy_JWT_Helper();
-		$result            = Sesamy::is_locked( $post ) ? $Sesamy_JWT_Helper->verify( $jwt ) : true;
+		$sesamy_helper_obj = new Sesamy_JWT_Helper();
+		$result            = Sesamy::is_locked( $post ) ? $sesamy_helper_obj->verify( $jwt ) : true;
 
 		if ( is_wp_error( $result ) ) {
 			return $result;
 		} elseif ( is_bool( $result ) && true === $result ) {
 			return new WP_REST_Response( array( 'data' => apply_filters( 'the_content', $post->post_content ) ) );
 		} else {
-			return new WP_Error( 400, 'The link is incorrect or no longer valid.' );
+			return new WP_Error( 400, __( 'The link is incorrect or no longer valid.', 'sesamy' ) );
 		}
 	}
 
-
+	/**
+	 * API enpoint callback function for passes.
+	 *
+	 * @since      1.0.0
+	 * @package    Sesamy
+	 * @param string $request Request method.
+	 */
 	public function sesamy_passes_ep( $request ) {
 
-		$passes = get_terms( 'sesamy_passes', array( 'hide_empty' => false ) );
+		$passes = get_terms(
+			array(
+				'taxonomy'   => 'sesamy_passes',
+				'hide_empty' => false,
+			),
+		);
 		$data   = array_map( 'sesamy_get_pass_info', $passes );
 		return new WP_REST_Response( array_values( $data ) );
 	}
 
+	/**
+	 * API enpoint callback function for passes details.
+	 *
+	 * @since      1.0.0
+	 * @package    Sesamy
+	 * @param string $request Request method.
+	 */
 	public function sesamy_passes_details_ep( $request ) {
 
 		$term_slug = sanitize_text_field( $request['slug'] );
 		$term      = get_term_by( 'slug', $term_slug, 'sesamy_passes' );
-		if ( false === $term ) {
+
+		if ( false == $term ) {
 			return new WP_Error( 'sesamy_pass_not_found', __( 'Pass not found', 'sesamy' ), array( 'status' => 404 ) );
 		} else {
 			return new WP_REST_Response( sesamy_get_pass_info( $term ) );
@@ -106,7 +155,14 @@ class Sesamy_Api_Endpoint {
 
 
 	/**
-	 * Format response based on Accept header
+	 * Format response based on Accept header.
+	 *
+	 * @since      1.0.0
+	 * @package    Sesamy
+	 * @param string $served Served.
+	 * @param array  $result Results format.
+	 * @param string $request Request method.
+	 * @param string $server server.
 	 */
 	public function format_response( $served, $result, $request, $server ) {
 
@@ -118,12 +174,12 @@ class Sesamy_Api_Endpoint {
 
 					case 'text/html':
 						header( 'Content-Type: text/html; charset=' . get_option( 'blog_charset' ) );
-						echo wp_kses_post( $result->data['data'], wp_allowed_protocols() );
+						if ( ! empty( $result ) ) {
+							echo wp_kses_post( $result->data['data'], wp_allowed_protocols() );
+						}
 						exit;
 				}
 			}
 		}
 	}
-
-
 }

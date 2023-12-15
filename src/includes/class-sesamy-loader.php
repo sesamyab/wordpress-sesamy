@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Register all actions and filters for the plugin
  *
@@ -22,8 +21,6 @@
  * @author     Jonas Stensved <jonas@viggeby.com>
  */
 class Sesamy_Loader {
-
-
 	/**
 	 * The array of actions registered with WordPress.
 	 *
@@ -75,7 +72,7 @@ class Sesamy_Loader {
 	 * @param object $component     A reference to the instance of the object on which the filter is defined.
 	 * @param string $callback      The name of the function definition on the $component.
 	 * @param int    $priority      Optional. The priority at which the function should be fired. Default is 10.
-	 * @param int    $accepted_args Optional. The number of arguments that should be passed to the $callback. Default is 1
+	 * @param int    $accepted_args Optional. The number of arguments that should be passed to the $callback. Default is 1.
 	 */
 	public function add_filter( $hook, $component, $callback, $priority = 10, $accepted_args = 1 ) {
 		$this->filters = $this->add( $this->filters, $hook, $component, $callback, $priority, $accepted_args );
@@ -126,6 +123,9 @@ class Sesamy_Loader {
 
 	/**
 	 * Remove a registered filter
+	 *
+	 * @since 1.0.0
+	 * @param string $hook   The name of the WordPress action that is being registered.
 	 */
 	public function remove_filter( $hook ) {
 
@@ -138,6 +138,9 @@ class Sesamy_Loader {
 
 	/**
 	 * Remove a registered action
+	 *
+	 * @since 1.0.0
+	 * @param string $hook   The name of the WordPress action that is being registered.
 	 */
 	public function remove_action( $hook ) {
 
@@ -147,5 +150,4 @@ class Sesamy_Loader {
 			unset( $this->filters[ $hook ] );
 		}
 	}
-
 }

@@ -29,7 +29,7 @@
 	 * practising this, we should strive to set a better example in our own work.
 	 */
 
-	// Check the checkbox state on page load ( For Locked section )
+	 // Check the checkbox state on page load ( For Locked section )
     if ($('.sesamy-classic-locked').is(':checked')) {
     	var fromdate = $( "input[name=locked_from_date]" ).val();
         $('.sesamy-classic-locked-active').hide(); // Show content if checkbox is unchecked

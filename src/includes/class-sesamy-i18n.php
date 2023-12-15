@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Define the internationalization functionality
  *
@@ -25,9 +24,6 @@
  * @author     Jonas Stensved <jonas@viggeby.com>
  */
 class Sesamy_I18n {
-
-
-
 	/**
 	 * Load the plugin text domain for translation.
 	 *
@@ -41,7 +37,4 @@ class Sesamy_I18n {
 			dirname( dirname( plugin_basename( __FILE__ ) ) ) . '/languages/'
 		);
 	}
-
-
-
 }

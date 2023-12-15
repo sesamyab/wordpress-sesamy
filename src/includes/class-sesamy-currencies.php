@@ -1,17 +1,34 @@
 <?php
+/**
+ * Seasamy currencies
+ *
+ * @link  https://www.viggeby.com
+ * @since 1.0.0
+ *
+ * @package    Sesamy
+ * @subpackage Sesamy/includes
+ */
 
+/**
+ * This class Set API for get currencies
+ *
+ * @since      1.0.0
+ * @package    Sesamy
+ * @subpackage Sesamy/includes
+ * @author     Jonas Stensved <jonas@viggeby.com>
+ */
 class Sesamy_Currencies {
-
-
-
 	/**
-	 * Get the public key
+	 * Get the public key.
+	 *
+	 * @since      1.0.0
+	 * @package    Sesamy
 	 */
 	public static function get_currencies() {
 
 		$currencies = get_transient( 'sesamy_currencies' );
 
-		// Use transient to avoid calling api more than needed
+		// Use transient to avoid calling api more than needed.
 		if ( false === $currencies ) {
 
 			$req  = wp_remote_get( Sesamy::$instance->get_assets_url() . '/markets.json' );
@@ -31,6 +48,12 @@ class Sesamy_Currencies {
 		return $currencies;
 	}
 
+	/**
+	 * Register route for currency.
+	 *
+	 * @since      1.0.0
+	 * @package    Sesamy
+	 */
 	public function register_route() {
 
 		register_rest_route(
@@ -48,6 +71,10 @@ class Sesamy_Currencies {
 
 	/**
 	 * Endpoint for returning currencies
+	 *
+	 * @since      1.0.0
+	 * @package    Sesamy
+	 * @param array $request Request Method.
 	 */
 	public function sesamy_currencies_ep( $request ) {
 

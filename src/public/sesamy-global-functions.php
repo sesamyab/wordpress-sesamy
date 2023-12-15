@@ -1,11 +1,36 @@
 <?php
+/**
+ * Plugin global functions
+ *
+ * @link  https://www.viggeby.com
+ * @since 1.0.0
+ *
+ * @package    Sesamy
+ * @subpackage Sesamy/includes
+ */
 
+/**
+ * Get Content container
+ *
+ * @since 1.0.0
+ * @package    Sesamy
+ * @param array  $atts Attributes.
+ * @param string $content Content.
+ */
 function get_sesamy_content_container( $atts = null, $content = null ) {
 	ob_start();
 	sesamy_content_container( $atts, $content );
 	return ob_get_clean();
 }
 
+/**
+ * Content container
+ *
+ * @since 1.0.0
+ * @package    Sesamy
+ * @param array  $atts Attributes.
+ * @param string $content Content.
+ */
 function sesamy_content_container( $atts = null, $content = null ) {
 	$post_settings = sesamy_get_post_settings( get_the_ID() );
 
@@ -24,14 +49,14 @@ function sesamy_content_container( $atts = null, $content = null ) {
 		'sesamy_content_container'
 	);
 
-	// If the article isn't locked, then add the "public" attribute to the container
+	// If the article isn't locked, then add the "public" attribute to the container.
 	if ( ! Sesamy_Post_Properties::is_locked( get_the_ID() ) ) {
 		$atts['public'] = 'true';
 	}
 
 	ob_start();
 
-	// Exclude attributes used by WordPress when making sesamy tag
+	// Exclude attributes used by WordPress when making sesamy tag.
 	$non_display_atts = array( 'preview' );
 	$html_attributes  = array_filter(
 		$atts,
@@ -45,7 +70,7 @@ function sesamy_content_container( $atts = null, $content = null ) {
 	Sesamy_Utils::html_attributes( $html_attributes );
 	echo '/>';
 
-	if (!isset($atts['public'])) {
+	if ( ! isset( $atts['public'] ) ) {
 		echo '<div slot="preview">' . wp_kses_post( $atts['preview'] ) . '</div>';
 	}
 
@@ -63,8 +88,8 @@ function sesamy_content_container( $atts = null, $content = null ) {
 
 	echo '</sesamy-content-container>';
 
-	// These hoops are here to get WordPress checks for not echoing unescaped content happy
-	// The "_clean" suffix is reserved for marking a variable as clean according to the developer handbook
+	// These hoops are here to get WordPress checks for not echoing unescaped content happy.
+	// The "_clean" suffix is reserved for marking a variable as clean according to the developer handbook.
 
 	$container_content       = ob_get_clean();
 	$content_container_clean = apply_filters( 'sesamy_content_container', $container_content );
@@ -73,12 +98,28 @@ function sesamy_content_container( $atts = null, $content = null ) {
 	echo $content_container_clean;
 }
 
+/**
+ * GEt Button container
+ *
+ * @since 1.0.0
+ * @package    Sesamy
+ * @param array  $atts Attributes.
+ * @param string $content Button Content.
+ */
 function get_sesamy_button_container( $atts = null, $content = null ) {
 	ob_start();
 	sesamy_button_container( $atts, $content );
 	return ob_get_clean();
 }
 
+/**
+ * Button container
+ *
+ * @since 1.0.0
+ * @package    Sesamy
+ * @param array  $atts Attributes.
+ * @param string $content Button Content.
+ */
 function sesamy_button_container( $atts = null, $content = null ) {
 	$atts = shortcode_atts(
 		array(
@@ -93,12 +134,28 @@ function sesamy_button_container( $atts = null, $content = null ) {
 	Sesamy_Utils::make_tag( 'sesamy-button-container', $atts, $content, false );
 }
 
+/**
+ * GEt Button HTML
+ *
+ * @since 1.0.0
+ * @package    Sesamy
+ * @param array  $atts Attributes.
+ * @param string $content Button Content.
+ */
 function get_sesamy_button( $atts = null, $content = null ) {
 	ob_start();
 	sesamy_button( $atts, $content );
 	return ob_get_clean();
 }
 
+/**
+ * Button Shortcode With attributes
+ *
+ * @since 1.0.0
+ * @package    Sesamy
+ * @param array  $atts Attributes.
+ * @param string $content Button Content.
+ */
 function sesamy_button( $atts = null, $content = null ) {
 	$atts = shortcode_atts(
 		array(
@@ -114,17 +171,31 @@ function sesamy_button( $atts = null, $content = null ) {
 		$atts,
 		'sesamy_button'
 	);
-
 	Sesamy_Utils::make_tag( 'sesamy-button', $atts, $content, false );
 }
 
-
+/**
+ * Login functionality
+ *
+ * @since 1.0.0
+ * @package    Sesamy
+ * @param array  $atts Attributes.
+ * @param string $content login Content.
+ */
 function get_sesamy_login( $atts = null, $content = null ) {
 	ob_start();
 	sesamy_login( $atts, $content );
 	return ob_get_clean();
 }
 
+/**
+ * Login Shortcode attributes
+ *
+ * @since 1.0.0
+ * @package    Sesamy
+ * @param array  $atts Attributes.
+ * @param string $content Content.
+ */
 function sesamy_login( $atts = null, $content = null ) {
 	$atts = shortcode_atts(
 		array(
@@ -139,16 +210,32 @@ function sesamy_login( $atts = null, $content = null ) {
 	Sesamy_Utils::make_tag( 'sesamy-login', $atts, $content, false );
 }
 
+/**
+ * Sesamy profile
+ *
+ * @since 1.0.0
+ * @package    Sesamy
+ * @param array  $atts Attributes.
+ * @param string $content profile Content.
+ */
 function get_sesamy_profile( $atts = null, $content = null ) {
 	ob_start();
 	sesamy_profile( $atts, $content );
 	return ob_get_clean();
 }
 
+/**
+ * Profile Attributes
+ *
+ * @since 1.0.0
+ * @package    Sesamy
+ * @param array  $atts Attributes.
+ * @param string $content profile Content.
+ */
 function sesamy_profile( $atts = null, $content = null ) {
 	$atts = shortcode_atts(
 		array(
-		// Add here if needed
+		// Add here if needed.
 		),
 		$atts,
 		'sesamy_profile'
@@ -157,6 +244,14 @@ function sesamy_profile( $atts = null, $content = null ) {
 	Sesamy_Utils::make_tag( 'sesamy-profile', $atts, $content, false );
 }
 
+/**
+ * Config functions callback
+ *
+ * @since 1.0.0
+ * @package    Sesamy
+ * @param array  $atts Attributes.
+ * @param string $content config Content.
+ */
 function get_sesamy_config( $atts = null, $content = null ) {
 	ob_start();
 	sesamy_config( $atts, $content );
@@ -165,6 +260,11 @@ function get_sesamy_config( $atts = null, $content = null ) {
 
 /**
  * Render the config tag
+ *
+ * @since 1.0.0
+ * @package    Sesamy
+ * @param array  $atts Attributes.
+ * @param string $content config Content.
  */
 function sesamy_config( $atts, $content ) {
 	$atts = shortcode_atts(
@@ -179,14 +279,23 @@ function sesamy_config( $atts, $content ) {
 	Sesamy_Utils::make_tag( 'sesamy-config', $atts, $content, false );
 }
 
+/**
+ * Render the config tag
+ *
+ * @since 1.0.0
+ * @package    Sesamy
+ */
 function sesamy_get_enabled_post_types() {
 	$content_types = get_option( 'sesamy_content_types', array() );
-	return ($content_types && is_array($content_types)) ? $content_types : array();
+	return ( $content_types && is_array( $content_types ) ) ? $content_types : array();
 }
-
 
 /**
  * Return information about a pass in sesamy in a easily accessible way
+ *
+ * @since 1.0.0
+ * @package    Sesamy
+ * @param array $term Term object.
  */
 function sesamy_get_pass_info( $term ) {
 
@@ -199,7 +308,7 @@ function sesamy_get_pass_info( $term ) {
 		'title'         => $term->name,
 		'description'   => $term->description,
 		'price'         => get_term_meta( $term->term_id, 'price', true ),
-		'currency'      => get_option('sesamy_gloabl_currency'),
+		'currency'      => get_option( 'sesamy_gloabl_currency' ),
 		'image'         => ! empty( $image_id ) ? wp_get_attachment_image_url( $image_id, 'full' ) : null,
 		'url'           => get_term_meta( $term->term_id, 'url', true ),
 		'item_src'      => get_site_url() . '/wp-json/sesamy/v1/passes/' . $term->slug,
@@ -212,29 +321,45 @@ function sesamy_get_pass_info( $term ) {
 
 /**
  * Return information about sesamy settings for a post in an easy accessible way
+ *
+ * @since 1.0.0
+ * @package    Sesamy
+ * @param array $post_id Post ID.
  */
 function sesamy_get_post_settings( $post_id ) {
 	return Sesamy_Post_Properties::get_post_settings( $post_id );
 }
 
-
+/**
+ * Return information about sesamy settings for a post in an easy accessible way
+ *
+ * @since 1.0.0
+ * @package    Sesamy
+ * @param array $post_id_or_passes Post ID.
+ * @param array $separator Seperater.
+ */
 function sesamy_get_passes( $post_id_or_passes, $separator = ';' ) {
 
 	return sesamy_get_passes_urls( $post_id_or_passes, $separator );
 }
 
 /**
- * Return an array with the pass urls
+ * Get passes URL
+ *
+ * @since 1.0.0
+ * @package    Sesamy
+ * @param array $post_id_or_passes Post ID.
+ * @param array $separator Seperater.
  */
 function sesamy_get_passes_urls( $post_id_or_passes, $separator = ';' ) {
 	if ( is_array( $post_id_or_passes ) ) {
-		// Array of passes
+		// Array of passes.
 		$passes = $post_id_or_passes;
 	} elseif ( $post_id_or_passes instanceof WP_Post ) {
-		// It's a WP_Post
+		// It's a WP_Post.
 		$passes = sesamy_get_post_settings( $post_id_or_passes->ID )['passes'];
 	} elseif ( is_numeric( $post_id_or_passes ) ) {
-		// A post ID
+		// A post ID.
 		$passes = sesamy_get_post_settings( $post_id_or_passes )['passes'];
 	}
 
