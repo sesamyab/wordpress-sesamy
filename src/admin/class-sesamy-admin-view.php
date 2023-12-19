@@ -44,6 +44,12 @@ class Sesamy_Admin_View {
 			update_post_meta( $post_id, '_sesamy_price', floatval( $_GET['sesamy_single_purchase_price'] ) );
 		}
 
+		// Save Access Level.
+		if ( isset( $_GET['access_level'] ) ) {
+			$sesamy_access_level = sanitize_text_field( wp_unslash( $_GET['access_level'] ) );
+			update_post_meta( $post_id, '_sesamy_access_level', $sesamy_access_level );
+		}
+
 		$passes = get_terms(
 			array(
 				'taxonomy'   => 'sesamy_passes',
@@ -137,6 +143,12 @@ class Sesamy_Admin_View {
 			$sesamy_single_purchase_price = sanitize_text_field( wp_unslash( $_POST['sesamy_single_purchase_price'] ) );
 			update_post_meta( $post_id, '_sesamy_price', $sesamy_single_purchase_price );
 		}
+
+		// Save Access Level.
+		if ( isset( $_POST['access_level'] ) ) {
+			$sesamy_access_level = sanitize_text_field( wp_unslash( $_POST['access_level'] ) );
+			update_post_meta( $post_id, '_sesamy_access_level', $sesamy_access_level );
+		}
 	}
 
 	/**
@@ -228,6 +240,14 @@ class Sesamy_Admin_View {
 						}
 					}
 					?>
+						<label class="wp-clearfix sesamy-bulk-edit-price">
+							<span class="title"><?php echo esc_html__( 'Access Level', 'sesamy' ); ?></span>
+							<select name="access_level" id="access_level">
+								<option value="entitlement">Entitlement</option>
+								<option value="public">Public</option>
+								<option value="logged-in">Small</option>
+							</select>
+						</label>
 				</div>
 				</fieldset>
 			<?php
@@ -327,7 +347,10 @@ class Sesamy_Admin_View {
 			array( $this, 'sesamy_add_class_meta_box' ),
 			'post',
 			'side',
-			'default'
+			'default',
+			array(
+		        '__back_compat_meta_box' => true,
+		    )
 		);
 	}
 
@@ -348,6 +371,8 @@ class Sesamy_Admin_View {
 
 		// We'll use this nonce field later on when saving.
 		wp_nonce_field( 'sesamy_post_meta_box_nonce', 'post_meta_box_nonce' );
+
+		$access_level_args = array( 'entitlement', 'public', 'logged-in' );
 		?>
 
 		<fieldset  class="classic-fields-sesamy">
@@ -436,6 +461,26 @@ class Sesamy_Admin_View {
 					}
 					?>
 				</div>	    
+
+				<div class="block-container">
+					<label class="wp-clearfix sesamy-bulk-edit-price">
+						<span class="title"><?php echo esc_html__( 'Access Level', 'sesamy' ); ?></span>
+					</label>
+					<div>
+						<?php $access_level = ( isset( $post_properties['access_level'] ) && $post_properties['access_level'] != -1 )? $post_properties['access_level'] :  'entitlement'; ?>
+						<select name="access_level" id="access_level">
+							<?php 
+							if ( !empty( $access_level_args ) ) {
+								foreach ( $access_level_args as $key => $level_text ) { ?>
+									<option value="<?php echo esc_attr( $level_text ) ?>" <?php echo ( $access_level === $level_text )? "selected=selected" : ''  ?>> 
+										<?php echo esc_html__( ucfirst( $level_text ), 'sesamy' ) ?>  
+									</option>
+									<?php 
+								}
+							} ?>
+						</select>
+					</div>
+				</div>
 			</div>
 		</fieldset>
 		<?php

@@ -101,6 +101,15 @@ class Sesamy {
 	public $content_container;
 
 	/**
+	 * The flac check
+	 *
+	 * @since  1.0.0
+	 * @access public
+	 * @var    string    $scheduling content_container.
+	 */
+	public $classic_editor;
+
+	/**
 	 * Define the core functionality of the plugin.
 	 *
 	 * Set the plugin name and the plugin version that can be used throughout the plugin.
@@ -215,12 +224,9 @@ class Sesamy {
 		$this->loader->add_action( 'bulk_edit_custom_box', $this->admin_view, 'bulk_edit_fields', 10, 2 );
 		$this->loader->add_action( 'save_post', $this->admin_view, 'bulk_edit_save', 10, 2 );
 
-		// Check if Classic Editor is active.		
-		if( $this->sesamy_is_classic_editor() ) {
-			$this->loader->add_action( 'add_meta_boxes', $this->admin_view, 'sesamy_post_sidebar_meta_box', 10, 1 );
-		}
-		$this->loader->add_action( 'save_post', $this->admin_view, 'sesamy_postmeta_edit_save', 10, 1 );
+		$this->loader->add_action( 'add_meta_boxes', $this->admin_view, 'sesamy_post_sidebar_meta_box', 10, 1 );
 
+		$this->loader->add_action( 'save_post', $this->admin_view, 'sesamy_postmeta_edit_save', 10, 1 );
 
 		// Use wp_insert_post to allow WP to save meta first.
 		$this->loader->add_action( 'wp_after_insert_post', $this->scheduling, 'after_insert_post', 99, 4 );
@@ -321,16 +327,4 @@ class Sesamy {
 		return get_post_meta( $post->ID, '_sesamy_locked', true ) ?? false;
 	}
 
-	/**
-	 * True if the classic editor enable
-	 *
-	 * @return boolean
-	 */
-	public function sesamy_is_classic_editor() {
-		if( isset( $_GET['classic-editor'] ) ) {
-			return true;
-		}
-
-		return false;
-	}
 }

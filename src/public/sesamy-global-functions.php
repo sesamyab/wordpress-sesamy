@@ -32,7 +32,14 @@ function get_sesamy_content_container( $atts = null, $content = null ) {
  * @param string $content Content.
  */
 function sesamy_content_container( $atts = null, $content = null ) {
-	$post_settings = sesamy_get_post_settings( get_the_ID() );
+	$post_id = get_the_ID();
+	$post_settings = sesamy_get_post_settings( $post_id );
+	if ( $post_settings['access_level'] != -1 && !empty( $post_settings['access_level'] ) ) {
+		$access_level = $post_settings['access_level'];	
+	} else {
+		$access_level = 'entitlement';
+	}
+	
 
 	$atts = shortcode_atts(
 		array(
@@ -44,13 +51,14 @@ function sesamy_content_container( $atts = null, $content = null ) {
 			'lock_mode'            => get_option( 'sesamy_lock_mode' ),
 			'access_url'           => get_site_url() . '/wp-json/sesamy/v1/posts/' . $atts['publisher_content_id'],
 			'pass'                 => '',
+			'access-level' 		   => $access_level,
 		),
 		$atts,
 		'sesamy_content_container'
 	);
 
 	// If the article isn't locked, then add the "public" attribute to the container.
-	if ( ! Sesamy_Post_Properties::is_locked( get_the_ID() ) ) {
+	if ( ! Sesamy_Post_Properties::is_locked( $post_id ) ) {
 		$atts['public'] = 'true';
 	}
 
@@ -90,6 +98,11 @@ function sesamy_content_container( $atts = null, $content = null ) {
 
 	// These hoops are here to get WordPress checks for not echoing unescaped content happy.
 	// The "_clean" suffix is reserved for marking a variable as clean according to the developer handbook.
+
+	echo '<script
+      defer
+      src="https://assets.sesamy.com/scripts/web-components/sesamy-content-container.min.js"
+    ></script>';
 
 	$container_content       = ob_get_clean();
 	$content_container_clean = apply_filters( 'sesamy_content_container', $container_content );

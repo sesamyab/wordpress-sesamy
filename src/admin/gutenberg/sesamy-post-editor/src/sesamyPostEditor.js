@@ -3,6 +3,7 @@ import { PluginDocumentSettingPanel } from '@wordpress/edit-post';
 import { useSelect, useDispatch } from '@wordpress/data';
 import { __ } from '@wordpress/i18n';
 import { useEffect, useState, useMemo } from '@wordpress/element';
+import { store as coreStore } from '@wordpress/core-data';
 
 
 function* getPaymentOptions(enableTiers) {
@@ -42,11 +43,14 @@ export default () => {
 const SesamyPostEditor = () => {
 
   const meta = useSelect(select => select('core/editor').getEditedPostAttribute('meta'));
-  const sesamyTiersTaxonomy = wp.data.select('core').getEntityRecords('taxonomy', 'sesamy_passes');
+  //const sesamyTiersTaxonomy = wp.data.select('core').getEntityRecords('taxonomy', 'sesamy_passes');  
   const currentPost = useSelect(select => select('core/editor').getCurrentPost());
   const sesamy_passes = useSelect(select => select('core/editor').getEditedPostAttribute('sesamy_passes'));
-
   const dispatch = useDispatch();
+
+  const sesamyTiersTaxonomy = useSelect( (select) => {
+    return select(coreStore).getEntityRecords( 'taxonomy', 'sesamy_passes' );
+  });
 
   const setMeta = (meta) => {
     dispatch('core/editor').editPost({ meta });
@@ -71,7 +75,7 @@ const SesamyPostEditor = () => {
 
   // Enable tiers if there is at least one
   const enableTiers = useMemo(() => {
-
+    
     if (!sesamyTiersTaxonomy) {
       return;
     }
@@ -201,7 +205,7 @@ const SesamyPostEditor = () => {
               label={tier.name}
               checked={isChecked}
               onChange={(checked) => setTier(tier, checked)}
-              __nextHasNoMarginBottom
+              
             />
 
           })}
@@ -213,6 +217,17 @@ const SesamyPostEditor = () => {
       </>
       }
 
+      <SelectControl
+            label="Access Level"
+            value={ meta['_sesamy_access_level'] }
+            options={ [
+                { label: 'Entitlement', value: 'entitlement' },
+                { label: 'Public', value: 'public' },
+                { label: 'Logged-in', value: 'logged-in' },
+            ] }
+            onChange={(value) => setMeta({ '_sesamy_access_level': value })}
+            __nextHasNoMarginBottom
+        />
 
     </PluginDocumentSettingPanel>
   );
