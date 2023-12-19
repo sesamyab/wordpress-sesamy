@@ -27,6 +27,5 @@ jobs:
       env:
         SVN_USERNAME: ${{ secrets.SVN_USERNAME }}
         SVN_PASSWORD: ${{ secrets.SVN_PASSWORD }}
-        SLUG: sesamy
-        VERSION: 1.0.5
+        SLUG: sesamy        
         BUILD_DIR: src

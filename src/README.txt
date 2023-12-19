@@ -1,10 +1,10 @@
 === Sesamy ===
-Contributors: jstensved
+Contributors: markussesamy,jstensved
 Tags: sesamy, paywall
 Requires at least: 5.0.1
 Requires PHP: 7.4
-Tested up to: 6.1
-Stable tag: 1.0.5
+Tested up to: 6.4.2
+Stable tag: 1.0.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -101,6 +101,12 @@ The following filters can be used to modify the default output from the plugin:
 
 
 == Changelog ==
+
+= 1.0.6 =
+* Added classic editor support 
+* Added Access level option in post
+* Added additional article meta data
+* Removed currency from post and added global currency in general settings
 
 = 1.0.5 =
 * Added admin columns for easy overview of paywall settings
