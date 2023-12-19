@@ -98,6 +98,18 @@ class Sesamy_Post_Properties {
 					)
 				);
 
+				register_post_meta(
+					$post_type,
+					'_sesamy_access_level',
+					array(
+						'show_in_rest'  => true,
+						'single'        => true,
+						'type'          => 'string',
+						'auth_callback' => '__return_true',
+						'default'       => 'entitlement',
+					)
+				);
+
 			}
 		}
 	}
@@ -185,6 +197,7 @@ class Sesamy_Post_Properties {
 			'passes'                 => is_array( $passes ) ? array_map( 'sesamy_get_pass_info', $passes ) : array(),
 			'locked_from'            => (int) get_post_meta( $post->ID, '_sesamy_locked_from', true ),
 			'locked_until'           => (int) get_post_meta( $post->ID, '_sesamy_locked_until', true ),
+			'access_level'           => get_post_meta( $post->ID, '_sesamy_access_level', true ),
 		);
 	}
 }
