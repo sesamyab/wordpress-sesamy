@@ -43,7 +43,7 @@ class Sesamy_Post_Editor {
 					'sesamy-post-editor',
 					'sesamy_block_obj',
 					array(
-						'home' => get_site_url(),
+						'home' => get_home_url(),
 					)
 				);
 			}

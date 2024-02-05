@@ -79,15 +79,15 @@ function sesamy_content_container( $atts = null, $content = null ) {
 	echo '/>';
 
 	if ( ! isset( $atts['public'] ) ) {
-		echo '<div slot="preview">' . wp_kses_post( $atts['preview'] ) . '</div>';
+		echo '<div slot="preview">' . $atts['preview'] . '</div>';
 	}
 
 	if ( 'embed' === $atts['lock_mode'] ) {
-		echo '<div slot="content">' . wp_kses_post( $content ) . '</div>';
+		echo '<div slot="content">' . $content . '</div>';
 	}
 
 	if ( 'encode' === $atts['lock_mode'] ) {
-		echo '<div slot="content">' . wp_kses_post( base64_encode( $content ) ) . '</div>';
+		echo '<div slot="content">' . base64_encode( $content ) . '</div>';
 	}
 
 	if ( 'signedUrl' !== $atts['lock_mode'] ) {
