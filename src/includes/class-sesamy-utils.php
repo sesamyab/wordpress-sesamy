@@ -85,7 +85,7 @@ class Sesamy_Utils {
 
 		echo '>';
 
-		echo ( empty( $content ) && $self_close ) ? '/>' : wp_kses_post( $content ) . '</' . esc_attr( $name ) . '>';
+		echo ( empty( $content ) && $self_close ) ? '/>' : $content . '</' . esc_attr( $name ) . '>';
 	}
 
 	/**

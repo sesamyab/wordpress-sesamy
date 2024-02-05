@@ -175,7 +175,7 @@ class Sesamy_Api_Endpoint {
 					case 'text/html':
 						header( 'Content-Type: text/html; charset=' . get_option( 'blog_charset' ) );
 						if ( ! empty( $result ) ) {
-							echo wp_kses_post( $result->data['data'], wp_allowed_protocols() );
+							echo $result->data['data'], wp_allowed_protocols();
 						}
 						exit;
 				}
