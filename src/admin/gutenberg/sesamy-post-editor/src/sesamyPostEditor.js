@@ -43,13 +43,19 @@ export default () => {
 const SesamyPostEditor = () => {
 
   const meta = useSelect(select => select('core/editor').getEditedPostAttribute('meta'));
+  const tagMetaValue = meta['_sesamy_tags'].split("|");
   //const sesamyTiersTaxonomy = wp.data.select('core').getEntityRecords('taxonomy', 'sesamy_passes');  
   const currentPost = useSelect(select => select('core/editor').getCurrentPost());
   const sesamy_passes = useSelect(select => select('core/editor').getEditedPostAttribute('sesamy_passes'));
   const dispatch = useDispatch();
+  wp.data.dispatch( 'core/edit-post').removeEditorPanel( 'taxonomy-panel-sesamy_tags' ) ; //Hide sesamy_tags taxonomy panel from sidebar
 
   const sesamyTiersTaxonomy = useSelect( (select) => {
     return select(coreStore).getEntityRecords( 'taxonomy', 'sesamy_passes' );
+  });
+
+  const sesamyTagsTaxonomy = useSelect((select) => {
+    return select(coreStore).getEntityRecords('taxonomy', 'sesamy_tags');
   });
 
   const setMeta = (meta) => {
@@ -73,6 +79,26 @@ const SesamyPostEditor = () => {
     dispatch('core').editEntityRecord('postType', currentPost.type, currentPost.id, { 'sesamy_passes': newPasses });
   }
 
+  const setTag = (tag, included) => {
+    var tag_array = (tagMetaValue) ? tagMetaValue : [];
+    if ( included && !tag_array.includes((tag.id).toString()) ) {
+      tag_array.push((tag.id).toString());
+    } else if (!included) {
+      var index = tag_array.indexOf((tag.id).toString());
+      if (index !== -1) {
+        tag_array = [...tag_array.filter(id => id !== (tag.id).toString())];
+      }
+    }
+
+    let tag_string = "";
+    if(tag_array.length > 1) {
+      tag_string = tag_array.join('|');
+    } else {
+      tag_string = tag_array.toString();
+    }
+    setMeta({ '_sesamy_tags': tag_string });
+  }
+
   // Enable tiers if there is at least one
   const enableTiers = useMemo(() => {
     
@@ -92,6 +118,16 @@ const SesamyPostEditor = () => {
 
     return Array.from(getPaymentOptions(enableTiers))
   }, [enableTiers]);
+
+  // Enable tag if there is at least one
+  const enableSesamyTag = useMemo(() => {
+
+    if (!sesamyTagsTaxonomy) {
+      return;
+    }
+
+    return sesamyTagsTaxonomy.length > 0;
+  }, [sesamyTagsTaxonomy]);
 
   // Helper function to get date and time in ISO format for input with datetime-local
   const getDateTimeISO = (date) => {
@@ -216,6 +252,19 @@ const SesamyPostEditor = () => {
 
       </>
       }
+
+      {!!enableSesamyTag && <>
+      <h3>Sesamy Attributes</h3>
+      {sesamyTagsTaxonomy.map(tag => {
+        const isTagChecked = tagMetaValue && tagMetaValue.includes((tag.id).toString());
+
+        return <CheckboxControl
+          label={tag.name}
+          checked={isTagChecked}
+          onChange={(checked) => setTag(tag, checked)}
+        />
+      })}
+      </>}
 
       <SelectControl
             label="Access Level"

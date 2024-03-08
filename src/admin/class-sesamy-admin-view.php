@@ -144,6 +144,16 @@ class Sesamy_Admin_View {
 			update_post_meta( $post_id, '_sesamy_price', $sesamy_single_purchase_price );
 		}
 
+		// Save Sesamy tags.
+		if ( isset( $_POST['sesamy-post-tags'] ) ) {
+			// Set the meta for the post.
+			$sesamy_tag =  wp_unslash( $_POST['sesamy-post-tags'] );
+			$sesamy_tag = implode("|", $sesamy_tag);
+			update_post_meta( $post_id, "_sesamy_tags", $sesamy_tag );
+		} else {
+			update_post_meta( $post_id, "_sesamy_tags", "" );
+		}
+		
 		// Save Access Level.
 		if ( isset( $_POST['access_level'] ) ) {
 			$sesamy_access_level = sanitize_text_field( wp_unslash( $_POST['access_level'] ) );
@@ -462,6 +472,33 @@ class Sesamy_Admin_View {
 					?>
 				</div>	    
 
+				<div class="block-container">
+					<label class="wp-clearfix sesamy-bulk-edit-price">
+						<span class="title"><?php echo esc_html( __( 'Sesamy Attributes', 'sesamy' ) ); ?></span>
+					</label>
+					
+					<?php
+					$args = array(
+						'taxonomy'   => 'sesamy_tags',
+						'hide_empty' => false,
+					);
+
+					// Get sesamy_tags categories.
+					$sesamy_tags = get_terms( $args );
+					$selected_sesamy_tags = $post_properties['sesamy_tags'] ? is_array($post_properties['sesamy_tags']) ? $post_properties['sesamy_tags'] : explode("|", $post_properties['sesamy_tags']) : [];
+					
+					// Output tag checkboxes.
+					if ( ! empty( $sesamy_tags ) ) {
+						foreach ( $sesamy_tags as $sesamy_tag ) {
+							$checked = in_array( $sesamy_tag->term_id, $selected_sesamy_tags ) ? 'checked="checked"' : '';
+							echo '<input type="checkbox" name="sesamy-post-tags[]"  value="' . esc_attr( $sesamy_tag->term_id ) . '" ' . $checked . '>';
+							echo esc_html( $sesamy_tag->name );
+							echo '<br>';
+						}
+					}
+					?>
+				</div>
+				
 				<div class="block-container">
 					<label class="wp-clearfix sesamy-bulk-edit-price">
 						<span class="title"><?php echo esc_html__( 'Access Level', 'sesamy' ); ?></span>

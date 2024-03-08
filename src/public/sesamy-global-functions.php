@@ -40,6 +40,25 @@ function sesamy_content_container( $atts = null, $content = null ) {
 		$access_level = 'entitlement';
 	}
 	
+	// Get sesamy tags and add in container argument
+	if ( !empty( $post_settings['sesamy_tags'] ) ) {
+		$required_tags = explode("|", $post_settings['sesamy_tags']);
+	} else {
+		$required_tags = get_option('sesamy_tags');
+	}
+
+	$tag_name = [];
+	if(isset($required_tags) && is_array($required_tags)) {
+		foreach($required_tags as $tag) {
+			$tag_array = get_term_by("term_id", $tag, "sesamy_tags");
+			if($tag_array) {
+				$get_term_meta = get_term_meta($tag_array->term_id, "attribute_type", true);
+				array_push($tag_name, ($get_term_meta) ? $get_term_meta.":".$tag_array->slug : $tag_array->slug);
+			}
+		}
+		$required_tags = $tag_name;
+	}
+	$required_tags = ($required_tags) ? implode(";", $required_tags) : "";
 
 	$atts = shortcode_atts(
 		array(
@@ -52,6 +71,7 @@ function sesamy_content_container( $atts = null, $content = null ) {
 			'access_url'           => get_site_url() . '/wp-json/sesamy/v1/posts/' . $atts['publisher_content_id'],
 			'pass'                 => '',
 			'access-level' 		   => $access_level,
+			'required-attributes'  => $required_tags,
 		),
 		$atts,
 		'sesamy_content_container'

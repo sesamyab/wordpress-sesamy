@@ -117,6 +117,31 @@ class Sesamy_Settings_Admin {
 				'label_for' => 'sesamy_content_types',
 			)
 		);
+
+		$sesamy_tags = get_terms([
+			'taxonomy' => "sesamy_tags",
+			'hide_empty' => false,
+		]);
+		
+		$sesamy_tags_array = array();
+		if(count($sesamy_tags) > 0) {
+			foreach($sesamy_tags as $sesamy_tag) {
+				$sesamy_tags_array[$sesamy_tag->term_id] = $sesamy_tag->name;
+			}
+		}
+		
+		add_settings_field(
+			'sesamy_tags',
+			__( 'Sesamy Attributes', 'sesamy' ),
+			array( $this, 'settings_render_tag_checkboxlist' ),
+			'sesamy',
+			'sesamy_section_general',
+			array(
+				'name'      => 'sesamy_tags',
+				'options'   => $sesamy_tags_array,
+				'label_for' => 'sesamy_content_types',
+			)
+		);
 	}
 
 	/**
@@ -172,6 +197,27 @@ class Sesamy_Settings_Admin {
 		}
 	}
 
+	/**
+	 * Checkbox field render
+	 *
+	 * @param array $args Arguments of checkbox fields.
+	 * @since 1.0.0
+	 * @package    Sesamy
+	 */
+	public function settings_render_tag_checkboxlist( $args ) {
+		if ( ! empty( $args ) ) {
+			$options = get_option( $args['name'] );
+			if ( ! is_array( $options ) ) {
+				$options = array();
+			}
+			
+			foreach ( $args['options'] as $key => $value ) {
+				$checked = in_array( $key, $options ) ? 'checked' : '';
+				echo '<label><input type="checkbox" name="' . esc_attr( $args['name'] ) . '[]" value="' . esc_attr( $key ) . '" ' . esc_attr( $checked ) . '>' . esc_attr( $value ) . '</label><br>';
+			}
+		}
+	}
+	
 	/**
 	 * Text field render
 	 *
