@@ -7,7 +7,7 @@
  * registers the activation and deactivation functions, and defines a function
  * that starts the plugin.
  *
- * @link    https://www.viggeby.com
+ * @link    https://sesamy.com
  * @since   1.0.0
  * @package Sesamy
  *
@@ -15,9 +15,9 @@
  * Plugin Name:       Sesamy
  * Plugin URI:        https://sesamy.com
  * Description:       Add paywall functionality with Sesamy (sesamy.com) to your WordPress website.
- * Version:           1.0.7
- * Author:            Sesamy AB, Jonas Stensved
- * Author URI:        https://www.viggeby.com
+ * Version:           1.0.8
+ * Author:            Sesamy AB
+ * Author URI:        https://sesamy.com
  * License:           GPL-2.0+
  * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
  * Text Domain:       sesamy

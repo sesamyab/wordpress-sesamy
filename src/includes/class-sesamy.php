@@ -178,6 +178,7 @@ class Sesamy {
 	private function define_common_hooks() {
 
 		$this->loader->add_action( 'init', Sesamy_Passes::get_instance(), 'register_taxonomy' );
+		$this->loader->add_action( 'init', Sesamy_Tags::get_instance(), 'register_taxonomy' );
 
 		$post_properties = new Sesamy_Post_Properties();
 		$this->loader->add_action( 'init', $post_properties, 'register_post_meta' );
