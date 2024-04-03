@@ -150,8 +150,10 @@ class Sesamy_Admin_View {
 			$sesamy_tag =  wp_unslash( $_POST['sesamy-post-tags'] );
 			$sesamy_tag = implode("|", $sesamy_tag);
 			update_post_meta( $post_id, "_sesamy_tags", $sesamy_tag );
+			wp_set_post_terms( $post_id,  $_POST['sesamy-post-tags'], 'sesamy_tags' );
 		} else {
 			update_post_meta( $post_id, "_sesamy_tags", "" );
+			wp_set_post_terms( $post_id, array(), 'sesamy_tags' );
 		}
 		
 		// Save Access Level.
