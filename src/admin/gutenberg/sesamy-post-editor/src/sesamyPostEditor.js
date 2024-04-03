@@ -47,6 +47,7 @@ const SesamyPostEditor = () => {
   //const sesamyTiersTaxonomy = wp.data.select('core').getEntityRecords('taxonomy', 'sesamy_passes');  
   const currentPost = useSelect(select => select('core/editor').getCurrentPost());
   const sesamy_passes = useSelect(select => select('core/editor').getEditedPostAttribute('sesamy_passes'));
+  const sesamy_tag = useSelect(select => select('core/editor').getEditedPostAttribute('sesamy_tags'));
   const dispatch = useDispatch();
   wp.data.dispatch( 'core/edit-post').removeEditorPanel( 'taxonomy-panel-sesamy_tags' ) ; //Hide sesamy_tags taxonomy panel from sidebar
 
@@ -97,6 +98,17 @@ const SesamyPostEditor = () => {
       tag_string = tag_array.toString();
     }
     setMeta({ '_sesamy_tags': tag_string });
+
+    
+    // Store data in default DB table
+    var newTag = [];
+    if (included && !sesamy_tag.includes(tag.id)) {
+      newTag = [...sesamy_tag, tag.id];
+    } else if (!included) {
+      newTag = [...sesamy_tag.filter(id => id !== tag.id)]
+    }
+
+    dispatch('core').editEntityRecord('postType', currentPost.type, currentPost.id, { 'sesamy_tags': newTag });
   }
 
   // Enable tiers if there is at least one
