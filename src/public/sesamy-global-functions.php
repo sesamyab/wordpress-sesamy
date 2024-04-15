@@ -119,11 +119,6 @@ function sesamy_content_container( $atts = null, $content = null ) {
 	// These hoops are here to get WordPress checks for not echoing unescaped content happy.
 	// The "_clean" suffix is reserved for marking a variable as clean according to the developer handbook.
 
-	echo '<script
-      defer
-      src="https://assets.sesamy.com/scripts/web-components/sesamy-content-container.min.js"
-    ></script>';
-
 	$container_content       = ob_get_clean();
 	$content_container_clean = apply_filters( 'sesamy_content_container', $container_content );
 
