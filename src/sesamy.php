@@ -15,7 +15,7 @@
  * Plugin Name:       Sesamy
  * Plugin URI:        https://sesamy.com
  * Description:       Add paywall functionality with Sesamy (sesamy.com) to your WordPress website.
- * Version:           1.0.10
+ * Version:           1.0.10  // Downgrade version number
  * Author:            Sesamy AB
  * Author URI:        https://sesamy.com
  * License:           GPL-2.0+
