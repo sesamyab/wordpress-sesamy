@@ -175,10 +175,25 @@ class Sesamy_Content_Container {
 
 		ob_start();
 
+		$post_settings = sesamy_get_post_settings( $post_id );
+		if ( $post_settings['access_level'] != -1 && !empty( $post_settings['access_level'] ) ) {
+			$access_level = $post_settings['access_level'];	
+		} else {
+			$access_level = 'entitlement';
+		}
+
+		$html_attributes_l = array(
+			"access-level" => $access_level,
+		);
+	
+		echo '<sesamy-locked-content-container ';
+			Sesamy_Utils::html_attributes( $html_attributes_l );
+			echo ' >';
+
 		?>
 		<div class="sesamy-paywall" data-sesamy-paywall data-sesamy-item-src="<?php the_permalink( $post->ID ); ?>" data-sesamy-passes="<?php sesamy_get_passes_urls( $post->ID ); ?>">
 
-		<?php sesamy_login(); ?>
+		<?php sesamy_login(); echo '</sesamy-locked-content-container>'; ?>
 		<?php
 
 		if ( $post_settings['enable_single_purchase'] ) {

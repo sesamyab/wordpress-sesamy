@@ -94,6 +94,16 @@ function sesamy_content_container( $atts = null, $content = null ) {
 		ARRAY_FILTER_USE_KEY
 	);
 
+	if($access_level == "logged-in") {
+		$html_attributes = array(
+			"access-url"   => $atts['access_url'],
+			"pass" 		   => $atts['pass'],
+			"access-level" => $atts['access-level'],
+			"gradient" 	   => $atts['gradient'],
+			'is_locked'    => Sesamy_Post_Properties::is_locked( $post_id ) ? "true" : "false",
+		);
+	}
+	
 	echo '<sesamy-content-container ';
 	Sesamy_Utils::html_attributes( $html_attributes );
 	echo '/>';
