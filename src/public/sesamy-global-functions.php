@@ -94,10 +94,6 @@ function sesamy_content_container( $atts = null, $content = null ) {
 		ARRAY_FILTER_USE_KEY
 	);
 
-	if ( 'signedUrl' === $atts['lock_mode'] && isset( $atts['public'] ) ) {
-		echo $content;
-	}
-
 	echo '<sesamy-content-container ';
 	Sesamy_Utils::html_attributes( $html_attributes );
 	echo '/>';
