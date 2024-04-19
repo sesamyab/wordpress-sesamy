@@ -182,12 +182,36 @@ class Sesamy_Content_Container {
 			$access_level = 'entitlement';
 		}
 
-		$html_attributes_l = array(
+		// Get sesamy tags and add in container argument
+		if ( !empty( $post_settings['sesamy_tags'] ) ) {
+			$required_tags = explode("|", $post_settings['sesamy_tags']);
+		} else {
+			$required_tags = get_option('sesamy_tags');
+		}
+
+		$tag_name = [];
+		if(isset($required_tags) && is_array($required_tags)) {
+			foreach($required_tags as $tag) {
+				$tag_array = get_term_by("term_id", $tag, "sesamy_tags");
+				if($tag_array) {
+					$get_term_meta = get_term_meta($tag_array->term_id, "attribute_type", true);
+					array_push($tag_name, ($get_term_meta) ? $get_term_meta.":".$tag_array->slug : $tag_array->slug);
+				}
+			}
+			$required_tags = $tag_name;
+		}
+		$required_tags = ($required_tags) ? implode(";", $required_tags) : "";
+
+		$html_attributes = array(
 			"access-level" => $access_level,
+			'publisher_content_id' => $post->ID,
+			'item_src'             => get_permalink(),
+			'pass'                 => sesamy_get_passes_urls( $post_settings['passes'] ),
+			'required-attributes'  => $required_tags,
 		);
 	
 		echo '<sesamy-locked-content-container ';
-			Sesamy_Utils::html_attributes( $html_attributes_l );
+			Sesamy_Utils::html_attributes( $html_attributes );
 			echo ' >';
 
 		?>
