@@ -175,10 +175,49 @@ class Sesamy_Content_Container {
 
 		ob_start();
 
+		$post_settings = sesamy_get_post_settings( $post_id );
+		if ( $post_settings['access_level'] != -1 && !empty( $post_settings['access_level'] ) ) {
+			$access_level = $post_settings['access_level'];	
+		} else {
+			$access_level = 'entitlement';
+		}
+
+		// Get sesamy tags and add in container argument
+		if ( !empty( $post_settings['sesamy_tags'] ) ) {
+			$required_tags = explode("|", $post_settings['sesamy_tags']);
+		} else {
+			$required_tags = get_option('sesamy_tags');
+		}
+
+		$tag_name = [];
+		if(isset($required_tags) && is_array($required_tags)) {
+			foreach($required_tags as $tag) {
+				$tag_array = get_term_by("term_id", $tag, "sesamy_tags");
+				if($tag_array) {
+					$get_term_meta = get_term_meta($tag_array->term_id, "attribute_type", true);
+					array_push($tag_name, ($get_term_meta) ? $get_term_meta.":".$tag_array->slug : $tag_array->slug);
+				}
+			}
+			$required_tags = $tag_name;
+		}
+		$required_tags = ($required_tags) ? implode(";", $required_tags) : "";
+
+		$html_attributes = array(
+			"access-level" => $access_level,
+			'publisher_content_id' => $post->ID,
+			'item_src'             => get_permalink(),
+			'pass'                 => sesamy_get_passes_urls( $post_settings['passes'] ),
+			'required-attributes'  => $required_tags,
+		);
+	
+		echo '<sesamy-locked-content-container ';
+			Sesamy_Utils::html_attributes( $html_attributes );
+			echo ' >';
+
 		?>
 		<div class="sesamy-paywall" data-sesamy-paywall data-sesamy-item-src="<?php the_permalink( $post->ID ); ?>" data-sesamy-passes="<?php sesamy_get_passes_urls( $post->ID ); ?>">
 
-		<?php sesamy_login(); ?>
+		<?php sesamy_login(); echo '</sesamy-locked-content-container>'; ?>
 		<?php
 
 		if ( $post_settings['enable_single_purchase'] ) {
