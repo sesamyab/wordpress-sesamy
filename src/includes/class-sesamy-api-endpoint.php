@@ -92,8 +92,6 @@ class Sesamy_Api_Endpoint {
 
 		$post = get_post( $request['id'] );
 
-		print_r($post); exit;
-
 		// Check that post actually exists.
 		if ( null === $post ) {
 			return new WP_Error( 404, __( 'Post not found.', 'sesamy' ) );
@@ -104,7 +102,7 @@ class Sesamy_Api_Endpoint {
 
 		// If the post is locked, verify the JWT token. If not, just return the content.
 		$sesamy_helper_obj = new Sesamy_JWT_Helper();
-		$result            = Sesamy::is_locked( $post ) ? $sesamy_helper_obj->verify( $jwt ) : true;
+		$result            = Sesamy::is_locked( $post ) && preg_match('/^\s*Bearer/i', $jwt) ? $sesamy_helper_obj->verify( $jwt ) : true;
 
 		if ( is_wp_error( $result ) ) {
 			return $result;
@@ -175,7 +173,7 @@ class Sesamy_Api_Endpoint {
 					case 'text/html':
 						header( 'Content-Type: text/html; charset=' . get_option( 'blog_charset' ) );
 						if ( ! empty( $result ) ) {
-							echo $result->data['data'], wp_allowed_protocols();
+							echo wp_kses_post( $result->data['data'], wp_allowed_protocols() );
 						}
 						exit;
 				}
