@@ -1,8 +1,6 @@
-name: Deploy to WordPress.org
+name: Deploy to WordPress.org and AWS S3
 on:
-  release:
-    types: [published]
-  workflow_dispatch:
+  push:
     branches:
       - master
 jobs:
@@ -12,6 +10,16 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@master
+
+    - name: Execute version.sh
+      run: |
+        chmod +x version.sh
+        ./version.sh
+
+    - name: Execute changelog.sh
+      run: |
+        chmod +x changelog.sh
+        ./changelog.sh
 
     - name: Install dependencies
       run: yarn install --frozen-lockfile
@@ -29,3 +37,13 @@ jobs:
         SVN_PASSWORD: ${{ secrets.SVN_PASSWORD }}
         SLUG: sesamy        
         BUILD_DIR: src
+        AWS_ACCESS_KEY_ID: ${{ secrets.PROD_AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.PROD_AWS_SECRET_ACCESS_KEY }}
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v2
+      with:
+        aws-access-key-id: ${{ secrets.PROD_AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.PROD_AWS_SECRET_ACCESS_KEY }}
+        aws-region: eu-west-1
+    - name: Deploy latest to S3 bucket
+      run: aws s3 sync ./dist s3://sesamy-assets-cdn/scripts/${{ github.event.repository.name }} --delete --cache-control max-age=0

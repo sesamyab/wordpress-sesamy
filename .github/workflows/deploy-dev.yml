@@ -24,6 +24,16 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.PACKAGE_READ_TOKEN }}
 
+      - name: Execute version.sh
+        run: |
+          chmod +x version.sh
+          ./version.sh
+
+      - name: Execute changelog.sh
+        run: |
+          chmod +x changelog.sh
+          ./changelog.sh
+
       - name: Release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
