@@ -1,6 +1,8 @@
 name: Deploy to WordPress.org and AWS S3
 on:
-  push:
+  release:
+    types: [published]
+  workflow_dispatch:
     branches:
       - master
 jobs:
