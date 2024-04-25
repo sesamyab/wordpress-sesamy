@@ -23,6 +23,11 @@ jobs:
         run: yarn install --ignore-scripts
         env:
           NODE_AUTH_TOKEN: ${{ secrets.PACKAGE_READ_TOKEN }}
+      
+      - name: Set up Git
+        run: |
+          git config --global user.email "julianidiart1987@hotmail.com"
+          git config --global user.name "Julián Idiart"
 
       - name: Execute version.sh
         run: |
@@ -33,6 +38,19 @@ jobs:
         run: |
           chmod +x changelog.sh
           ./changelog.sh
+
+      - name: Stage Changes
+        run: git add .
+        
+      - name: Commit Changes
+        run: |
+          git commit -m "chore(release): publish version <tag> in wordpress.org"
+          
+      - name: Push Changes
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: master
 
       - name: Release
         env:

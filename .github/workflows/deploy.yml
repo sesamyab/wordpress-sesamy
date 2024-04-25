@@ -13,16 +13,6 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@master
 
-    - name: Execute version.sh
-      run: |
-        chmod +x version.sh
-        ./version.sh
-
-    - name: Execute changelog.sh
-      run: |
-        chmod +x changelog.sh
-        ./changelog.sh
-
     - name: Install dependencies
       run: yarn install --frozen-lockfile
 
