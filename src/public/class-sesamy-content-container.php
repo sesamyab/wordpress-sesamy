@@ -58,6 +58,12 @@ class Sesamy_Content_Container {
 
 		$is_locked = Sesamy_Post_Properties::is_locked( $post->ID );
 
+		if ( $post_settings['access_level'] != -1 && !empty( $post_settings['access_level'] ) ) {
+			$access_level = $post_settings['access_level'];	
+		} else {
+			$access_level = 'entitlement';
+		}
+
 		$atts = array(
 			'publisher_content_id' => $post->ID,
 			'item_src'             => get_permalink(),
@@ -69,8 +75,8 @@ class Sesamy_Content_Container {
 		$default_paywall = $this->show_paywall( $post, $post_settings );
 		$paywall_seo     = apply_filters( 'sesamy_paywall_seo', $this->show_seo_paywall_data( $post ), $post );
 
-		// Check if the post is unlocked. If so, only return the content container.
-		if ( ! $is_locked ) {
+		// Check if the post is unlocked or if the access level is public. If so, only return the content container.
+		if ( ! $is_locked || $access_level == 'public') {
 			return $paywall_seo . get_sesamy_content_container( $atts, $content );
 		}
 
