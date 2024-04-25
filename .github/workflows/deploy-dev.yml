@@ -41,10 +41,20 @@ jobs:
 
       - name: Stage Changes
         run: git add .
-        
+
+      - name: Fetch all tags
+        run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
+
+      - name: Get latest semantic version tag
+        id: latest-tag
+        run: |
+          LATEST_TAG=$(git tag -l --sort=-v:refname | grep '^[0-9]\+\.[0-9]\+\.[0-9]\+$' | head -n 1)
+          echo "Latest tag is $LATEST_TAG"
+          echo "::set-output name=tag::$LATEST_TAG"
+
       - name: Commit Changes
         run: |
-          git commit -m "chore(release): publish version <tag> in wordpress.org"
+          git commit -m "chore(release): publish version ${{ steps.latest-tag.outputs.tag }} in wordpress.org"
           
       - name: Push Changes
         uses: ad-m/github-push-action@master
