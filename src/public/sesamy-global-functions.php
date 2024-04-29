@@ -77,8 +77,10 @@ function sesamy_content_container( $atts = null, $content = null ) {
 		'sesamy_content_container'
 	);
 
-	// If the article isn't locked, then add the "public" attribute to the container.
-	if ( ! Sesamy_Post_Properties::is_locked( $post_id ) || $access_level == 'public') {
+	// If the article is in lock mode None, it's not locked or it has access level public, treat it as embed and public.
+	$is_public = $atts['lock_mode'] === 'none' || !Sesamy_Post_Properties::is_locked( $post_id ) || $access_level === 'public';
+	if ( $is_public ) {
+		$atts['lock_mode'] = 'embed';
 		$atts['public'] = 'true';
 	}
 
@@ -88,8 +90,8 @@ function sesamy_content_container( $atts = null, $content = null ) {
 	$non_display_atts = array( 'preview' );
 
 	// Only the 'entitlement' access level is supported to use with the 'signedUrl' and 'event' lock modes.
-	// If the content is public or the access level is not 'entitlement', we change the lock mode to 'embed', so that the content unlocks correctly.
-	if ( ( 'signedUrl' === $atts['lock_mode'] || 'event' === $atts['lock_mode'] ) && ( isset( $atts['public'] ) || $access_level != 'entitlement' ) ) {
+	// If the content is not 'entitlement', we change the lock mode to 'embed', so that the content unlocks correctly.
+	if ( ( 'signedUrl' === $atts['lock_mode'] || 'event' === $atts['lock_mode'] ) && $access_level != 'entitlement' ) {
 		$atts['lock_mode'] = 'embed';
 	}
 

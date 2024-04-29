@@ -75,8 +75,11 @@ class Sesamy_Content_Container {
 		$default_paywall = $this->show_paywall( $post, $post_settings );
 		$paywall_seo     = apply_filters( 'sesamy_paywall_seo', $this->show_seo_paywall_data( $post ), $post );
 
+		$lock_mode = get_option( 'sesamy_lock_mode' );
+
 		// Check if the post is unlocked or if the access level is public. If so, only return the content container.
-		if ( ! $is_locked || $access_level == 'public') {
+		$is_public = !$is_locked || $access_level === 'public' || $lock_mode === 'none';
+		if ( $is_public ) {
 			return $paywall_seo . get_sesamy_content_container( $atts, $content );
 		}
 
