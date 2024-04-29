@@ -4,7 +4,7 @@ Tags: sesamy, paywall
 Requires at least: 5.0.1
 Requires PHP: 7.4
 Tested up to: 6.4.2
-Stable tag: 2.0.1
+Stable tag: 2.0.5
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -101,6 +101,13 @@ The following filters can be used to modify the default output from the plugin:
 
 
 == Changelog ==
+
+= 2.0.5 =
+* Fix a duplicated preview in unlocked content with "Embed" lock mode
+
+= 2.0.4 =
+* Fix to display the content in "Public" access for "Event" and "Signed URL" lock modes
+* Fix to hide the paywall if the content is public
 
 = 2.0.1 =
 * Fixed show content if signed url not locked
