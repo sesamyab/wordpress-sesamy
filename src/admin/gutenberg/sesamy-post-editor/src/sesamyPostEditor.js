@@ -1,4 +1,4 @@
-import { ToggleControl, __experimentalNumberControl as NumberControl, SelectControl, CheckboxControl, __experimentalInputControl as InputControl } from '@wordpress/components';
+import { ToggleControl, __experimentalNumberControl as NumberControl, SelectControl, CheckboxControl, __experimentalInputControl as InputControl, TextareaControl } from '@wordpress/components';
 import { PluginDocumentSettingPanel } from '@wordpress/edit-post';
 import { useSelect, useDispatch } from '@wordpress/data';
 import { __ } from '@wordpress/i18n';
@@ -49,7 +49,9 @@ const SesamyPostEditor = () => {
   const sesamy_passes = useSelect(select => select('core/editor').getEditedPostAttribute('sesamy_passes'));
   const sesamy_tag = useSelect(select => select('core/editor').getEditedPostAttribute('sesamy_tags'));
   const dispatch = useDispatch();
+  
   wp.data.dispatch( 'core/edit-post').removeEditorPanel( 'taxonomy-panel-sesamy_tags' ) ; //Hide sesamy_tags taxonomy panel from sidebar
+  // wp.data.dispatch( 'core/editor').removeEditorPanel( 'taxonomy-panel-sesamy_tags' ) ; //Hide sesamy_tags taxonomy panel from sidebar
 
   const sesamyTiersTaxonomy = useSelect( (select) => {
     return select(coreStore).getEntityRecords( 'taxonomy', 'sesamy_passes' );
@@ -180,117 +182,163 @@ const SesamyPostEditor = () => {
   const minLockedUntil = meta['_sesamy_locked_from'] && unixTimestampUTCToLocalDatetime(meta['_sesamy_locked_from']) > new Date() ? unixTimestampUTCToLocalDatetime(meta['_sesamy_locked_from']) : undefined;
 
   return (
-    <PluginDocumentSettingPanel
-      className="sesamy-editor-panel"
-      name="sesamy-post-editor"
-      title={__('Sesamy', 'sesamy')}
-    >
+    <>
+      <PluginDocumentSettingPanel
+        className="sesamy-editor-panel"
+        name="sesamy-post-editor"
+        title={__('Sesamy', 'sesamy')}
+      >
 
-      <ToggleControl
-        checked={meta['_sesamy_locked']}
-        label={__('Locked now', 'sesamy')}
-        onChange={(value) => setMeta({ '_sesamy_locked': value })}
-      />
-
-      {meta['_sesamy_locked'] === false && 
-        <InputControl
-          label={__('Locked from', 'sesamy')}
-          value={meta['_sesamy_locked_from'] ? getDateTimeISO(unixTimestampUTCToLocalDatetime(meta['_sesamy_locked_from'])) : ''}
-          type='datetime-local'
-          min={getDateTimeISO(minLockedFrom)}
-          max={minLockedUntil ? getDateTimeISO(minLockedUntil) : ''}
-          onChange={value => setMeta({ '_sesamy_locked_from': value ? datetimeLocalToUnixTimestampUTC(value) : -1 }) }
-        />
-      }
-
-      {(meta['_sesamy_locked'] === true || !isNaN(meta['_sesamy_locked_from']) && meta['_sesamy_locked_from']  > 0 ) &&
-        <InputControl
-          label={__('Locked until', 'sesamy')}
-          value={ meta['_sesamy_locked_until'] ? getDateTimeISO(unixTimestampUTCToLocalDatetime(meta['_sesamy_locked_until'])) : ''}
-          min={getDateTimeISO(minLockedFrom)}
-          type='datetime-local'
-          onChange={value => setMeta({ '_sesamy_locked_until': value ? datetimeLocalToUnixTimestampUTC(value) : -1 })}
-        />
-      }
-
-
-      {(meta['_sesamy_locked'] === true || !isNaN(meta['_sesamy_locked_from']) && meta['_sesamy_locked_from'] > 0) && <>
-
-
-        <h3>Single purchase</h3>
         <ToggleControl
-          checked={meta['_sesamy_enable_single_purchase']}
-          label={__('Enable single-purchase', 'sesamy')}
-          onChange={(value) => setMeta({ '_sesamy_enable_single_purchase': value })}
-        />
+          checked={meta['_sesamy_locked']}
+          label={__('Locked now', 'sesamy')}
+          onChange={(value) => setMeta({ '_sesamy_locked': value })} />
 
-        {meta['_sesamy_enable_single_purchase'] && <>
+        {meta['_sesamy_locked'] === false &&
+          <InputControl
+            label={__('Locked from', 'sesamy')}
+            value={meta['_sesamy_locked_from'] ? getDateTimeISO(unixTimestampUTCToLocalDatetime(meta['_sesamy_locked_from'])) : ''}
+            type='datetime-local'
+            min={getDateTimeISO(minLockedFrom)}
+            max={minLockedUntil ? getDateTimeISO(minLockedUntil) : ''}
+            onChange={value => setMeta({ '_sesamy_locked_from': value ? datetimeLocalToUnixTimestampUTC(value) : -1 })} />}
+
+        {(meta['_sesamy_locked'] === true || !isNaN(meta['_sesamy_locked_from']) && meta['_sesamy_locked_from'] > 0) &&
+          <InputControl
+            label={__('Locked until', 'sesamy')}
+            value={meta['_sesamy_locked_until'] ? getDateTimeISO(unixTimestampUTCToLocalDatetime(meta['_sesamy_locked_until'])) : ''}
+            min={getDateTimeISO(minLockedFrom)}
+            type='datetime-local'
+            onChange={value => setMeta({ '_sesamy_locked_until': value ? datetimeLocalToUnixTimestampUTC(value) : -1 })} />}
 
 
-          <NumberControl
-            label={__('Price', 'sesamy')}
-            value={parseFloat(meta['_sesamy_price'])}
-            min={0}
-            step={'0.01'}
-            onChange={(value) => {
-              setMeta({ '_sesamy_price': value })
-            }}
-          />
+        {(meta['_sesamy_locked'] === true || !isNaN(meta['_sesamy_locked_from']) && meta['_sesamy_locked_from'] > 0) && <>
+
+
+          <h3>Single purchase</h3>
+          <ToggleControl
+            checked={meta['_sesamy_enable_single_purchase']}
+            label={__('Enable single-purchase', 'sesamy')}
+            onChange={(value) => setMeta({ '_sesamy_enable_single_purchase': value })} />
+
+          {meta['_sesamy_enable_single_purchase'] && <>
+
+
+            <NumberControl
+              label={__('Price', 'sesamy')}
+              value={parseFloat(meta['_sesamy_price'])}
+              min={0}
+              step={'0.01'}
+              onChange={(value) => {
+                setMeta({ '_sesamy_price': value });
+              } } />
+
+          </>}
+
+          {meta['_sesamy_enable_single_purchase'] && <>
+
+
+            <InputControl
+              label={__('Discount Codes', 'sesamy')}
+              value={meta['_sesamy_discount_codes']}
+              onChange={(value) => {
+                setMeta({ '_sesamy_discount_codes': value });
+              } } />
+
+          </>}
+
+          {!!enableTiers && <>
+
+
+            <h3>Sesamy Passes</h3>
+
+
+            {sesamyTiersTaxonomy.map(tier => {
+
+              const isChecked = sesamy_passes && sesamy_passes.includes(tier.id);
+
+              return <CheckboxControl
+                label={tier.name}
+                checked={isChecked}
+                onChange={(checked) => setTier(tier, checked)} />;
+
+            })}
+
+          </>}
+
+
 
         </>}
 
-        {!!enableTiers && <>
-
-
-          <h3>Sesamy Passes</h3>
-
-
-          {sesamyTiersTaxonomy.map(tier => {
-
-            const isChecked = sesamy_passes && sesamy_passes.includes(tier.id);
+        {!!enableSesamyTag && <>
+          <h3>Sesamy Attributes</h3>
+          {sesamyTagsTaxonomy.map(tag => {
+            const isTagChecked = tagMetaValue && tagMetaValue.includes((tag.id).toString());
 
             return <CheckboxControl
-              label={tier.name}
-              checked={isChecked}
-              onChange={(checked) => setTier(tier, checked)}
-              
-            />
-
+              label={tag.name}
+              checked={isTagChecked}
+              onChange={(checked) => setTag(tag, checked)} />;
           })}
-
         </>}
 
+        <SelectControl
+          label="Access Level"
+          value={meta['_sesamy_access_level']}
+          options={[
+            { label: 'Entitlement', value: 'entitlement' },
+            { label: 'Public', value: 'public' },
+            { label: 'Logged-in', value: 'logged-in' },
+          ]}
+          onChange={(value) => setMeta({ '_sesamy_access_level': value })}
+          __nextHasNoMarginBottom />
+
+      </PluginDocumentSettingPanel>
+      <PluginDocumentSettingPanel
+        className="sesamy-editor-panel"
+        name="sesamy-paywall-wizard-post-editor"
+        title={__('Sesamy Paywall', 'sesamy_paywall')}
+      >
+
+          <ToggleControl
+            checked={meta['_sesamy_paywall_wizard_show_hide']}
+            label={meta['_sesamy_paywall_wizard_show_hide'] ? __('Switch to default paywall', 'sesamy') : __('Switch to paywall wizard', 'sesamy')}
+            onChange={(value) => setMeta({ '_sesamy_paywall_wizard_show_hide': value })} />
+          
+          {meta['_sesamy_paywall_wizard_show_hide'] && <>
 
 
-      </>
-      }
+            <InputControl
+              label={__('Logo URL', 'sesamy')}
+              value={meta['_sesamy_paywall_wizard_logo_URL']}
+              onChange={(value) => {
+                setMeta({ '_sesamy_paywall_wizard_logo_URL': value });
+              } } />
 
-      {!!enableSesamyTag && <>
-      <h3>Sesamy Attributes</h3>
-      {sesamyTagsTaxonomy.map(tag => {
-        const isTagChecked = tagMetaValue && tagMetaValue.includes((tag.id).toString());
+            <InputControl
+              label={__('Title', 'sesamy')}
+              value={meta['_sesamy_paywall_wizard_title']}
+              onChange={(value) => {
+                setMeta({ '_sesamy_paywall_wizard_title': value });
+              } } />
 
-        return <CheckboxControl
-          label={tag.name}
-          checked={isTagChecked}
-          onChange={(checked) => setTag(tag, checked)}
-        />
-      })}
-      </>}
+            <TextareaControl
+              label={__('Perks', 'sesamy')}
+              value={meta['_sesamy_paywall_wizard_perks']}
+              onChange={(value) => {
+                setMeta({ '_sesamy_paywall_wizard_perks': value });
+              } } />
+            
+            <ToggleControl
+            checked={meta['_sesamy_paywall_wizard_show_login']}
+            label={__('Show login', 'sesamy')}
+            onChange={(value) => setMeta({ '_sesamy_paywall_wizard_show_login': value })} />
 
-      <SelectControl
-            label="Access Level"
-            value={ meta['_sesamy_access_level'] }
-            options={ [
-                { label: 'Entitlement', value: 'entitlement' },
-                { label: 'Public', value: 'public' },
-                { label: 'Logged-in', value: 'logged-in' },
-            ] }
-            onChange={(value) => setMeta({ '_sesamy_access_level': value })}
-            __nextHasNoMarginBottom
-        />
+          </>}
 
-    </PluginDocumentSettingPanel>
+
+      </PluginDocumentSettingPanel>
+    </>
   );
 
 }

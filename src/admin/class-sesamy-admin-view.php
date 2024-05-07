@@ -155,12 +155,47 @@ class Sesamy_Admin_View {
 			update_post_meta( $post_id, "_sesamy_tags", "" );
 			wp_set_post_terms( $post_id, array(), 'sesamy_tags' );
 		}
+
+		// Save discount codes.
+		if ( isset( $_POST['sesamy_discount_codes'] ) ) {
+			// Set the meta for the post.
+			$sesamy_discount_codes = sanitize_text_field( wp_unslash( $_POST['sesamy_discount_codes'] ) );
+			update_post_meta( $post_id, "_sesamy_discount_codes", $sesamy_discount_codes );
+		} else {
+			update_post_meta( $post_id, "_sesamy_discount_codes", "" );
+		}
 		
 		// Save Access Level.
 		if ( isset( $_POST['access_level'] ) ) {
 			$sesamy_access_level = sanitize_text_field( wp_unslash( $_POST['access_level'] ) );
 			update_post_meta( $post_id, '_sesamy_access_level', $sesamy_access_level );
 		}
+
+		// Save or update the custom meta data.
+		$paywall_wizard_show_hide = ( isset( $_POST['sesamy_paywall_wizard_show_hide'] ) ) ? 1 : 0;
+		update_post_meta( $post_id, '_sesamy_paywall_wizard_show_hide', $paywall_wizard_show_hide );
+
+		// Save logo URL.
+		if ( isset( $_POST['sesamy_paywall_wizard_logo_URL'] ) ) {
+			$sesamy_access_level = sanitize_text_field( wp_unslash( $_POST['sesamy_paywall_wizard_logo_URL'] ) );
+			update_post_meta( $post_id, '_sesamy_paywall_wizard_logo_URL', $sesamy_access_level );
+		}
+
+		// Save paywall wizard title.
+		if ( isset( $_POST['sesamy_paywall_wizard_title'] ) ) {
+			$sesamy_access_level = sanitize_text_field( wp_unslash( $_POST['sesamy_paywall_wizard_title'] ) );
+			update_post_meta( $post_id, '_sesamy_paywall_wizard_title', $sesamy_access_level );
+		}
+
+		// Save paywall wizard perks.
+		if ( isset( $_POST['sesamy_paywall_wizard_perks'] ) ) {
+			$sesamy_access_level = sanitize_text_field( wp_unslash( $_POST['sesamy_paywall_wizard_perks'] ) );
+			update_post_meta( $post_id, '_sesamy_paywall_wizard_perks', $sesamy_access_level );
+		}
+
+		// Save or update the paywall wizard login.
+		$paywall_wizard_login = ( isset( $_POST['sesamy_paywall_wizard_login'] ) ) ? 1 : 0;
+		update_post_meta( $post_id, '_sesamy_paywall_wizard_show_login', $paywall_wizard_login );
 	}
 
 	/**
@@ -364,6 +399,18 @@ class Sesamy_Admin_View {
 		        '__back_compat_meta_box' => true,
 		    )
 		);
+
+		add_meta_box(
+			'sesamy_paywall_add_custom_meta_box',
+			__( 'Sesamy Paywall', 'sesamy_paywall' ),
+			array( $this, 'sesamy_paywall_add_class_meta_box' ),
+			'post',
+			'side',
+			'default',
+			array(
+		        '__back_compat_meta_box' => true,
+		    )
+		);
 	}
 
 
@@ -447,6 +494,16 @@ class Sesamy_Admin_View {
 					<input type="number" name="sesamy_single_purchase_price" value="<?php echo esc_attr( $post_properties['price'] ); ?>">
 				</div>
 
+				<div class="sesamy-classic-locked-discount-codes block-container">
+					<label class="wp-clearfix sesamy-bulk-edit-discount-codes">
+						<span class="title"><?php echo esc_html( __( 'Discount Codes', 'sesamy' ) ); ?></span>
+					</label>
+
+					<div class="sesamy-classic-purchase-container">
+						<input type="text" name="sesamy_discount_codes" value="<?php echo esc_attr( $post_properties['discount_codes'] ); ?>" class="sesamy-discount-codes">
+					</div>
+				</div>
+
 				<div class="block-container">
 					<label class="wp-clearfix sesamy-bulk-edit-price">
 						<span class="title"><?php echo esc_html( __( 'SESAMY PASSES', 'sesamy' ) ); ?></span>
@@ -519,6 +576,78 @@ class Sesamy_Admin_View {
 							} ?>
 						</select>
 					</div>
+				</div>
+			</div>
+		</fieldset>
+		<?php
+	}
+
+	/**
+	 * Callback function to render the content of the meta box
+	 *
+	 * @param string $post Post Object.
+	 * @since 1.0.0
+	 * @package    Sesamy
+	 */
+	public function sesamy_paywall_add_class_meta_box( $post ) {
+
+		$post_properties = Sesamy_Post_Properties::get_post_settings( $post->ID );
+
+		$sesamy_paywall_wizard_show_hide = Sesamy_Post_Properties::is_show_paywall_wizard( $post->ID );
+		$sesamy_paywall_wizard_checked = ( 1 == $sesamy_paywall_wizard_show_hide ) ? 'checked="checked"' : '';
+
+		$sesamy_paywall_wizard_login_checked = ( 1 == $post_properties['paywall_wizard_show_login'] ) ? 'checked="checked"' : '';
+
+		// We'll use this nonce field later on when saving.
+		wp_nonce_field( 'sesamy_post_meta_box_nonce', 'post_meta_box_nonce' );
+
+		$access_level_args = array( 'entitlement', 'public', 'logged-in' );
+		?>
+
+		<fieldset  class="classic-fields-sesamy">
+			<input type="checkbox" name="sesamy_paywall_wizard_show_hide" <?php echo esc_attr( $sesamy_paywall_wizard_checked ); ?> class="sesamy_paywall_wizard_show_hide">
+			<label class="wp-clearfix sesamy-bulk-edit-price">
+				<span class="title sesamy_paywall_wizard_show_hide_title"><b>
+					<?php echo ( 1 == $sesamy_paywall_wizard_show_hide ) ? esc_html( __( 'Switch to default paywall', 'sesamy' ) ) : esc_html( __( 'Switch to paywall wizard', 'sesamy' ) ); ?>
+				</b></span>
+			</label>
+
+			<div class="sesamy-classic-paywall-wizard-inactive">
+				<div class="sesamy-classic-paywall-wizard-logo-URL block-container">
+					<label class="wp-clearfix sesamy-bulk-edit-Logo-URL">
+						<span class="title"><?php echo esc_html( __( 'Logo URL', 'sesamy' ) ); ?></span>
+					</label>
+
+					<div class="sesamy-classic-purchase-container">
+						<input type="text" name="sesamy_paywall_wizard_logo_URL" value="<?php echo esc_attr( $post_properties['logo_URL'] ); ?>" class="sesamy_paywall_wizard_logo_URL">
+					</div>
+				</div>
+
+				<div class="sesamy-classic-paywall-wizard-title block-container">
+					<label class="wp-clearfix sesamy-bulk-edit-title">
+						<span class="title"><?php echo esc_html( __( 'Title', 'sesamy' ) ); ?></span>
+					</label>
+
+					<div class="sesamy-classic-purchase-container">
+						<input type="text" name="sesamy_paywall_wizard_title" value="<?php echo esc_attr( $post_properties['paywall_wizard_title'] ); ?>" class="sesamy_paywall_wizard_logo_URL">
+					</div>
+				</div>
+
+				<div class="sesamy-classic-paywall-wizard-perks block-container">
+					<label class="wp-clearfix sesamy-bulk-edit-perks">
+						<span class="title"><?php echo esc_html( __( 'Perks', 'sesamy' ) ); ?></span>
+					</label>
+
+					<div class="sesamy-classic-purchase-container">
+						<textarea name="sesamy_paywall_wizard_perks" class="sesamy_paywall_wizard_perks"><?php echo esc_attr( $post_properties['paywall_wizard_perks'] ); ?></textarea>
+					</div>
+				</div>
+
+				<div class="sesamy-classic-paywall-wizard-login block-container">
+					<label class="wp-clearfix sesamy-bulk-edit-login">
+						<input type="checkbox" name="sesamy_paywall_wizard_login" <?php echo esc_attr( $sesamy_paywall_wizard_login_checked ); ?> class="sesamy_paywall_wizard_login">
+						<span class="title"><?php echo esc_html( __( 'Show login', 'sesamy' ) ); ?></span>
+					</label>
 				</div>
 			</div>
 		</fieldset>

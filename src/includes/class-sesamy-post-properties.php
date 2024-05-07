@@ -121,6 +121,74 @@ class Sesamy_Post_Properties {
 					)
 				);
 
+				register_post_meta(
+					$post_type,
+					'_sesamy_discount_codes',
+					array(
+						'show_in_rest'  => true,
+						'single'        => true,
+						'type'          => 'string',
+						'auth_callback' => '__return_true',
+					)
+				);
+
+				register_post_meta(
+					$post_type,
+					'_sesamy_paywall_wizard_show_hide',
+					array(
+						'show_in_rest'  => true,
+						'single'        => true,
+						'type'          => 'boolean',
+						'default'       => false,
+						'auth_callback' => '__return_true',
+					)
+				);
+
+				register_post_meta(
+					$post_type,
+					'_sesamy_paywall_wizard_logo_URL',
+					array(
+						'show_in_rest'  => true,
+						'single'        => true,
+						'type'          => 'string',
+						'auth_callback' => '__return_true',
+					)
+				);
+
+				register_post_meta(
+					$post_type,
+					'_sesamy_paywall_wizard_title',
+					array(
+						'show_in_rest'  => true,
+						'single'        => true,
+						'type'          => 'string',
+						'auth_callback' => '__return_true',
+					)
+				);
+
+				register_post_meta(
+					$post_type,
+					'_sesamy_paywall_wizard_perks',
+					array(
+						'show_in_rest'  => true,
+						'single'        => true,
+						'type'          => 'string',
+						'auth_callback' => '__return_true',
+					)
+				);
+
+				register_post_meta(
+					$post_type,
+					'_sesamy_paywall_wizard_show_login',
+					array(
+						'show_in_rest'  => true,
+						'single'        => true,
+						'type'          => 'boolean',
+						'default'       => false,
+						'auth_callback' => '__return_true',
+					)
+				);
+
 			}
 		}
 	}
@@ -152,6 +220,19 @@ class Sesamy_Post_Properties {
 
 		$post = get_post( $post );
 		return (bool) ( get_post_meta( $post->ID, '_sesamy_locked', true ) ?? false );
+	}
+
+	/**
+	 * Locked post check
+	 *
+	 * @since  1.0.0
+	 * @package    Sesamy
+	 * @param array $post post Object.
+	 */
+	public static function is_show_paywall_wizard( $post ) {
+
+		$post = get_post( $post );
+		return (bool) ( get_post_meta( $post->ID, '_sesamy_paywall_wizard_show_hide', true ) ?? false );
 	}
 
 	/**
@@ -202,14 +283,19 @@ class Sesamy_Post_Properties {
 		$passes = get_the_terms( $post->ID, 'sesamy_passes' );
 
 		return array(
-			'locked'                 => (bool) get_post_meta( $post->ID, '_sesamy_locked', true ),
-			'enable_single_purchase' => (bool) get_post_meta( $post->ID, '_sesamy_enable_single_purchase', true ),
-			'price'                  => get_post_meta( $post->ID, '_sesamy_price', true ),
-			'passes'                 => is_array( $passes ) ? array_map( 'sesamy_get_pass_info', $passes ) : array(),
-			'locked_from'            => (int) get_post_meta( $post->ID, '_sesamy_locked_from', true ),
-			'locked_until'           => (int) get_post_meta( $post->ID, '_sesamy_locked_until', true ),
-			'sesamy_tags'            => get_post_meta( $post->ID, '_sesamy_tags', true ),
-			'access_level'           => get_post_meta( $post->ID, '_sesamy_access_level', true ),
+			'locked'                 	=> (bool) get_post_meta( $post->ID, '_sesamy_locked', true ),
+			'enable_single_purchase' 	=> (bool) get_post_meta( $post->ID, '_sesamy_enable_single_purchase', true ),
+			'price'                  	=> get_post_meta( $post->ID, '_sesamy_price', true ),
+			'passes'                 	=> is_array( $passes ) ? array_map( 'sesamy_get_pass_info', $passes ) : array(),
+			'locked_from'            	=> (int) get_post_meta( $post->ID, '_sesamy_locked_from', true ),
+			'locked_until'           	=> (int) get_post_meta( $post->ID, '_sesamy_locked_until', true ),
+			'sesamy_tags'            	=> get_post_meta( $post->ID, '_sesamy_tags', true ),
+			'discount_codes'         	=> get_post_meta( $post->ID, '_sesamy_discount_codes', true ),
+			'access_level'           	=> get_post_meta( $post->ID, '_sesamy_access_level', true ),
+			'logo_URL'           	 	=> get_post_meta( $post->ID, '_sesamy_paywall_wizard_logo_URL', true ),
+			'paywall_wizard_title'   	=> get_post_meta( $post->ID, '_sesamy_paywall_wizard_title', true ),
+			'paywall_wizard_perks'      => get_post_meta( $post->ID, '_sesamy_paywall_wizard_perks', true ),
+			'paywall_wizard_show_login' => get_post_meta( $post->ID, '_sesamy_paywall_wizard_show_login', true ),
 		);
 	}
 }
