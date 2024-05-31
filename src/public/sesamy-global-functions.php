@@ -413,7 +413,7 @@ function sesamy_get_passes_urls( $post_id_or_passes, $separator = ';' ) {
 /**
  * Get Paywall Wizard HTML
  *
- * @since 2.0.8
+ * @since 2.1.0
  * @package    Sesamy
  * @param array  $atts Attributes.
  * @param string $content Content.
@@ -427,7 +427,7 @@ function get_sesamy_paywall_wizard( $atts = null, $content = null ) {
 /**
  * Paywall Wizard Shortcode With attributes
  *
- * @since 2.0.8
+ * @since 2.1.0
  * @package    Sesamy
  * @param array  $atts Attributes.
  * @param string $content Content.
