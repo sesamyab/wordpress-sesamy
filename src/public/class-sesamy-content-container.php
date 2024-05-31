@@ -202,7 +202,7 @@ class Sesamy_Content_Container {
 			{
 				"data": {
 					"showLoginButton": <?php echo $post_settings['show_login'] ? 'true' : 'false'; ?>,
-					"logoSrc": <?php echo json_encode( $post_settings['paywall_wizard_logo_URL'] ); ?>,
+					"logoSrc": <?php echo json_encode( $post_settings['paywall_wizard_logo_url'] ); ?>,
 					"color": "#D62802",
 					"vendorId": "<?php echo get_option( 'sesamy_client_id' ); ?>",
 					<?php if ( $post_settings['enable_single_purchase'] ) { ?>
