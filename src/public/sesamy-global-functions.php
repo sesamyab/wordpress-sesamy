@@ -436,6 +436,7 @@ function sesamy_paywall_wizard( $atts = null, $content = null ) {
 	$atts = shortcode_atts(
 		array(
 			'publisher_content_id' => '',
+			'item_src' => '',
 		),
 		$atts,
 		'sesamy_paywall_wizard'
