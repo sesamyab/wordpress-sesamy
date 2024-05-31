@@ -1,296 +1,386 @@
-import { ToggleControl, __experimentalNumberControl as NumberControl, SelectControl, CheckboxControl, __experimentalInputControl as InputControl } from '@wordpress/components';
-import { PluginDocumentSettingPanel } from '@wordpress/edit-post';
-import { useSelect, useDispatch } from '@wordpress/data';
-import { __ } from '@wordpress/i18n';
-import { useEffect, useState, useMemo } from '@wordpress/element';
-import { store as coreStore } from '@wordpress/core-data';
-
+import {
+	ToggleControl,
+	__experimentalNumberControl as NumberControl,
+	SelectControl,
+	CheckboxControl,
+	__experimentalInputControl as InputControl,
+	TextareaControl,
+} from "@wordpress/components";
+import { PluginDocumentSettingPanel } from "@wordpress/edit-post";
+import { useSelect, useDispatch } from "@wordpress/data";
+import { __ } from "@wordpress/i18n";
+import { useEffect, useState, useMemo } from "@wordpress/element";
+import { store as coreStore } from "@wordpress/core-data";
 
 function* getPaymentOptions(enableTiers) {
+	if (enableTiers) {
+		yield { label: "Tier", value: "tier" };
+	}
 
-  if (enableTiers) {
-    yield { label: 'Tier', value: 'tier' };
-  }
-
-  yield { label: 'Custom Price', value: 'custom' };
+	yield { label: "Custom Price", value: "custom" };
 }
 
 // Only load for enabled post types
 export default () => {
+	const currentPostType = useSelect((select) =>
+		select("core/editor").getCurrentPostType()
+	);
+	const [settings, setSettings] = useState();
 
-  const currentPostType = useSelect(select => select('core/editor').getCurrentPostType());
-  const [settings, setSettings] = useState();
+	// Load settings
+	useEffect(() => {
+		fetch(sesamy_block_obj.home + "/wp-json/sesamy/v1/settings")
+			.then((response) => response.json())
+			.then((data) => setSettings(data));
+	}, []);
 
-  // Load settings
-  useEffect(() => {
-
-    fetch( sesamy_block_obj.home + '/wp-json/sesamy/v1/settings' )
-      .then((response) => response.json())
-      .then((data) => setSettings(data));
-
-  }, []);
-
-  // Only show box for enabled post types
-  return (settings && settings.content_types.includes(currentPostType)) ? (<SesamyPostEditor />) : null;
-
-}
+	// Only show box for enabled post types
+	return settings && settings.content_types.includes(currentPostType) ? (
+		<SesamyPostEditor />
+	) : null;
+};
 
 /**
  * The sesamy post editor
  *
- * @returns 
+ * @returns
  */
 const SesamyPostEditor = () => {
+	const meta = useSelect((select) =>
+		select("core/editor").getEditedPostAttribute("meta")
+	);
+	const tagMetaValue = meta["_sesamy_tags"].split("|");
+	//const sesamyTiersTaxonomy = wp.data.select('core').getEntityRecords('taxonomy', 'sesamy_passes');
+	const currentPost = useSelect((select) =>
+		select("core/editor").getCurrentPost()
+	);
+	const sesamy_passes = useSelect((select) =>
+		select("core/editor").getEditedPostAttribute("sesamy_passes")
+	);
+	const sesamy_tag = useSelect((select) =>
+		select("core/editor").getEditedPostAttribute("sesamy_tags")
+	);
+	const dispatch = useDispatch();
 
-  const meta = useSelect(select => select('core/editor').getEditedPostAttribute('meta'));
-  const tagMetaValue = meta['_sesamy_tags'].split("|");
-  //const sesamyTiersTaxonomy = wp.data.select('core').getEntityRecords('taxonomy', 'sesamy_passes');  
-  const currentPost = useSelect(select => select('core/editor').getCurrentPost());
-  const sesamy_passes = useSelect(select => select('core/editor').getEditedPostAttribute('sesamy_passes'));
-  const sesamy_tag = useSelect(select => select('core/editor').getEditedPostAttribute('sesamy_tags'));
-  const dispatch = useDispatch();
-  wp.data.dispatch( 'core/edit-post').removeEditorPanel( 'taxonomy-panel-sesamy_tags' ) ; //Hide sesamy_tags taxonomy panel from sidebar
+	wp.data
+		.dispatch("core/edit-post")
+		.removeEditorPanel("taxonomy-panel-sesamy_tags"); //Hide sesamy_tags taxonomy panel from sidebar
+	// wp.data.dispatch( 'core/editor').removeEditorPanel( 'taxonomy-panel-sesamy_tags' ) ; //Hide sesamy_tags taxonomy panel from sidebar
 
-  const sesamyTiersTaxonomy = useSelect( (select) => {
-    return select(coreStore).getEntityRecords( 'taxonomy', 'sesamy_passes' );
-  });
+	const sesamyTiersTaxonomy = useSelect((select) => {
+		return select(coreStore).getEntityRecords("taxonomy", "sesamy_passes");
+	});
 
-  const sesamyTagsTaxonomy = useSelect((select) => {
-    return select(coreStore).getEntityRecords('taxonomy', 'sesamy_tags');
-  });
+	const sesamyTagsTaxonomy = useSelect((select) => {
+		return select(coreStore).getEntityRecords("taxonomy", "sesamy_tags");
+	});
 
-  const setMeta = (meta) => {
-    dispatch('core/editor').editPost({ meta });
-  }
+	const setMeta = (meta) => {
+		dispatch("core/editor").editPost({ meta });
+	};
 
+	const setTier = (tier, included) => {
+		var newPasses = [];
 
-  const setTier = (tier, included) => {
+		if (included && !sesamy_passes.includes(tier.id)) {
+			newPasses = [...sesamy_passes, tier.id];
+		} else if (!included) {
+			newPasses = [...sesamy_passes.filter((id) => id !== tier.id)];
+		}
 
+		dispatch("core").editEntityRecord(
+			"postType",
+			currentPost.type,
+			currentPost.id,
+			{ sesamy_passes: newPasses }
+		);
+	};
 
-    var newPasses = [];
+	const setTag = (tag, included) => {
+		var tag_array = tagMetaValue ? tagMetaValue : [];
+		if (included && !tag_array.includes(tag.id.toString())) {
+			tag_array.push(tag.id.toString());
+		} else if (!included) {
+			var index = tag_array.indexOf(tag.id.toString());
+			if (index !== -1) {
+				tag_array = [...tag_array.filter((id) => id !== tag.id.toString())];
+			}
+		}
 
-    if (included && !sesamy_passes.includes(tier.id)) {
-      newPasses = [...sesamy_passes, tier.id];
-    } else if (!included) {
-      newPasses = [...sesamy_passes.filter(id => id !== tier.id)]
-    }
+		let tag_string = "";
+		if (tag_array.length > 1) {
+			tag_string = tag_array.join("|");
+		} else {
+			tag_string = tag_array.toString();
+		}
+		setMeta({ _sesamy_tags: tag_string });
 
+		// Store data in default DB table
+		var newTag = [];
+		if (included && !sesamy_tag.includes(tag.id)) {
+			newTag = [...sesamy_tag, tag.id];
+		} else if (!included) {
+			newTag = [...sesamy_tag.filter((id) => id !== tag.id)];
+		}
 
+		dispatch("core").editEntityRecord(
+			"postType",
+			currentPost.type,
+			currentPost.id,
+			{ sesamy_tags: newTag }
+		);
+	};
 
-    dispatch('core').editEntityRecord('postType', currentPost.type, currentPost.id, { 'sesamy_passes': newPasses });
-  }
+	// Enable tiers if there is at least one
+	const enableTiers = useMemo(() => {
+		if (!sesamyTiersTaxonomy) {
+			return;
+		}
 
-  const setTag = (tag, included) => {
-    var tag_array = (tagMetaValue) ? tagMetaValue : [];
-    if ( included && !tag_array.includes((tag.id).toString()) ) {
-      tag_array.push((tag.id).toString());
-    } else if (!included) {
-      var index = tag_array.indexOf((tag.id).toString());
-      if (index !== -1) {
-        tag_array = [...tag_array.filter(id => id !== (tag.id).toString())];
-      }
-    }
+		return sesamyTiersTaxonomy.length > 0;
+	}, [sesamyTiersTaxonomy]);
 
-    let tag_string = "";
-    if(tag_array.length > 1) {
-      tag_string = tag_array.join('|');
-    } else {
-      tag_string = tag_array.toString();
-    }
-    setMeta({ '_sesamy_tags': tag_string });
+	// Populate payment types
+	const paymentTypes = useMemo(() => {
+		if (enableTiers === undefined) {
+			return;
+		}
 
-    
-    // Store data in default DB table
-    var newTag = [];
-    if (included && !sesamy_tag.includes(tag.id)) {
-      newTag = [...sesamy_tag, tag.id];
-    } else if (!included) {
-      newTag = [...sesamy_tag.filter(id => id !== tag.id)]
-    }
+		return Array.from(getPaymentOptions(enableTiers));
+	}, [enableTiers]);
 
-    dispatch('core').editEntityRecord('postType', currentPost.type, currentPost.id, { 'sesamy_tags': newTag });
-  }
+	// Enable tag if there is at least one
+	const enableSesamyTag = useMemo(() => {
+		if (!sesamyTagsTaxonomy) {
+			return;
+		}
 
-  // Enable tiers if there is at least one
-  const enableTiers = useMemo(() => {
-    
-    if (!sesamyTiersTaxonomy) {
-      return;
-    }
+		return sesamyTagsTaxonomy.length > 0;
+	}, [sesamyTagsTaxonomy]);
 
-    return sesamyTiersTaxonomy.length > 0;
-  }, [sesamyTiersTaxonomy]);
+	// Helper function to get date and time in ISO format for input with datetime-local
+	const getDateTimeISO = (date) => {
+		if (!date) {
+			return undefined;
+		}
 
-  // Populate payment types
-  const paymentTypes = useMemo(() => {
+		const year = date.getFullYear();
+		const month = (date.getMonth() + 1).toString().padStart(2, "0");
+		const day = date.getDate().toString().padStart(2, "0");
+		const hours = date.getHours().toString().padStart(2, "0");
+		const minutes = date.getMinutes().toString().padStart(2, "0");
+		return `${year}-${month}-${day}T${hours}:${minutes}`;
+	};
 
-    if (enableTiers === undefined) {
-      return;
-    }
+	const datetimeLocalToUnixTimestampUTC = (localDateTimeString) => {
+		if (!localDateTimeString) {
+			return undefined;
+		}
 
-    return Array.from(getPaymentOptions(enableTiers))
-  }, [enableTiers]);
+		const localDate = new Date(localDateTimeString);
+		return Math.floor(localDate.getTime() / 1000);
+	};
 
-  // Enable tag if there is at least one
-  const enableSesamyTag = useMemo(() => {
+	const unixTimestampUTCToLocalDatetime = (unixTimestampUTC) => {
+		if (!unixTimestampUTC || unixTimestampUTC < 0) {
+			return undefined;
+		}
 
-    if (!sesamyTagsTaxonomy) {
-      return;
-    }
+		return new Date(unixTimestampUTC * 1000);
+	};
 
-    return sesamyTagsTaxonomy.length > 0;
-  }, [sesamyTagsTaxonomy]);
+	const minLockedFrom = new Date();
+	const minLockedUntil =
+		meta["_sesamy_locked_from"] &&
+		unixTimestampUTCToLocalDatetime(meta["_sesamy_locked_from"]) > new Date()
+			? unixTimestampUTCToLocalDatetime(meta["_sesamy_locked_from"])
+			: undefined;
 
-  // Helper function to get date and time in ISO format for input with datetime-local
-  const getDateTimeISO = (date) => {
+	return (
+		<PluginDocumentSettingPanel
+			className="sesamy-editor-panel"
+			name="sesamy-post-editor"
+			title={__("Sesamy", "sesamy")}
+		>
+			<ToggleControl
+				checked={meta["_sesamy_locked"]}
+				label={__("Locked now", "sesamy")}
+				onChange={(value) => setMeta({ _sesamy_locked: value })}
+			/>
 
-    if(!date){
-      return undefined;
-    }
-    
-    const year = date.getFullYear();
-    const month = (date.getMonth() + 1).toString().padStart(2, '0');
-    const day = date.getDate().toString().padStart(2, '0');
-    const hours = date.getHours().toString().padStart(2, '0');
-    const minutes = date.getMinutes().toString().padStart(2, '0');
-    return `${year}-${month}-${day}T${hours}:${minutes}`;
-  };
+			{meta["_sesamy_locked"] === false && (
+				<InputControl
+					label={__("Locked from", "sesamy")}
+					value={
+						meta["_sesamy_locked_from"]
+							? getDateTimeISO(
+									unixTimestampUTCToLocalDatetime(meta["_sesamy_locked_from"])
+							  )
+							: ""
+					}
+					type="datetime-local"
+					min={getDateTimeISO(minLockedFrom)}
+					max={minLockedUntil ? getDateTimeISO(minLockedUntil) : ""}
+					onChange={(value) =>
+						setMeta({
+							_sesamy_locked_from: value
+								? datetimeLocalToUnixTimestampUTC(value)
+								: -1,
+						})
+					}
+				/>
+			)}
 
-  const datetimeLocalToUnixTimestampUTC = (localDateTimeString) => {
+			{(meta["_sesamy_locked"] === true ||
+				(!isNaN(meta["_sesamy_locked_from"]) &&
+					meta["_sesamy_locked_from"] > 0)) && (
+				<InputControl
+					label={__("Locked until", "sesamy")}
+					value={
+						meta["_sesamy_locked_until"]
+							? getDateTimeISO(
+									unixTimestampUTCToLocalDatetime(meta["_sesamy_locked_until"])
+							  )
+							: ""
+					}
+					min={getDateTimeISO(minLockedFrom)}
+					type="datetime-local"
+					onChange={(value) =>
+						setMeta({
+							_sesamy_locked_until: value
+								? datetimeLocalToUnixTimestampUTC(value)
+								: -1,
+						})
+					}
+				/>
+			)}
 
-    if (!localDateTimeString) {
-      return undefined;
-    }
+			{(meta["_sesamy_locked"] === true ||
+				(!isNaN(meta["_sesamy_locked_from"]) &&
+					meta["_sesamy_locked_from"] > 0)) && (
+				<>
+					<h3>Single purchase</h3>
+					<ToggleControl
+						checked={meta["_sesamy_enable_single_purchase"]}
+						label={__("Enable single-purchase", "sesamy")}
+						onChange={(value) =>
+							setMeta({ _sesamy_enable_single_purchase: value })
+						}
+					/>
 
-    const localDate = new Date(localDateTimeString);
-    return Math.floor(localDate.getTime() / 1000);
-  }
+					{meta["_sesamy_enable_single_purchase"] && (
+						<>
+							<NumberControl
+								label={__("Price", "sesamy")}
+								value={parseFloat(meta["_sesamy_price"])}
+								min={0}
+								step={"0.01"}
+								onChange={(value) => {
+									setMeta({ _sesamy_price: value });
+								}}
+							/>
+						</>
+					)}
 
-  const unixTimestampUTCToLocalDatetime = (unixTimestampUTC) => {
+					{!!enableTiers && (
+						<>
+							<h3>Sesamy Passes</h3>
 
-    if (!unixTimestampUTC || unixTimestampUTC < 0) {
-      return undefined;
-    }
+							{sesamyTiersTaxonomy.map((tier) => {
+								const isChecked =
+									sesamy_passes && sesamy_passes.includes(tier.id);
 
-    return new Date(unixTimestampUTC * 1000);
-  }
+								return (
+									<CheckboxControl
+										label={tier.name}
+										checked={isChecked}
+										onChange={(checked) => setTier(tier, checked)}
+									/>
+								);
+							})}
+						</>
+					)}
+				</>
+			)}
 
+			{!!enableSesamyTag && (
+				<>
+					<h3>Sesamy Attributes</h3>
+					{sesamyTagsTaxonomy.map((tag) => {
+						const isTagChecked =
+							tagMetaValue && tagMetaValue.includes(tag.id.toString());
 
-  const minLockedFrom = new Date();
-  const minLockedUntil = meta['_sesamy_locked_from'] && unixTimestampUTCToLocalDatetime(meta['_sesamy_locked_from']) > new Date() ? unixTimestampUTCToLocalDatetime(meta['_sesamy_locked_from']) : undefined;
+						return (
+							<CheckboxControl
+								label={tag.name}
+								checked={isTagChecked}
+								onChange={(checked) => setTag(tag, checked)}
+							/>
+						);
+					})}
+				</>
+			)}
 
-  return (
-    <PluginDocumentSettingPanel
-      className="sesamy-editor-panel"
-      name="sesamy-post-editor"
-      title={__('Sesamy', 'sesamy')}
-    >
+			<SelectControl
+				label="Access Level"
+				value={meta["_sesamy_access_level"]}
+				options={[
+					{ label: "Entitlement", value: "entitlement" },
+					{ label: "Public", value: "public" },
+					{ label: "Logged-in", value: "logged-in" },
+				]}
+				onChange={(value) => setMeta({ _sesamy_access_level: value })}
+				__nextHasNoMarginBottom
+			/>
 
-      <ToggleControl
-        checked={meta['_sesamy_locked']}
-        label={__('Locked now', 'sesamy')}
-        onChange={(value) => setMeta({ '_sesamy_locked': value })}
-      />
+			<h3>Paywall</h3>
+			<ToggleControl
+				checked={meta["_sesamy_show_login"]}
+				label={__("Show login", "sesamy")}
+				onChange={(value) => setMeta({ _sesamy_show_login: value })}
+			/>
 
-      {meta['_sesamy_locked'] === false && 
-        <InputControl
-          label={__('Locked from', 'sesamy')}
-          value={meta['_sesamy_locked_from'] ? getDateTimeISO(unixTimestampUTCToLocalDatetime(meta['_sesamy_locked_from'])) : ''}
-          type='datetime-local'
-          min={getDateTimeISO(minLockedFrom)}
-          max={minLockedUntil ? getDateTimeISO(minLockedUntil) : ''}
-          onChange={value => setMeta({ '_sesamy_locked_from': value ? datetimeLocalToUnixTimestampUTC(value) : -1 }) }
-        />
-      }
+			<ToggleControl
+				checked={meta["_sesamy_paywall_wizard"]}
+				label={__("Use Paywall Wizard", "sesamy")}
+				onChange={(value) => setMeta({ _sesamy_paywall_wizard: value })}
+			/>
 
-      {(meta['_sesamy_locked'] === true || !isNaN(meta['_sesamy_locked_from']) && meta['_sesamy_locked_from']  > 0 ) &&
-        <InputControl
-          label={__('Locked until', 'sesamy')}
-          value={ meta['_sesamy_locked_until'] ? getDateTimeISO(unixTimestampUTCToLocalDatetime(meta['_sesamy_locked_until'])) : ''}
-          min={getDateTimeISO(minLockedFrom)}
-          type='datetime-local'
-          onChange={value => setMeta({ '_sesamy_locked_until': value ? datetimeLocalToUnixTimestampUTC(value) : -1 })}
-        />
-      }
+			{meta["_sesamy_paywall_wizard"] && (
+				<>
+					<InputControl
+						label={__("Logo URL", "sesamy")}
+						value={meta["_sesamy_paywall_wizard_logo_url"]}
+						onChange={(value) => {
+							setMeta({ _sesamy_paywall_wizard_logo_url: value });
+						}}
+					/>
 
+					<InputControl
+						label={__("Title", "sesamy")}
+						value={meta["_sesamy_paywall_wizard_title"]}
+						onChange={(value) => {
+							setMeta({ _sesamy_paywall_wizard_title: value });
+						}}
+					/>
 
-      {(meta['_sesamy_locked'] === true || !isNaN(meta['_sesamy_locked_from']) && meta['_sesamy_locked_from'] > 0) && <>
+					<TextareaControl
+						label={__("Description", "sesamy")}
+						value={meta["_sesamy_paywall_wizard_description"]}
+						onChange={(value) => {
+							setMeta({ _sesamy_paywall_wizard_description: value });
+						}}
+					/>
 
-
-        <h3>Single purchase</h3>
-        <ToggleControl
-          checked={meta['_sesamy_enable_single_purchase']}
-          label={__('Enable single-purchase', 'sesamy')}
-          onChange={(value) => setMeta({ '_sesamy_enable_single_purchase': value })}
-        />
-
-        {meta['_sesamy_enable_single_purchase'] && <>
-
-
-          <NumberControl
-            label={__('Price', 'sesamy')}
-            value={parseFloat(meta['_sesamy_price'])}
-            min={0}
-            step={'0.01'}
-            onChange={(value) => {
-              setMeta({ '_sesamy_price': value })
-            }}
-          />
-
-        </>}
-
-        {!!enableTiers && <>
-
-
-          <h3>Sesamy Passes</h3>
-
-
-          {sesamyTiersTaxonomy.map(tier => {
-
-            const isChecked = sesamy_passes && sesamy_passes.includes(tier.id);
-
-            return <CheckboxControl
-              label={tier.name}
-              checked={isChecked}
-              onChange={(checked) => setTier(tier, checked)}
-              
-            />
-
-          })}
-
-        </>}
-
-
-
-      </>
-      }
-
-      {!!enableSesamyTag && <>
-      <h3>Sesamy Attributes</h3>
-      {sesamyTagsTaxonomy.map(tag => {
-        const isTagChecked = tagMetaValue && tagMetaValue.includes((tag.id).toString());
-
-        return <CheckboxControl
-          label={tag.name}
-          checked={isTagChecked}
-          onChange={(checked) => setTag(tag, checked)}
-        />
-      })}
-      </>}
-
-      <SelectControl
-            label="Access Level"
-            value={ meta['_sesamy_access_level'] }
-            options={ [
-                { label: 'Entitlement', value: 'entitlement' },
-                { label: 'Public', value: 'public' },
-                { label: 'Logged-in', value: 'logged-in' },
-            ] }
-            onChange={(value) => setMeta({ '_sesamy_access_level': value })}
-            __nextHasNoMarginBottom
-        />
-
-    </PluginDocumentSettingPanel>
-  );
-
-}
+					<TextareaControl
+						label={__("Perks (One per line)", "sesamy")}
+						value={meta["_sesamy_paywall_wizard_perks"]}
+						onChange={(value) => {
+							setMeta({ _sesamy_paywall_wizard_perks: value });
+						}}
+					/>
+				</>
+			)}
+		</PluginDocumentSettingPanel>
+	);
+};

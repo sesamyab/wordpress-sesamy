@@ -32,6 +32,7 @@ class Sesamy_Shortcodes {
 		$this->register_shortcode( 'sesamy_login' );
 		$this->register_shortcode( 'sesamy_profile' );
 		$this->register_shortcode( 'sesamy_config' );
+		$this->register_shortcode( 'sesamy_paywall_wizard' );
 	}
 
 	/**
