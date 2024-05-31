@@ -103,8 +103,8 @@ The following filters can be used to modify the default output from the plugin:
 == Changelog ==
 
 = 2.1.0 =
-* Allow using the Paywall Wizard (instead of the default paywall with buttons)
-* Show/Hide Login
+* Enable/disable paywall wizard in the edit post screen.
+* Enable/disable login button in the edit post screen..
 
 = 2.0.7 =
 * Fix to always display the content for "None" lock mode
