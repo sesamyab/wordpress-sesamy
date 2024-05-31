@@ -225,7 +225,7 @@ class Sesamy_Post_Properties {
 	/**
 	 * Locked post check
 	 *
-	 * @since  2.0.8
+	 * @since  2.1.0
 	 * @package    Sesamy
 	 * @param array $post post Object.
 	 */
