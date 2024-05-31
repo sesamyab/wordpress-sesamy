@@ -350,9 +350,9 @@ const SesamyPostEditor = () => {
 				<>
 					<InputControl
 						label={__("Logo URL", "sesamy")}
-						value={meta["_sesamy_paywall_wizard_logo_URL"]}
+						value={meta["_sesamy_paywall_wizard_logo_urk"]}
 						onChange={(value) => {
-							setMeta({ _sesamy_paywall_wizard_logo_URL: value });
+							setMeta({ _sesamy_paywall_wizard_logo_url: value });
 						}}
 					/>
 
