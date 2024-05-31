@@ -409,3 +409,36 @@ function sesamy_get_passes_urls( $post_id_or_passes, $separator = ';' ) {
 
 	return implode( $separator, $pass_api_urls );
 }
+
+/**
+ * Get Paywall Wizard HTML
+ *
+ * @since 2.0.8
+ * @package    Sesamy
+ * @param array  $atts Attributes.
+ * @param string $content Content.
+ */
+function get_sesamy_paywall_wizard( $atts = null, $content = null ) {
+	ob_start();
+	sesamy_paywall_wizard( $atts, $content );
+	return ob_get_clean();
+}
+
+/**
+ * Paywall Wizard Shortcode With attributes
+ *
+ * @since 2.0.8
+ * @package    Sesamy
+ * @param array  $atts Attributes.
+ * @param string $content Content.
+ */
+function sesamy_paywall_wizard( $atts = null, $content = null ) {
+	$atts = shortcode_atts(
+		array(
+			'publisher_content_id' => '',
+		),
+		$atts,
+		'sesamy_paywall_wizard'
+	);
+	Sesamy_Utils::make_tag( 'sesamy-paywall-wizard', $atts, $content, false );
+}
