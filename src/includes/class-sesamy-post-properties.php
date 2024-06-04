@@ -128,7 +128,7 @@ class Sesamy_Post_Properties {
 						'show_in_rest'  => true,
 						'single'        => true,
 						'type'          => 'boolean',
-						'default'       => false,
+						'default'       => true,
 						'auth_callback' => '__return_true',
 					)
 				);
