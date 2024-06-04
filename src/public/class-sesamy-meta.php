@@ -41,7 +41,7 @@ class Sesamy_Meta {
 				$this->make_tag( 'sesamy:description', wp_strip_all_tags( $post->post_excerpt ) );
 				$this->make_tag( 'sesamy:image', get_the_post_thumbnail_url( $post ) );
 				$this->make_tag( 'sesamy:price', $price_info['price'] );
-				$this->make_tag( 'sesamy:currency', get_option( 'sesamy_gloabl_currency' ) );
+				$this->make_tag( 'sesamy:currency', get_option( 'sesamy_global_currency' ) );
 				$this->make_tag( 'sesamy:publisher-content-id', $post->ID );
 				$this->make_tag( 'sesamy:pass', sesamy_get_passes_urls( $post ) );
 

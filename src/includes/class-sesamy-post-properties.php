@@ -205,7 +205,7 @@ class Sesamy_Post_Properties {
 		return array(
 			'type'     => get_term_meta( $tier->term_id, 'type', true ),
 			'price'    => get_term_meta( $tier->term_id, 'price', true ),
-			'currency' => get_option( 'sesamy_gloabl_currency' ),
+			'currency' => get_option( 'sesamy_global_currency' ),
 		);
 	}
 
@@ -254,7 +254,7 @@ class Sesamy_Post_Properties {
 
 		$info['enable_single_purchase'] = boolval( get_post_meta( $post->ID, '_sesamy_enable_single_purchase', true ) );
 		$info['price']                  = get_post_meta( $post->ID, '_sesamy_price', true );
-		$info['currency']               = get_option( 'sesamy_gloabl_currency' );
+		$info['currency']               = get_option( 'sesamy_global_currency' );
 
 		return $info;
 	}
