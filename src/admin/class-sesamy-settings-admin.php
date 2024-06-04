@@ -142,6 +142,78 @@ class Sesamy_Settings_Admin {
 				'label_for' => 'sesamy_content_types',
 			)
 		);
+
+		add_settings_field(
+			'sesamy_paywall_wizard',
+			__( 'Use paywall wizard as default', 'sesamy' ),
+			array( $this, 'settings_render_boolean' ),
+			'sesamy',
+			'sesamy_section_general',
+			array(
+				'name'      => 'sesamy_paywall_wizard',
+				'label_for' => 'sesamy_paywall_wizard',
+			)
+		);
+
+		add_settings_field(
+			'sesamy_paywall_wizard_logo_url',
+			__( 'Paywall Wizard Logo URL', 'sesamy' ),
+			array( $this, 'settings_render_input' ),
+			'sesamy',
+			'sesamy_section_general',
+			array(
+				'name'      => 'sesamy_paywall_wizard_logo_url',
+				'label_for' => 'sesamy_paywall_wizard_logo_url',
+			)
+		);
+
+		add_settings_field(
+			'sesamy_paywall_wizard_logo_url',
+			__( 'Paywall Wizard Logo URL', 'sesamy' ),
+			array( $this, 'settings_render_input' ),
+			'sesamy',
+			'sesamy_section_general',
+			array(
+				'name'      => 'sesamy_paywall_wizard_logo_url',
+				'label_for' => 'sesamy_paywall_wizard_logo_url',
+			)
+		);
+
+		add_settings_field(
+			'sesamy_paywall_wizard_title',
+			__( 'Paywall Wizard Title', 'sesamy' ),
+			array( $this, 'settings_render_input' ),
+			'sesamy',
+			'sesamy_section_general',
+			array(
+				'name'      => 'sesamy_paywall_wizard_title',
+				'label_for' => 'sesamy_paywall_wizard_title',
+			)
+		);
+
+		add_settings_field(
+			'sesamy_paywall_wizard_perks',
+			__( 'Paywall Wizard Perks (One per line)', 'sesamy' ),
+			array( $this, 'settings_render_textarea' ),
+			'sesamy',
+			'sesamy_section_general',
+			array(
+				'name'      => 'sesamy_paywall_wizard_perks',
+				'label_for' => 'sesamy_paywall_wizard_perks',
+			)
+		);
+
+		add_settings_field(
+			'sesamy_paywall_wizard_description',
+			__( 'Paywall Wizard Single Purchase Description', 'sesamy' ),
+			array( $this, 'settings_render_textarea' ),
+			'sesamy',
+			'sesamy_section_general',
+			array(
+				'name'      => 'sesamy_paywall_wizard_description',
+				'label_for' => 'sesamy_paywall_wizard_description',
+			)
+		);
 	}
 
 	/**
@@ -230,6 +302,36 @@ class Sesamy_Settings_Admin {
 			$settings_value = get_option( $args['name'] );
 
 			echo '<input type="text" name="' . esc_attr( $args['name'] ) . '" value="' . esc_attr( $settings_value ) . '">';
+		}
+	}
+
+	/**
+	 * Boolean field render
+	 * 
+	 * @param array $args Arguments of boolean fields.
+	 * @since 2.1.2
+	 * @package    Sesamy
+	 */
+	public function settings_render_boolean( $args ) {
+		if ( ! empty( $args ) ) {
+			$settings_value = get_option( $args['name'] );
+
+			echo '<input type="checkbox" name="' . esc_attr( $args['name'] ) . '" value="1" ' . checked( 1, $settings_value, false ) . '>';
+		}
+	}
+
+	/**
+	 * Textarea field render
+	 *
+	 * @param array $args Arguments of textarea fields.
+	 * @since 1.0.0
+	 * @package    Sesamy
+	 */
+	public function settings_render_textarea( $args ) {
+		if ( ! empty( $args ) ) {
+			$settings_value = get_option( $args['name'] );
+
+			echo '<textarea name="' . esc_attr( $args['name'] ) . '">' . esc_attr( $settings_value ) . '</textarea>';
 		}
 	}
 }
