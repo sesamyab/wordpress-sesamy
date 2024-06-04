@@ -209,7 +209,7 @@ class Sesamy_Content_Container {
 					"singlePurchase": {
 						"type": "single",
 						"text": "<?php echo $post->post_title ?>",
-						"description": ""
+						"description": "<?php echo $post_settings['paywall_wizard_description']; ?>"
 					},
 					<?php } ?>
 					<?php
