@@ -289,6 +289,9 @@ class Sesamy_Content_Container {
 				gap: 1rem;
 				justify-content: center;
 			}
+			sesamy-paywall-wizard {
+				width: 100%;
+			}
 		</style>
 		<?php
 
