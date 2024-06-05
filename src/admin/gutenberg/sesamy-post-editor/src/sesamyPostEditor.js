@@ -365,20 +365,22 @@ const SesamyPostEditor = () => {
 					/>
 
 					<TextareaControl
-						label={__("Description", "sesamy")}
-						value={meta["_sesamy_paywall_wizard_description"]}
-						onChange={(value) => {
-							setMeta({ _sesamy_paywall_wizard_description: value });
-						}}
-					/>
-
-					<TextareaControl
 						label={__("Perks (One per line)", "sesamy")}
 						value={meta["_sesamy_paywall_wizard_perks"]}
 						onChange={(value) => {
 							setMeta({ _sesamy_paywall_wizard_perks: value });
 						}}
 					/>
+
+					{meta["_sesamy_enable_single_purchase"] && (
+						<TextareaControl
+							label={__("Single Purchase Description", "sesamy")}
+							value={meta["_sesamy_paywall_wizard_description"]}
+							onChange={(value) => {
+								setMeta({ _sesamy_paywall_wizard_description: value });
+							}}
+						/>
+					)}
 				</>
 			)}
 		</PluginDocumentSettingPanel>
