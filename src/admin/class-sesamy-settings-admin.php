@@ -101,7 +101,7 @@ class Sesamy_Settings_Admin {
 					'event'     => 'Event',
 					'none'      => 'None',
 				),
-				'label_for' => 'sesamy_content_types',
+				'label_for' => 'sesamy_lock_mode',
 			)
 		);
 
@@ -114,7 +114,7 @@ class Sesamy_Settings_Admin {
 			array(
 				'name'      => 'sesamy_global_currency',
 				'options'   => Sesamy_Currencies::get_currencies(),
-				'label_for' => 'sesamy_content_types',
+				'label_for' => 'sesamy_global_currency',
 			)
 		);
 
@@ -139,7 +139,7 @@ class Sesamy_Settings_Admin {
 			array(
 				'name'      => 'sesamy_tags',
 				'options'   => $sesamy_tags_array,
-				'label_for' => 'sesamy_content_types',
+				'label_for' => 'sesamy_tags',
 			)
 		);
 
@@ -309,7 +309,7 @@ class Sesamy_Settings_Admin {
 	 * Boolean field render
 	 * 
 	 * @param array $args Arguments of boolean fields.
-	 * @since 2.1.2
+	 * @since 2.2.2
 	 * @package    Sesamy
 	 */
 	public function settings_render_boolean( $args ) {
@@ -324,7 +324,7 @@ class Sesamy_Settings_Admin {
 	 * Textarea field render
 	 *
 	 * @param array $args Arguments of textarea fields.
-	 * @since 1.0.0
+	 * @since 2.2.2
 	 * @package    Sesamy
 	 */
 	public function settings_render_textarea( $args ) {
