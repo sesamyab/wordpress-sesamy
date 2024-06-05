@@ -318,8 +318,8 @@ class Sesamy_Admin_View {
 
 					$post_info = Sesamy_Post_Properties::get_post_price_info( $post_id );
 					if ( true === $post_info['enable_single_purchase'] ) {
-						if ( ! empty( $post_info['price'] ) && ! empty( get_option( 'sesamy_gloabl_currency' ) ) ) {
-							echo esc_html( $post_info['price'] ) . ' ' . esc_html( get_option( 'sesamy_gloabl_currency' ) );
+						if ( ! empty( $post_info['price'] ) && ! empty( get_option( 'sesamy_global_currency' ) ) ) {
+							echo esc_html( $post_info['price'] ) . ' ' . esc_html( get_option( 'sesamy_global_currency' ) );
 						}
 					} else {
 						echo esc_html__( 'Disabled', 'sesamy' );

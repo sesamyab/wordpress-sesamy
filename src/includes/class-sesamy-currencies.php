@@ -26,24 +26,15 @@ class Sesamy_Currencies {
 	 */
 	public static function get_currencies() {
 
-		$currencies = get_transient( 'sesamy_currencies' );
-
-		// Use transient to avoid calling api more than needed.
-		if ( false === $currencies ) {
-
-			$req  = wp_remote_get( Sesamy::$instance->get_assets_url() . '/markets.json' );
-			$json = wp_remote_retrieve_body( $req );
-			$data = json_decode( $json );
-
-			$currencies = array();
-
-			foreach ( $data as $item ) {
-				$currencies[ $item->currency ] = $item->currency;
-			}
-
-			set_transient( 'sesamy_currencies', $currencies, 60 );
-
-		}
+		// TODO: https://assets.sesamy.com/markets.json is not automatically updated from the catalog anymore.
+		// Need to find a new way to get currencies. For now we just return a static array.
+		$currencies = array(
+			"EUR" => "EUR",
+			"DKK" => "DKK",
+			"NOK" => "NOK",
+			"SEK" => "SEK",
+			"GBP" => "GBP",
+		);
 
 		return $currencies;
 	}
