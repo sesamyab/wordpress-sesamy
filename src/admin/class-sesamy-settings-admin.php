@@ -145,7 +145,7 @@ class Sesamy_Settings_Admin {
 
 		add_settings_field(
 			'sesamy_paywall_wizard',
-			__( 'Use paywall wizard as default', 'sesamy' ),
+			__( 'Use paywall wizard by default', 'sesamy' ),
 			array( $this, 'settings_render_boolean' ),
 			'sesamy',
 			'sesamy_section_general',
