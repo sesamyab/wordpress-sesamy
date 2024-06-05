@@ -8,4 +8,4 @@
  * @package Sesamy
  */
 
-define( 'SESAMY_VERSION', '2.1.1' );
+define( 'SESAMY_VERSION', '2.2.2' );
