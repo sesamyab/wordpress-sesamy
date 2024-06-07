@@ -34,7 +34,7 @@ function get_sesamy_content_container( $atts = null, $content = null ) {
 function sesamy_content_container( $atts = null, $content = null ) {
 	$post_id       = get_the_ID();
 	$post_settings = sesamy_get_post_settings( $post_id );
-	if ( $post_settings['access_level'] != -1 && ! empty( $post_settings['access_level'] ) ) {
+	if ( -1 != $post_settings['access_level'] && ! empty( $post_settings['access_level'] ) ) {
 		$access_level = $post_settings['access_level'];
 	} else {
 		$access_level = 'entitlement';
@@ -78,7 +78,7 @@ function sesamy_content_container( $atts = null, $content = null ) {
 	);
 
 	// If the article is in lock mode None, it's not locked or it has access level public, treat it as embed and public.
-	$is_public = $atts['lock_mode'] === 'none' || ! Sesamy_Post_Properties::is_locked( $post_id ) || $access_level === 'public';
+	$is_public = 'none' === $atts['lock_mode'] || ! Sesamy_Post_Properties::is_locked( $post_id ) || 'public' === $access_level;
 	if ( $is_public ) {
 		$atts['lock_mode'] = 'embed';
 		$atts['public']    = 'true';
@@ -91,7 +91,7 @@ function sesamy_content_container( $atts = null, $content = null ) {
 
 	// Only the 'entitlement' access level is supported to use with the 'signedUrl' and 'event' lock modes.
 	// If the content is not 'entitlement', we change the lock mode to 'embed', so that the content unlocks correctly.
-	if ( ( 'signedUrl' === $atts['lock_mode'] || 'event' === $atts['lock_mode'] ) && $access_level != 'entitlement' ) {
+	if ( ( 'signedUrl' === $atts['lock_mode'] || 'event' === $atts['lock_mode'] ) && 'entitlement' != $access_level ) {
 		$atts['lock_mode'] = 'embed';
 	}
 

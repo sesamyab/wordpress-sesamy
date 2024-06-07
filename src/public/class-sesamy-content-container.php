@@ -58,7 +58,7 @@ class Sesamy_Content_Container {
 
 		$is_locked = Sesamy_Post_Properties::is_locked( $post->ID );
 
-		if ( $post_settings['access_level'] != -1 && ! empty( $post_settings['access_level'] ) ) {
+		if ( -1 != $post_settings['access_level'] && ! empty( $post_settings['access_level'] ) ) {
 			$access_level = $post_settings['access_level'];
 		} else {
 			$access_level = 'entitlement';
@@ -78,7 +78,7 @@ class Sesamy_Content_Container {
 		$lock_mode = get_option( 'sesamy_lock_mode' );
 
 		// Check if the post is unlocked or if the access level is public. If so, only return the content container.
-		$is_public = ! $is_locked || $access_level === 'public' || $lock_mode === 'none';
+		$is_public = ! $is_locked || 'public' === $access_level || 'none' === $lock_mode;
 		if ( $is_public ) {
 			return $paywall_seo . get_sesamy_content_container( $atts, $content );
 		}

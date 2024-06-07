@@ -506,7 +506,7 @@ class Sesamy_Admin_View {
 						<span class="title"><?php echo esc_html__( 'Access Level', 'sesamy' ); ?></span>
 					</label>
 					<div>
-						<?php $access_level = ( isset( $post_properties['access_level'] ) && $post_properties['access_level'] != -1 ) ? $post_properties['access_level'] : 'entitlement'; ?>
+						<?php $access_level = ( isset( $post_properties['access_level'] ) && -1 != $post_properties['access_level'] ) ? $post_properties['access_level'] : 'entitlement'; ?>
 						<select name="access_level" id="access_level">
 							<?php
 							if ( ! empty( $access_level_args ) ) {
