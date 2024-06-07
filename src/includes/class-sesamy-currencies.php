@@ -29,11 +29,11 @@ class Sesamy_Currencies {
 		// TODO: https://assets.sesamy.com/markets.json is not automatically updated from the catalog anymore.
 		// Need to find a new way to get currencies. For now we just return a static array.
 		$currencies = array(
-			"EUR" => "EUR",
-			"DKK" => "DKK",
-			"NOK" => "NOK",
-			"SEK" => "SEK",
-			"GBP" => "GBP",
+			'EUR' => 'EUR',
+			'DKK' => 'DKK',
+			'NOK' => 'NOK',
+			'SEK' => 'SEK',
+			'GBP' => 'GBP',
 		);
 
 		return $currencies;

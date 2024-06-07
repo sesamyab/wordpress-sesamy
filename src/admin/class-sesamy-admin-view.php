@@ -132,7 +132,7 @@ class Sesamy_Admin_View {
 		// Save Sesamy passes.
 		if ( isset( $_POST['sesamy-post-passes'] ) ) {
 			// Set the term for the post.
-			$sesamy_post_passes =  wp_unslash( $_POST['sesamy-post-passes'] );
+			$sesamy_post_passes = wp_unslash( $_POST['sesamy-post-passes'] );
 			wp_set_object_terms( $post_id, $sesamy_post_passes, 'sesamy_passes' );
 		} else {
 			wp_set_object_terms( $post_id, array(), 'sesamy_passes' );
@@ -147,15 +147,15 @@ class Sesamy_Admin_View {
 		// Save Sesamy tags.
 		if ( isset( $_POST['sesamy-post-tags'] ) ) {
 			// Set the meta for the post.
-			$sesamy_tag =  wp_unslash( $_POST['sesamy-post-tags'] );
-			$sesamy_tag = implode("|", $sesamy_tag);
-			update_post_meta( $post_id, "_sesamy_tags", $sesamy_tag );
-			wp_set_post_terms( $post_id,  $_POST['sesamy-post-tags'], 'sesamy_tags' );
+			$sesamy_tag = wp_unslash( $_POST['sesamy-post-tags'] );
+			$sesamy_tag = implode( '|', $sesamy_tag );
+			update_post_meta( $post_id, '_sesamy_tags', $sesamy_tag );
+			wp_set_post_terms( $post_id, $_POST['sesamy-post-tags'], 'sesamy_tags' );
 		} else {
-			update_post_meta( $post_id, "_sesamy_tags", "" );
+			update_post_meta( $post_id, '_sesamy_tags', '' );
 			wp_set_post_terms( $post_id, array(), 'sesamy_tags' );
 		}
-		
+
 		// Save Access Level.
 		if ( isset( $_POST['access_level'] ) ) {
 			$sesamy_access_level = sanitize_text_field( wp_unslash( $_POST['access_level'] ) );
@@ -361,8 +361,8 @@ class Sesamy_Admin_View {
 			'side',
 			'default',
 			array(
-		        '__back_compat_meta_box' => true,
-		    )
+				'__back_compat_meta_box' => true,
+			)
 		);
 	}
 
@@ -454,7 +454,7 @@ class Sesamy_Admin_View {
 
 					<?php
 					$passes = Sesamy_Post_Properties::get_post_passes( $post->ID );
-					$args = array(
+					$args   = array(
 						'taxonomy'   => 'sesamy_passes',
 						'hide_empty' => false,
 					);
@@ -486,9 +486,9 @@ class Sesamy_Admin_View {
 					);
 
 					// Get sesamy_tags categories.
-					$sesamy_tags = get_terms( $args );
-					$selected_sesamy_tags = $post_properties['sesamy_tags'] ? is_array($post_properties['sesamy_tags']) ? $post_properties['sesamy_tags'] : explode("|", $post_properties['sesamy_tags']) : [];
-					
+					$sesamy_tags          = get_terms( $args );
+					$selected_sesamy_tags = $post_properties['sesamy_tags'] ? is_array( $post_properties['sesamy_tags'] ) ? $post_properties['sesamy_tags'] : explode( '|', $post_properties['sesamy_tags'] ) : array();
+
 					// Output tag checkboxes.
 					if ( ! empty( $sesamy_tags ) ) {
 						foreach ( $sesamy_tags as $sesamy_tag ) {
@@ -506,17 +506,19 @@ class Sesamy_Admin_View {
 						<span class="title"><?php echo esc_html__( 'Access Level', 'sesamy' ); ?></span>
 					</label>
 					<div>
-						<?php $access_level = ( isset( $post_properties['access_level'] ) && $post_properties['access_level'] != -1 )? $post_properties['access_level'] :  'entitlement'; ?>
+						<?php $access_level = ( isset( $post_properties['access_level'] ) && $post_properties['access_level'] != -1 ) ? $post_properties['access_level'] : 'entitlement'; ?>
 						<select name="access_level" id="access_level">
-							<?php 
-							if ( !empty( $access_level_args ) ) {
-								foreach ( $access_level_args as $key => $level_text ) { ?>
-									<option value="<?php echo esc_attr( $level_text ) ?>" <?php echo ( $access_level === $level_text )? "selected=selected" : ''  ?>> 
-										<?php echo esc_html__( ucfirst( $level_text ), 'sesamy' ) ?>  
+							<?php
+							if ( ! empty( $access_level_args ) ) {
+								foreach ( $access_level_args as $key => $level_text ) {
+									?>
+									<option value="<?php echo esc_attr( $level_text ); ?>" <?php echo ( $access_level === $level_text ) ? 'selected=selected' : ''; ?>> 
+										<?php echo esc_html__( ucfirst( $level_text ), 'sesamy' ); ?>  
 									</option>
-									<?php 
+									<?php
 								}
-							} ?>
+							}
+							?>
 						</select>
 					</div>
 				</div>

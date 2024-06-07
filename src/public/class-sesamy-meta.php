@@ -65,7 +65,7 @@ class Sesamy_Meta {
 
 				// Loop through all the taxonomies and set the sesamy:tags tag.
 				$taxonomies = get_object_taxonomies( $post->post_type, 'objects' );
-				$tags = array();
+				$tags       = array();
 				foreach ( $taxonomies as $taxonomy ) {
 					$terms = get_the_terms( $post->ID, $taxonomy->name );
 					if ( $terms && ! is_wp_error( $terms ) ) {

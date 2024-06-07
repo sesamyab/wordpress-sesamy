@@ -138,8 +138,8 @@ class Sesamy_Passes {
 	 */
 	public function prevent_add_term( $term, $taxonomy ) {
 
-		if ( 'sesamy_passes' == $taxonomy  && isset( $_POST['url'] ) && ! empty( $_POST['url'] ) ) {
-			if ( wp_http_validate_url( $_POST['url'] ) == FALSE ) {
+		if ( 'sesamy_passes' == $taxonomy && isset( $_POST['url'] ) && ! empty( $_POST['url'] ) ) {
+			if ( wp_http_validate_url( $_POST['url'] ) == false ) {
 				$term = new WP_Error( 'invalid_term', 'Please enter valid Public URL.' );
 			}
 		}

@@ -58,8 +58,8 @@ class Sesamy_Content_Container {
 
 		$is_locked = Sesamy_Post_Properties::is_locked( $post->ID );
 
-		if ( $post_settings['access_level'] != -1 && !empty( $post_settings['access_level'] ) ) {
-			$access_level = $post_settings['access_level'];	
+		if ( $post_settings['access_level'] != -1 && ! empty( $post_settings['access_level'] ) ) {
+			$access_level = $post_settings['access_level'];
 		} else {
 			$access_level = 'entitlement';
 		}
@@ -78,7 +78,7 @@ class Sesamy_Content_Container {
 		$lock_mode = get_option( 'sesamy_lock_mode' );
 
 		// Check if the post is unlocked or if the access level is public. If so, only return the content container.
-		$is_public = !$is_locked || $access_level === 'public' || $lock_mode === 'none';
+		$is_public = ! $is_locked || $access_level === 'public' || $lock_mode === 'none';
 		if ( $is_public ) {
 			return $paywall_seo . get_sesamy_content_container( $atts, $content );
 		}
@@ -135,12 +135,12 @@ class Sesamy_Content_Container {
 	public function show_seo_paywall_data( $post ) {
 		ob_start();
 
-		$headline            = get_the_title( $post );
-		$image               = get_the_post_thumbnail_url( $post, 'full' );
-		$date_published      = get_the_date( 'c', $post );
-		$date_modified       = get_the_modified_date( 'c', $post );
-		$author              = get_the_author_meta( 'display_name', $post );
-		$description         = get_the_excerpt( $post );
+		$headline             = get_the_title( $post );
+		$image                = get_the_post_thumbnail_url( $post, 'full' );
+		$date_published       = get_the_date( 'c', $post );
+		$date_modified        = get_the_modified_date( 'c', $post );
+		$author               = get_the_author_meta( 'display_name', $post );
+		$description          = get_the_excerpt( $post );
 		$isaccessible_forfree = Sesamy_Post_Properties::is_locked( $post->ID ) ? 'False' : 'True';
 
 		?>
@@ -188,15 +188,18 @@ class Sesamy_Content_Container {
 		<div class="sesamy-paywall" data-sesamy-paywall data-sesamy-item-src="<?php the_permalink( $post->ID ); ?>" data-sesamy-passes="<?php sesamy_get_passes_urls( $post->ID ); ?>">
 
 		<?php if ( $post_settings['paywall_wizard'] ) { ?>
-		<?php
-		// Format the perks to be used in the paywall wizard.
-		$perks = $post_settings['paywall_wizard_perks'];
-		$perks_array = explode("\n", $perks);
-		$perks_array_with_quotes = array_map(function($perk) {
-			return '"' . $perk . '"';
-		}, $perks_array);
-		$separated_perks = implode(", ", $perks_array_with_quotes);
-		?>
+			<?php
+			// Format the perks to be used in the paywall wizard.
+			$perks                   = $post_settings['paywall_wizard_perks'];
+			$perks_array             = explode( "\n", $perks );
+			$perks_array_with_quotes = array_map(
+				function( $perk ) {
+					return '"' . $perk . '"';
+				},
+				$perks_array
+			);
+			$separated_perks         = implode( ', ', $perks_array_with_quotes );
+			?>
 		<!-- Paywall wizard inline JSON config -->
 		<script type="application/json" id="paywall-wizard">
 			{
@@ -208,14 +211,14 @@ class Sesamy_Content_Container {
 					<?php if ( $post_settings['enable_single_purchase'] ) { ?>
 					"singlePurchase": {
 						"type": "single",
-						"text": "<?php echo $post->post_title ?>",
+						"text": "<?php echo $post->post_title; ?>",
 						"description": "<?php echo $post_settings['paywall_wizard_description']; ?>"
 					},
 					<?php } ?>
 					<?php
 					if ( count( $post_settings['passes'] ) > 0 ) {
-					$lastPass = end($post_settings['passes'])
-					?>
+						$lastPass = end( $post_settings['passes'] )
+						?>
 					"subscriptions": [
 						<?php foreach ( $post_settings['passes'] as $pass ) { ?>
 						{
@@ -230,19 +233,19 @@ class Sesamy_Content_Container {
 							"discountCodes": []
 						}
 							<?php
-							if ($pass !== $lastPass) {
+							if ( $pass !== $lastPass ) {
 								echo ',';
 							}
-							}
-							?>
+						}
+						?>
 					],
 						<?php } ?>
-					"subscriptionFeatures": [<?php echo htmlspecialchars_decode($separated_perks); ?>],
-					"subscriptionPurchaseText": "<?php echo $post_settings['paywall_wizard_title'] ?>"
+					"subscriptionFeatures": [<?php echo htmlspecialchars_decode( $separated_perks ); ?>],
+					"subscriptionPurchaseText": "<?php echo $post_settings['paywall_wizard_title']; ?>"
 				}
 			}
-    	</script>
-		<?php
+		</script>
+			<?php
 			$paywall_wizard_args = array(
 				'publisher_content_id' => $post->ID,
 				'item_src'             => get_the_permalink( $post->ID ),
@@ -257,7 +260,7 @@ class Sesamy_Content_Container {
 
 			// Display the default paywall (single purhcase + passes buttons).
 			if ( $post_settings['enable_single_purchase'] ) {
-	
+
 				$button_args = array(
 					'price'    => $post_settings['price'],
 					'currency' => get_option( 'sesamy_global_currency' ),
@@ -266,9 +269,9 @@ class Sesamy_Content_Container {
 				sesamy_button( $button_args, null );
 			}
 			if ( count( $post_settings['passes'] ) > 0 ) {
-	
+
 				foreach ( $post_settings['passes'] as $pass ) {
-	
+
 					$button_args = array(
 						'text'                 => $pass['title'],
 						'price'                => $pass['price'],

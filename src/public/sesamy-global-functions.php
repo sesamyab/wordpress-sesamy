@@ -32,33 +32,33 @@ function get_sesamy_content_container( $atts = null, $content = null ) {
  * @param string $content Content.
  */
 function sesamy_content_container( $atts = null, $content = null ) {
-	$post_id = get_the_ID();
+	$post_id       = get_the_ID();
 	$post_settings = sesamy_get_post_settings( $post_id );
-	if ( $post_settings['access_level'] != -1 && !empty( $post_settings['access_level'] ) ) {
-		$access_level = $post_settings['access_level'];	
+	if ( $post_settings['access_level'] != -1 && ! empty( $post_settings['access_level'] ) ) {
+		$access_level = $post_settings['access_level'];
 	} else {
 		$access_level = 'entitlement';
 	}
-	
+
 	// Get sesamy tags and add in container argument
-	if ( !empty( $post_settings['sesamy_tags'] ) ) {
-		$required_tags = explode("|", $post_settings['sesamy_tags']);
+	if ( ! empty( $post_settings['sesamy_tags'] ) ) {
+		$required_tags = explode( '|', $post_settings['sesamy_tags'] );
 	} else {
-		$required_tags = get_option('sesamy_tags');
+		$required_tags = get_option( 'sesamy_tags' );
 	}
 
-	$tag_name = [];
-	if(isset($required_tags) && is_array($required_tags)) {
-		foreach($required_tags as $tag) {
-			$tag_array = get_term_by("term_id", $tag, "sesamy_tags");
-			if($tag_array) {
-				$get_term_meta = get_term_meta($tag_array->term_id, "attribute_type", true);
-				array_push($tag_name, ($get_term_meta) ? $get_term_meta.":".$tag_array->slug : $tag_array->slug);
+	$tag_name = array();
+	if ( isset( $required_tags ) && is_array( $required_tags ) ) {
+		foreach ( $required_tags as $tag ) {
+			$tag_array = get_term_by( 'term_id', $tag, 'sesamy_tags' );
+			if ( $tag_array ) {
+				$get_term_meta = get_term_meta( $tag_array->term_id, 'attribute_type', true );
+				array_push( $tag_name, ( $get_term_meta ) ? $get_term_meta . ':' . $tag_array->slug : $tag_array->slug );
 			}
 		}
 		$required_tags = $tag_name;
 	}
-	$required_tags = ($required_tags) ? implode(";", $required_tags) : "";
+	$required_tags = ( $required_tags ) ? implode( ';', $required_tags ) : '';
 
 	$atts = shortcode_atts(
 		array(
@@ -70,7 +70,7 @@ function sesamy_content_container( $atts = null, $content = null ) {
 			'lock_mode'            => get_option( 'sesamy_lock_mode' ),
 			'access_url'           => get_site_url() . '/wp-json/sesamy/v1/posts/' . $atts['publisher_content_id'],
 			'pass'                 => '',
-			'access-level' 		   => $access_level,
+			'access-level'         => $access_level,
 			'required-attributes'  => $required_tags,
 		),
 		$atts,
@@ -78,10 +78,10 @@ function sesamy_content_container( $atts = null, $content = null ) {
 	);
 
 	// If the article is in lock mode None, it's not locked or it has access level public, treat it as embed and public.
-	$is_public = $atts['lock_mode'] === 'none' || !Sesamy_Post_Properties::is_locked( $post_id ) || $access_level === 'public';
+	$is_public = $atts['lock_mode'] === 'none' || ! Sesamy_Post_Properties::is_locked( $post_id ) || $access_level === 'public';
 	if ( $is_public ) {
 		$atts['lock_mode'] = 'embed';
-		$atts['public'] = 'true';
+		$atts['public']    = 'true';
 	}
 
 	ob_start();
@@ -95,7 +95,7 @@ function sesamy_content_container( $atts = null, $content = null ) {
 		$atts['lock_mode'] = 'embed';
 	}
 
-	$html_attributes  = array_filter(
+	$html_attributes = array_filter(
 		$atts,
 		function ( $key ) use ( $non_display_atts ) {
 			return ! in_array( $key, $non_display_atts, true );
@@ -436,7 +436,7 @@ function sesamy_paywall_wizard( $atts = null, $content = null ) {
 	$atts = shortcode_atts(
 		array(
 			'publisher_content_id' => '',
-			'item_src' => '',
+			'item_src'             => '',
 		),
 		$atts,
 		'sesamy_paywall_wizard'

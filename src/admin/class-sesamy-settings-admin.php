@@ -118,18 +118,20 @@ class Sesamy_Settings_Admin {
 			)
 		);
 
-		$sesamy_tags = get_terms([
-			'taxonomy' => "sesamy_tags",
-			'hide_empty' => false,
-		]);
-		
+		$sesamy_tags = get_terms(
+			array(
+				'taxonomy'   => 'sesamy_tags',
+				'hide_empty' => false,
+			)
+		);
+
 		$sesamy_tags_array = array();
-		if(count($sesamy_tags) > 0) {
-			foreach($sesamy_tags as $sesamy_tag) {
-				$sesamy_tags_array[$sesamy_tag->term_id] = $sesamy_tag->name;
+		if ( count( $sesamy_tags ) > 0 ) {
+			foreach ( $sesamy_tags as $sesamy_tag ) {
+				$sesamy_tags_array[ $sesamy_tag->term_id ] = $sesamy_tag->name;
 			}
 		}
-		
+
 		add_settings_field(
 			'sesamy_tags',
 			__( 'Sesamy Attributes', 'sesamy' ),
@@ -240,7 +242,7 @@ class Sesamy_Settings_Admin {
 			echo '<select name="' . esc_attr( $args['name'] ) . '">';
 			foreach ( $args['options'] as $key => $value ) {
 				$selected = $key === $settings_value ? 'selected' : '';
-				echo '<option value="' . esc_attr( $key ) . '"' .  $selected  . '>' . esc_html( $value ) . '</option>';
+				echo '<option value="' . esc_attr( $key ) . '"' . $selected . '>' . esc_html( $value ) . '</option>';
 			}
 			echo '</select>';
 		}
@@ -282,14 +284,14 @@ class Sesamy_Settings_Admin {
 			if ( ! is_array( $options ) ) {
 				$options = array();
 			}
-			
+
 			foreach ( $args['options'] as $key => $value ) {
 				$checked = in_array( $key, $options ) ? 'checked' : '';
 				echo '<label><input type="checkbox" name="' . esc_attr( $args['name'] ) . '[]" value="' . esc_attr( $key ) . '" ' . esc_attr( $checked ) . '>' . esc_attr( $value ) . '</label><br>';
 			}
 		}
 	}
-	
+
 	/**
 	 * Text field render
 	 *
@@ -307,7 +309,7 @@ class Sesamy_Settings_Admin {
 
 	/**
 	 * Boolean field render
-	 * 
+	 *
 	 * @param array $args Arguments of boolean fields.
 	 * @since 2.2.2
 	 * @package    Sesamy

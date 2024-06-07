@@ -53,7 +53,7 @@ class Test_Sesamy_Scheduling_Url extends WP_UnitTestCase {
 				'post_status'  => 'publish',
 				'post_author'  => 1,
 				'meta_input'   => array(
-					'_sesamy_locked'      => true,
+					'_sesamy_locked'       => true,
 					'_sesamy_locked_until' => $unlocked_from,
 				),
 			)
