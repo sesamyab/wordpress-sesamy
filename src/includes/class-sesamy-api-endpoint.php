@@ -102,7 +102,7 @@ class Sesamy_Api_Endpoint {
 
 		// If the post is locked, verify the JWT token. If not, just return the content.
 		$sesamy_helper_obj = new Sesamy_JWT_Helper();
-		$result            = Sesamy::is_locked( $post ) && preg_match('/^\s*Bearer/i', $jwt) ? $sesamy_helper_obj->verify( $jwt ) : true;
+		$result            = Sesamy::is_locked( $post ) && preg_match( '/^\s*Bearer/i', $jwt ) ? $sesamy_helper_obj->verify( $jwt ) : true;
 
 		if ( is_wp_error( $result ) ) {
 			return $result;
