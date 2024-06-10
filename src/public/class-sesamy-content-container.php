@@ -227,7 +227,7 @@ class Sesamy_Content_Container {
 					"singlePurchase": {
 						"type": "single",
 						"text": "<?php echo $post->post_title; ?>",
-						"description": "<?php echo $single_purchase_description; ?>"
+						"description": <?php echo json_json_encode($single_purchase_description); ?>
 					},
 					<?php } ?>
 					<?php
@@ -239,7 +239,7 @@ class Sesamy_Content_Container {
 						{
 							"type": "<?php echo $pass['period']; ?>",
 							"text": "<?php echo $pass['title']; ?>",
-							"description": "<?php echo $pass['description']; ?>",
+							"description": <?php echo json_encode($pass['description']); ?>,
 							"price": "<?php echo $pass['price']; ?>",
 							"currency": "<?php echo $pass['currency']; ?>",
 							"recurringPaymentText": "<?php echo $pass['period']; ?>",
@@ -309,6 +309,10 @@ class Sesamy_Content_Container {
 			}
 			sesamy-paywall-wizard {
 				width: 100%;
+				background: #F3F2F7;
+				border: 1px solid #88869F80;
+				padding: 18px 36px;
+				border-radius: 20px;
 			}
 		</style>
 		<?php
