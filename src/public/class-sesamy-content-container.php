@@ -227,7 +227,7 @@ class Sesamy_Content_Container {
 					"singlePurchase": {
 						"type": "single",
 						"text": "<?php echo $post->post_title; ?>",
-						"description": <?php echo json_json_encode($single_purchase_description); ?>
+						"description": <?php echo json_encode($single_purchase_description); ?>
 					},
 					<?php } ?>
 					<?php
