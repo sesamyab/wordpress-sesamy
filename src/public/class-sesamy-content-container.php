@@ -309,9 +309,10 @@ class Sesamy_Content_Container {
 			}
 			sesamy-paywall-wizard {
 				width: 100%;
-				border-radius: 30px;
-    			padding: 18px 36px;
-				box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px !important;
+				background: #F3F2F7;
+				border: 1px solid #88869F80;
+				padding: 18px 36px;
+				border-radius: 20px;
 			}
 		</style>
 		<?php
