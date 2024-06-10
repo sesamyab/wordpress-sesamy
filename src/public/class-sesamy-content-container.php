@@ -193,6 +193,7 @@ class Sesamy_Content_Container {
 			// Get the default Paywall Wizard values
 			$logo_url = get_option( 'sesamy_paywall_wizard_logo_url' );
 			$title    = get_option( 'sesamy_paywall_wizard_title' );
+			$single_purchase_description = get_option( 'sesamy_paywall_wizard_description' );
 			$perks    = get_option( 'sesamy_paywall_wizard_perks' );
 
 			// Override the default values if the post has custom values
@@ -226,7 +227,7 @@ class Sesamy_Content_Container {
 					"singlePurchase": {
 						"type": "single",
 						"text": "<?php echo $post->post_title; ?>",
-						"description": "<?php echo $post_settings['paywall_wizard_description']; ?>"
+						"description": "<?php echo $single_purchase_description; ?>"
 					},
 					<?php } ?>
 					<?php
