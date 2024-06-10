@@ -347,6 +347,16 @@ const SesamyPostEditor = () => {
 			/>
 
 			{meta["_sesamy_paywall_wizard"] && (
+				<ToggleControl
+					checked={meta["_sesamy_paywall_wizard_override_default"]}
+					label={__("Override Paywall Wizard default values", "sesamy")}
+					onChange={(value) =>
+						setMeta({ _sesamy_paywall_wizard_override_default: value })
+					}
+				/>
+			)}
+
+			{meta["_sesamy_paywall_wizard_override_default"] && (
 				<>
 					<InputControl
 						label={__("Logo URL", "sesamy")}
