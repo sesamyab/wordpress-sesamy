@@ -29,7 +29,12 @@ class Sesamy_Settings {
 		register_setting( 'sesamy', 'sesamy_content_types' );
 		register_setting( 'sesamy', 'sesamy_tags' );
 		register_setting( 'sesamy', 'sesamy_client_id' );
-		register_setting( 'sesamy', 'sesamy_paywall_wizard' );
+		register_setting( 'sesamy', 'sesamy_paywall_wizard', 
+		array(
+			'type' => 'boolean',
+      'sanitize_callback' => 'rest_sanitize_boolean',
+      'default' => false, // Default value must be a boolean
+		) );
 		register_setting( 'sesamy', 'sesamy_paywall_wizard_logo_url' );
 		register_setting( 'sesamy', 'sesamy_paywall_wizard_title' );
 		register_setting( 'sesamy', 'sesamy_paywall_wizard_description' );
