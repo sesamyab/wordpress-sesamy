@@ -133,6 +133,15 @@ class Sesamy_Post_Properties {
 					)
 				);
 
+				$sesamy_paywall_wizard_option = get_option('sesamy_paywall_wizard');
+				// If the option is an empty string, set it to false
+				if ($sesamy_paywall_wizard_option === '') {
+						$sesamy_paywall_wizard_option = false;
+				}
+
+				// Convert the option to boolean if it's not already
+				$sesamy_paywall_wizard_option = filter_var($sesamy_paywall_wizard_option, FILTER_VALIDATE_BOOLEAN);
+
 				register_post_meta(
 					$post_type,
 					'_sesamy_paywall_wizard',
@@ -140,7 +149,7 @@ class Sesamy_Post_Properties {
 						'show_in_rest'  => true,
 						'single'        => true,
 						'type'          => 'boolean',
-						'default'       => get_option( 'sesamy_paywall_wizard' ),
+						'default'       => $sesamy_paywall_wizard_option,
 						'auth_callback' => '__return_true',
 					)
 				);
