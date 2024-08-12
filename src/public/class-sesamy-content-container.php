@@ -187,117 +187,19 @@ class Sesamy_Content_Container {
 		?>
 		<div class="sesamy-paywall" data-sesamy-paywall data-sesamy-item-src="<?php the_permalink( $post->ID ); ?>" data-sesamy-passes="<?php sesamy_get_passes_urls( $post->ID ); ?>">
 
-		<?php
-		// Setup the paywall wizard if enabled
-		if ( $post_settings['paywall_wizard'] ) {
-			// Get the default Paywall Wizard values
-			$logo_url = get_option( 'sesamy_paywall_wizard_logo_url' );
-			$title    = get_option( 'sesamy_paywall_wizard_title' );
-			$single_purchase_description = get_option( 'sesamy_paywall_wizard_description' );
-			$perks    = get_option( 'sesamy_paywall_wizard_perks' );
-
-			// Override the default values if the post has custom values
-			if ( 1 == $post_settings['paywall_wizard_override_default'] ) {
-				$logo_url                    = $post_settings['paywall_wizard_logo_url'];
-				$title                       = $post_settings['paywall_wizard_title'];
-				$single_purchase_description = $post_settings['paywall_wizard_description'];
-				$perks                       = $post_settings['paywall_wizard_perks'];
-			}
-
-			// Format the perks to be used in the paywall wizard.
-			$perks_array             = explode( "\n", $perks );
-			$perks_array_with_quotes = array_map(
-				function( $perk ) {
-					return '"' . trim( $perk ) . '"';
-				},
-				$perks_array
-			);
-			$separated_perks         = implode( ', ', $perks_array_with_quotes );
-			?>
-		
-		<!-- Paywall wizard inline JSON config -->
-		<script type="application/json" id="paywall-wizard">
-			{
-				"data": {
-					"showLoginButton": <?php echo $post_settings['show_login'] ? 'true' : 'false'; ?>,
-					"logoSrc": <?php echo json_encode( $logo_url ); ?>,
-					"color": "#D62802",
-					"vendorId": "<?php echo get_option( 'sesamy_client_id' ); ?>",
-					<?php if ( $post_settings['enable_single_purchase'] ) { ?>
-					"singlePurchase": {
-						"type": "single",
-						"text": "<?php echo $post->post_title; ?>",
-						"description": <?php echo json_encode($single_purchase_description); ?>
-					},
-					<?php } ?>
-					<?php
-					if ( count( $post_settings['passes'] ) > 0 ) {
-						$lastPass = end( $post_settings['passes'] )
-						?>
-					"subscriptions": [
-						<?php foreach ( $post_settings['passes'] as $pass ) { ?>
-						{
-							"type": "<?php echo $pass['period']; ?>",
-							"text": "<?php echo $pass['title']; ?>",
-							"description": <?php echo json_encode($pass['description']); ?>,
-							"price": "<?php echo $pass['price']; ?>",
-							"currency": "<?php echo $pass['currency']; ?>",
-							"recurringPaymentText": "<?php echo $pass['period']; ?>",
-							"itemSrc": "<?php echo $pass['item_src']; ?>",
-							"po": "",
-							"discountCodes": []
-						}
-							<?php
-							if ( $pass !== $lastPass ) {
-								echo ',';
-							}
-						}
-						?>
-					],
-						<?php } ?>
-					"subscriptionFeatures": [<?php echo htmlspecialchars_decode( $separated_perks ); ?>],
-					"subscriptionPurchaseText": "<?php echo $title; ?>"
-				}
-			}
-		</script>
-			<?php
+		<?php					
+			$paywall_url_override = isset($post_settings['paywall_url_override']) ? $post_settings['paywall_url_override'] : '';
+			$global_paywall_url = get_option('sesamy_paywall_url', '');
+						
+			// Use the override URL if it's set, otherwise use the global URL
+			$paywall_url = !empty($paywall_url_override) ? $paywall_url_override : $global_paywall_url;
 			$paywall_wizard_args = array(
 				'publisher_content_id' => $post->ID,
 				'item_src'             => get_the_permalink( $post->ID ),
+				'settings_url'          => $paywall_url,
 			);
 			// Display the paywall wizard.
-			sesamy_paywall_wizard( $paywall_wizard_args );
-		} else {
-			// Show the login button if enabled.
-			if ( $post_settings['show_login'] ) {
-				sesamy_login();
-			}
-
-			// Display the default paywall (single purhcase + passes buttons).
-			if ( $post_settings['enable_single_purchase'] ) {
-	
-				$button_args = array(
-					'price'    => $post_settings['price'],
-					'currency' => get_option( 'sesamy_global_currency' ),
-					'item_src' => get_the_permalink( $post->ID ),
-				);
-				sesamy_button( $button_args, null );
-			}
-			if ( count( $post_settings['passes'] ) > 0 ) {
-	
-				foreach ( $post_settings['passes'] as $pass ) {
-	
-					$button_args = array(
-						'text'                 => $pass['title'],
-						'price'                => $pass['price'],
-						'currency'             => get_option( 'sesamy_global_currency' ),
-						'item_src'             => $pass['item_src'],
-						'publisher_content_id' => $pass['id'],
-					);
-					sesamy_button( $button_args, null );
-				}
-			}
-		}
+			sesamy_paywall_wizard( $paywall_wizard_args );		
 		?>
 		</div>
 		<style>

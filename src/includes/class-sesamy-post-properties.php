@@ -144,76 +144,14 @@ class Sesamy_Post_Properties {
 
 				register_post_meta(
 					$post_type,
-					'_sesamy_paywall_wizard',
-					array(
-						'show_in_rest'  => true,
-						'single'        => true,
-						'type'          => 'boolean',
-						'default'       => $sesamy_paywall_wizard_option,
-						'auth_callback' => '__return_true',
-					)
-				);
-
-				register_post_meta(
-					$post_type,
-					'_sesamy_paywall_wizard_override_default',
-					array(
-						'show_in_rest'  => true,
-						'single'        => true,
-						'type'          => 'boolean',
-						'default'       => false,
-						'auth_callback' => '__return_true',
-					)
-				);
-
-				register_post_meta(
-					$post_type,
-					'_sesamy_paywall_wizard_logo_url',
+					'_sesamy_paywall_url_override',
 					array(
 						'show_in_rest'  => true,
 						'single'        => true,
 						'type'          => 'string',
 						'auth_callback' => '__return_true',
-						'default'       => get_option( 'sesamy_paywall_wizard_logo_url' ),
 					)
 				);
-
-				register_post_meta(
-					$post_type,
-					'_sesamy_paywall_wizard_title',
-					array(
-						'show_in_rest'  => true,
-						'single'        => true,
-						'type'          => 'string',
-						'auth_callback' => '__return_true',
-						'default'       => get_option( 'sesamy_paywall_wizard_title' ),
-					)
-				);
-
-				register_post_meta(
-					$post_type,
-					'_sesamy_paywall_wizard_perks',
-					array(
-						'show_in_rest'  => true,
-						'single'        => true,
-						'type'          => 'string',
-						'auth_callback' => '__return_true',
-						'default'       => get_option( 'sesamy_paywall_wizard_perks' ),
-					)
-				);
-
-				register_post_meta(
-					$post_type,
-					'_sesamy_paywall_wizard_description',
-					array(
-						'show_in_rest'  => true,
-						'single'        => true,
-						'type'          => 'string',
-						'auth_callback' => '__return_true',
-						'default'       => get_option( 'sesamy_paywall_wizard_description' ),
-					)
-				);
-
 			}
 		}
 	}
@@ -316,13 +254,8 @@ class Sesamy_Post_Properties {
 			'locked_until'                    => (int) get_post_meta( $post->ID, '_sesamy_locked_until', true ),
 			'sesamy_tags'                     => get_post_meta( $post->ID, '_sesamy_tags', true ),
 			'access_level'                    => get_post_meta( $post->ID, '_sesamy_access_level', true ),
-			'paywall_wizard'                  => (bool) get_post_meta( $post->ID, '_sesamy_paywall_wizard', true ),
-			'paywall_wizard_override_default' => (bool) get_post_meta( $post->ID, '_sesamy_paywall_wizard_override_default', true ),
-			'paywall_wizard_logo_url'         => get_post_meta( $post->ID, '_sesamy_paywall_wizard_logo_url', true ),
-			'paywall_wizard_title'            => get_post_meta( $post->ID, '_sesamy_paywall_wizard_title', true ),
-			'paywall_wizard_description'      => get_post_meta( $post->ID, '_sesamy_paywall_wizard_description', true ),
-			'paywall_wizard_perks'            => get_post_meta( $post->ID, '_sesamy_paywall_wizard_perks', true ),
-			'show_login'                      => get_post_meta( $post->ID, '_sesamy_show_login', true ),
+			'show_login'                      => get_post_meta( $post->ID, '_sesamy_show_login', true ),			
+			'paywall_url_override' => get_post_meta($post->ID, '_sesamy_paywall_url_override', true),
 		);
 	}
 }
