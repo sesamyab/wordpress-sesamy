@@ -32,7 +32,9 @@ class Sesamy_Settings_Admin {
 			'Sesamy',
 			'manage_options',
 			'sesamy',
-			array( $this, 'admin_menu_html' )
+			array( $this, 'admin_menu_html' ),
+			plugins_url( 'public/images/sesamy.svg', dirname(__FILE__) ),
+			100
 		);
 	}
 

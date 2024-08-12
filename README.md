@@ -1,15 +1,15 @@
 # Development
 
-Dependencies for signature validation are implemented with libraries using composer. 
+Dependencies for signature validation are implemented with libraries using composer.
 
 Run the following command to install the dependencies:
 
     cd src && composer update
 
-
 For debugging gutenberg post editor:
 
     cd admin/gutenberg/sesamy-post-editor
+    npm install
     npm start
 
 (Make sure to hard-refresh to avoid script caching issues)
@@ -17,8 +17,7 @@ For debugging gutenberg post editor:
 ## Enable codesniffer
 
 Run the following command to enable codesniffer
-    ./vendor/bin/phpcs --config-set default_standard WordPress
-
+./vendor/bin/phpcs --config-set default_standard WordPress
 
 ## Run the codesniffer
 
@@ -34,11 +33,9 @@ You can also run automatic fixes according to standards like this
 
 ## Setup
 
-
 ## Enable the paywall for an article
 
 ## Passes
-
 
 # Filters and actions
 
@@ -54,13 +51,19 @@ To modify the data before returned you can add a filter. The default priority fo
 
     function my_callback( $post, $content)
 
-
 ## Custom paywall design
 
 You can customize how paywall will be rendering by supplying your own template in code using the filter `sesamy_paywall` like this:
 
-        add_filter('sesamy_paywall', 'show_paywall', 11, 3);
+    add_filter('sesamy_paywall', 'show_paywall', 11, 3);
 
-        function show_paywall( $default_paywall, $post, $post_settings){
-            // Code for your custom layout. Please see /demo folder for a complete example
-        }
+    function show_paywall( $default_paywall, $post, $post_settings){
+        // Code for your custom layout. Please see /demo folder for a complete example
+    }
+
+# Commmon issues
+
+## Sesamy section of the the editor is not showing
+
+- Make sure that the javascript packages has been installed and have been built
+- Check that the permalinks structure is set to post name: http://localhost:8000/wp-admin/options-permalink.php
