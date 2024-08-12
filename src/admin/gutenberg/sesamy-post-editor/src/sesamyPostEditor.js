@@ -4,7 +4,6 @@ import {
 	SelectControl,
 	CheckboxControl,
 	__experimentalInputControl as InputControl,
-	TextareaControl,
 } from "@wordpress/components";
 import { PluginDocumentSettingPanel } from "@wordpress/edit-post";
 import { useSelect, useDispatch } from "@wordpress/data";
@@ -46,6 +45,8 @@ export default () => {
  * @returns
  */
 const SesamyPostEditor = () => {
+	const [isOverrideEnabled, setIsOverrideEnabled] = useState(false);
+
 	const meta = useSelect((select) =>
 		select("core/editor").getEditedPostAttribute("meta")
 	);
@@ -140,14 +141,10 @@ const SesamyPostEditor = () => {
 		return sesamyTiersTaxonomy.length > 0;
 	}, [sesamyTiersTaxonomy]);
 
-	// Populate payment types
-	const paymentTypes = useMemo(() => {
-		if (enableTiers === undefined) {
-			return;
-		}
-
-		return Array.from(getPaymentOptions(enableTiers));
-	}, [enableTiers]);
+	useEffect(() => {
+		const savedOverride = meta["_sesamy_paywall_url_override"];
+		setIsOverrideEnabled(savedOverride !== "");
+	}, [meta["_sesamy_paywall_url_override"]]);
 
 	// Enable tag if there is at least one
 	const enableSesamyTag = useMemo(() => {
@@ -335,63 +332,32 @@ const SesamyPostEditor = () => {
 
 			<h3>Paywall</h3>
 			<ToggleControl
-				checked={meta["_sesamy_show_login"]}
-				label={__("Show login", "sesamy")}
-				onChange={(value) => setMeta({ _sesamy_show_login: value })}
-			/>
-
-			<ToggleControl
-				checked={meta["_sesamy_paywall_wizard"]}
-				label={__("Use Paywall Wizard", "sesamy")}
-				onChange={(value) => setMeta({ _sesamy_paywall_wizard: value })}
-			/>
-
-			{meta["_sesamy_paywall_wizard"] && (
-				<ToggleControl
-					checked={meta["_sesamy_paywall_wizard_override_default"]}
-					label={__("Override Paywall Wizard default values", "sesamy")}
-					onChange={(value) =>
-						setMeta({ _sesamy_paywall_wizard_override_default: value })
+				checked={isOverrideEnabled}
+				label={__("Override default Paywall URL", "sesamy")}
+				onChange={(value) => {
+					setIsOverrideEnabled(value);
+					if (!value) {
+						setMeta({ _sesamy_paywall_url_override: "" });
+					} else {
+						setMeta({
+							_sesamy_paywall_url_override:
+								meta["_sesamy_paywall_url_override"] ||
+								sesamy_block_obj.paywall_url ||
+								"",
+						});
 					}
+				}}
+			/>
+
+			{isOverrideEnabled && (
+				<InputControl
+					label={__("Override Paywall URL", "sesamy")}
+					value={meta["_sesamy_paywall_url_override"]}
+					onChange={(value) => {
+						setMeta({ _sesamy_paywall_url_override: value });
+						setIsOverrideEnabled(value !== "");
+					}}
 				/>
-			)}
-
-			{meta["_sesamy_paywall_wizard_override_default"] && (
-				<>
-					<InputControl
-						label={__("Logo URL", "sesamy")}
-						value={meta["_sesamy_paywall_wizard_logo_url"]}
-						onChange={(value) => {
-							setMeta({ _sesamy_paywall_wizard_logo_url: value });
-						}}
-					/>
-
-					<InputControl
-						label={__("Title", "sesamy")}
-						value={meta["_sesamy_paywall_wizard_title"]}
-						onChange={(value) => {
-							setMeta({ _sesamy_paywall_wizard_title: value });
-						}}
-					/>
-
-					<TextareaControl
-						label={__("Perks (One per line)", "sesamy")}
-						value={meta["_sesamy_paywall_wizard_perks"]}
-						onChange={(value) => {
-							setMeta({ _sesamy_paywall_wizard_perks: value });
-						}}
-					/>
-
-					{meta["_sesamy_enable_single_purchase"] && (
-						<TextareaControl
-							label={__("Single Purchase Description", "sesamy")}
-							value={meta["_sesamy_paywall_wizard_description"]}
-							onChange={(value) => {
-								setMeta({ _sesamy_paywall_wizard_description: value });
-							}}
-						/>
-					)}
-				</>
 			)}
 		</PluginDocumentSettingPanel>
 	);

@@ -437,6 +437,7 @@ function sesamy_paywall_wizard( $atts = null, $content = null ) {
 		array(
 			'publisher_content_id' => '',
 			'item_src' => '',
+			'settings_url' => '',
 		),
 		$atts,
 		'sesamy_paywall_wizard'

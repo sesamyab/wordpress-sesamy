@@ -146,76 +146,16 @@ class Sesamy_Settings_Admin {
 		);
 
 		add_settings_field(
-			'sesamy_paywall_wizard',
-			__( 'Use paywall wizard by default', 'sesamy' ),
-			array( $this, 'settings_render_boolean' ),
-			'sesamy',
-			'sesamy_section_general',
-			array(
-				'name'      => 'sesamy_paywall_wizard',
-				'label_for' => 'sesamy_paywall_wizard',
-			)
-		);
-
-		add_settings_field(
-			'sesamy_paywall_wizard_logo_url',
-			__( 'Paywall Wizard Logo URL', 'sesamy' ),
-			array( $this, 'settings_render_input' ),
-			'sesamy',
-			'sesamy_section_general',
-			array(
-				'name'      => 'sesamy_paywall_wizard_logo_url',
-				'label_for' => 'sesamy_paywall_wizard_logo_url',
-			)
-		);
-
-		add_settings_field(
-			'sesamy_paywall_wizard_logo_url',
-			__( 'Paywall Wizard Logo URL', 'sesamy' ),
-			array( $this, 'settings_render_input' ),
-			'sesamy',
-			'sesamy_section_general',
-			array(
-				'name'      => 'sesamy_paywall_wizard_logo_url',
-				'label_for' => 'sesamy_paywall_wizard_logo_url',
-			)
-		);
-
-		add_settings_field(
-			'sesamy_paywall_wizard_title',
-			__( 'Paywall Wizard Title', 'sesamy' ),
-			array( $this, 'settings_render_input' ),
-			'sesamy',
-			'sesamy_section_general',
-			array(
-				'name'      => 'sesamy_paywall_wizard_title',
-				'label_for' => 'sesamy_paywall_wizard_title',
-			)
-		);
-
-		add_settings_field(
-			'sesamy_paywall_wizard_perks',
-			__( 'Paywall Wizard Perks (One per line)', 'sesamy' ),
-			array( $this, 'settings_render_textarea' ),
-			'sesamy',
-			'sesamy_section_general',
-			array(
-				'name'      => 'sesamy_paywall_wizard_perks',
-				'label_for' => 'sesamy_paywall_wizard_perks',
-			)
-		);
-
-		add_settings_field(
-			'sesamy_paywall_wizard_description',
-			__( 'Paywall Wizard Single Purchase Description', 'sesamy' ),
-			array( $this, 'settings_render_textarea' ),
-			'sesamy',
-			'sesamy_section_general',
-			array(
-				'name'      => 'sesamy_paywall_wizard_description',
-				'label_for' => 'sesamy_paywall_wizard_description',
-			)
-		);
+            'sesamy_paywall_url',
+            __( 'Paywall URL', 'sesamy' ),
+            array( $this, 'settings_render_input' ),
+            'sesamy',
+            'sesamy_section_general',
+            array(
+                'name'      => 'sesamy_paywall_url',
+                'label_for' => 'sesamy_paywall_url',
+            )
+        );
 	}
 
 	/**
