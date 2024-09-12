@@ -64,7 +64,7 @@ class Sesamy_Passes {
 				'show_tagcloud'      => false,
 				'show_in_nav_menus'  => false,
 				'rewrite'            => false,
-				'hierarchical'       => true,
+				'hierarchical'       => false,
 				'show_in_rest'       => true,
 				'show_in_quick_edit' => false,
 				'meta_box_cb'        => false,
