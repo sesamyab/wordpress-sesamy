@@ -32,6 +32,44 @@ jobs:
       - name: Build
         run: yarn run build
 
+      - name: Set up Git
+        run: |
+          git config --global user.email "julianidiart1987@hotmail.com"
+          git config --global user.name "Julián Idiart"
+
+      - name: Fetch all tags
+        run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
+
+      - name: Get latest semantic version tag
+        id: latest-tag
+        run: |
+          LATEST_TAG=$(git tag -l --sort=-v:refname | grep '^[0-9]\+\.[0-9]\+\.[0-9]\+$' | head -n 1)
+          echo "Latest tag is $LATEST_TAG"
+          echo "::set-output name=tag::$LATEST_TAG"
+      
+      - name: Execute version.sh 
+        run: |
+          chmod +x version.sh
+          ./version.sh ${{ steps.latest-tag.outputs.tag }}
+
+      - name: Execute changelog.sh
+        run: |
+          chmod +x changelog.sh
+          ./changelog.sh ${{ steps.latest-tag.outputs.tag }}
+      
+      - name: Stage Changes
+        run: git add .
+
+      - name: Commit Changes
+        run: |
+          git commit -m "chore(release): publish version ${{ steps.latest-tag.outputs.tag }} in wordpress.org"
+          
+      - name: Push Changes
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: master
+
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v2
         with:
