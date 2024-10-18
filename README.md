@@ -77,3 +77,9 @@ When releasing a new version, make sure to update the version number in the foll
 - `src/sesamy.php`
 - `src/version.php`
 - `README.md`
+
+The version number needs to match the tag in github.
+
+## Deploying to Wordpress Store
+
+Run the Release action to push to the Wordpress store. The action will automatically create a zip file and push it to the store.
