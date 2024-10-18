@@ -2,10 +2,10 @@
 /**
  * Plugin Version
  *
- * @link  https://www.viggeby.com
+ * @link  https://www.sesamy.com
  * @since 1.0.0
  *
  * @package Sesamy
  */
 
-define( 'SESAMY_VERSION', '2.3.2' );
+define( 'SESAMY_VERSION', '3.0.0' );

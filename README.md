@@ -67,3 +67,13 @@ You can customize how paywall will be rendering by supplying your own template i
 
 - Make sure that the javascript packages has been installed and have been built
 - Check that the permalinks structure is set to post name: http://localhost:8000/wp-admin/options-permalink.php
+
+# Deploying to Wordpress Store
+
+## Releasing a new version
+
+When releasing a new version, make sure to update the version number in the following files:
+
+- `src/sesamy.php`
+- `src/version.php`
+- `README.md`
