@@ -2,7 +2,7 @@ version: "3.9"
 name: sesamy
 services:
   db:
-    image: mysql:8.0
+    image: mysql:8.4
     platform: linux/x86_64
     volumes:
       - db_data:/var/lib/mysql
