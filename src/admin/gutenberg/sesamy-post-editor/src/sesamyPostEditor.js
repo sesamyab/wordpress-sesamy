@@ -11,14 +11,6 @@ import { __ } from "@wordpress/i18n";
 import { useEffect, useState, useMemo } from "@wordpress/element";
 import { store as coreStore } from "@wordpress/core-data";
 
-function* getPaymentOptions(enableTiers) {
-	if (enableTiers) {
-		yield { label: "Tier", value: "tier" };
-	}
-
-	yield { label: "Custom Price", value: "custom" };
-}
-
 // Only load for enabled post types
 export default () => {
 	const currentPostType = useSelect((select) =>
@@ -50,8 +42,8 @@ const SesamyPostEditor = () => {
 	const meta = useSelect((select) =>
 		select("core/editor").getEditedPostAttribute("meta")
 	);
-	const tagMetaValue = meta["_sesamy_tags"].split("|");
-	//const sesamyTiersTaxonomy = wp.data.select('core').getEntityRecords('taxonomy', 'sesamy_passes');
+	const tagMetaValue = meta["_sesamy_tags"]?.split("|");
+
 	const currentPost = useSelect((select) =>
 		select("core/editor").getCurrentPost()
 	);
@@ -98,11 +90,11 @@ const SesamyPostEditor = () => {
 	};
 
 	const setTag = (tag, included) => {
-		var tag_array = tagMetaValue ? tagMetaValue : [];
+		let tag_array = tagMetaValue ? tagMetaValue : [];
 		if (included && !tag_array.includes(tag.id.toString())) {
 			tag_array.push(tag.id.toString());
 		} else if (!included) {
-			var index = tag_array.indexOf(tag.id.toString());
+			const index = tag_array.indexOf(tag.id.toString());
 			if (index !== -1) {
 				tag_array = [...tag_array.filter((id) => id !== tag.id.toString())];
 			}
