@@ -1,3 +1,4 @@
+import React from "react";
 import {
 	ToggleControl,
 	__experimentalNumberControl as NumberControl,
@@ -57,15 +58,16 @@ const SesamyPostEditor = () => {
 
 	wp.data
 		.dispatch("core/edit-post")
-		.removeEditorPanel("taxonomy-panel-sesamy_tags"); //Hide sesamy_tags taxonomy panel from sidebar
-	// wp.data.dispatch( 'core/editor').removeEditorPanel( 'taxonomy-panel-sesamy_tags' ) ; //Hide sesamy_tags taxonomy panel from sidebar
+		.removeEditorPanel("taxonomy-panel-sesamy_tags");
 
 	const sesamyTiersTaxonomy = useSelect((select) => {
-		return select(coreStore).getEntityRecords("taxonomy", "sesamy_passes");
+		return (
+			select(coreStore).getEntityRecords("taxonomy", "sesamy_passes") || []
+		);
 	});
 
 	const sesamyTagsTaxonomy = useSelect((select) => {
-		return select(coreStore).getEntityRecords("taxonomy", "sesamy_tags");
+		return select(coreStore).getEntityRecords("taxonomy", "sesamy_tags") || [];
 	});
 
 	const setMeta = (meta) => {
