@@ -40,8 +40,8 @@ export default () => {
 const SesamyPostEditor = () => {
 	const [isOverrideEnabled, setIsOverrideEnabled] = useState(false);
 
-	const meta = useSelect((select) =>
-		select("core/editor").getEditedPostAttribute("meta")
+	const meta = useSelect(
+		(select) => select("core/editor").getEditedPostAttribute("meta") || {}
 	);
 	const tagMetaValue = meta["_sesamy_tags"]?.split("|");
 
