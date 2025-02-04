@@ -5,3 +5,4 @@ dist/*
 node_modules
 *.cache
 .history
+.DS_Store
