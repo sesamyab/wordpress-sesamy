@@ -34,7 +34,7 @@ class Sesamy_Content_Container {
 		}
 
 		// Check if we're inside the main loop for any of the enabled post types.
-		if ( is_singular( sesamy_get_enabled_post_types() ) && in_the_loop() && is_main_query() ) {
+		if ( is_singular( sesamy_get_enabled_post_types() ) && is_main_query() ) {
 			global $post;
 			return apply_filters( 'sesamy_content', $post, $content );
 		}
