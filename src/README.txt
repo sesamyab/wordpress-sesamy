@@ -102,7 +102,7 @@ The following filters can be used to modify the default output from the plugin:
 
 == Changelog ==
 
-= 3.0.6 =
+= 3.0.8 =
 * Remove not needed react dependencies
 
 = 3.0.5 =
