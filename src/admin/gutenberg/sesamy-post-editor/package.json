@@ -14,10 +14,6 @@
 		"plugin-zip": "wp-scripts plugin-zip",
 		"start": "wp-scripts start"
 	},
-	"dependencies": {
-		"react": "^18.3.1",
-		"react-dom": "^18.3.1"
-	},
 	"devDependencies": {
 		"@wordpress/scripts": "^30.7.0"
 	}
