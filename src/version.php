@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Plugin Version
  *
@@ -8,4 +9,4 @@
  * @package Sesamy
  */
 
-define( 'SESAMY_VERSION', '3.0.6' );
+define('SESAMY_VERSION', '3.0.8');
