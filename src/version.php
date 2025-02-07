@@ -9,4 +9,4 @@
  * @package Sesamy
  */
 
-define('SESAMY_VERSION', '3.0.10');
+define('SESAMY_VERSION', '3.0.11');

@@ -4,7 +4,7 @@ Tags: sesamy, paywall
 Requires at least: 5.0.1
 Requires PHP: 7.4
 Tested up to: 6.7.1
-Stable tag: 3.0.10
+Stable tag: 3.0.11
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -101,6 +101,9 @@ The following filters can be used to modify the default output from the plugin:
 
 
 == Changelog ==
+
+= 3.0.11 =
+* Always hide the paywall if the user has access to the content.
 
 = 3.0.10 =
 * Downgrade wordpress/scripts to support older WP versions.
