@@ -1,6 +1,6 @@
 {
   "name": "wordpress-sesamy",
-  "version": "3.0.10",
+  "version": "3.0.11",
   "description": "Dependencies for signature validation are implemented with libraries using composer.",
   "main": "index.js",
   "scripts": {
