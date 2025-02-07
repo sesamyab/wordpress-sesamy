@@ -185,7 +185,7 @@ class Sesamy_Content_Container {
 		ob_start();
 
 		?>
-		<div class="sesamy-paywall" data-sesamy-paywall data-sesamy-item-src="<?php the_permalink( $post->ID ); ?>" data-sesamy-passes="<?php sesamy_get_passes_urls( $post->ID ); ?>">
+		<div class="sesamy-paywall" data-sesamy-paywall data-sesamy-item-src="<?php the_permalink( $post->ID ); ?>">
 
 		<?php					
 			$paywall_url_override = isset($post_settings['paywall_url_override']) ? $post_settings['paywall_url_override'] : '';

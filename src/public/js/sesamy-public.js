@@ -5,24 +5,14 @@ Array.from(document.querySelectorAll("[data-sesamy-paywall]")).forEach(
       return;
     }
 
-    var data = item.dataset;
+    var itemSrc = item.dataset.sesamyItemSrc || "";
+    var content = sesamy.content.get(item);
+    var passes = content?.pass?.split(";") || [];
 
-    if (!data.sesamyItemSrc) {
-      console.warn("Attribute data-sesamy-item-src not set.");
-      return;
-    }
-
-    if (!data.sesamyItemSrc) {
-      console.warn("Attribute data-sesamy-item-src not set.");
-      return;
-    }
-
-    sesamy
-      .getEntitlement(data.sesamyItemSrc, data.sesamyPasses?.split(",") ?? [])
-      .then((entitlement) => {
-        if (entitlement !== undefined) {
-          item.style.display = "none";
-        }
-      });
-  },
+    sesamy.getEntitlement(itemSrc, passes).then((entitlement) => {
+      if (entitlement !== undefined) {
+        item.style.display = "none";
+      }
+    });
+  }
 );
