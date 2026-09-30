@@ -94,23 +94,72 @@ class Sesamy_Api_Endpoint {
 
 		// Check that post actually exists.
 		if ( null === $post ) {
-			return new WP_Error( 404, __( 'Post not found.', 'sesamy' ) );
+			return new WP_Error( 'sesamy_post_not_found', __( 'Post not found.', 'sesamy' ), array( 'status' => 404 ) );
 		}
+
+		// Only published posts without a password are served.
+		if ( 'publish' !== $post->post_status || '' !== $post->post_password ) {
+			return new WP_Error( 'sesamy_post_not_found', __( 'Post not found.', 'sesamy' ), array( 'status' => 404 ) );
+		}
+
+		// If the post is locked, a valid access token is required. If not, just return the content.
+		if ( Sesamy::is_locked( $post ) ) {
+			$result = $this->authorize( $request );
+			if ( is_wp_error( $result ) ) {
+				return $result;
+			}
+		}
+
+		return new WP_REST_Response( array( 'data' => apply_filters( 'the_content', $post->post_content ) ) );
+	}
+
+	/**
+	 * Verify the Bearer token in the authorization header. Fails closed when the header is missing or invalid.
+	 *
+	 * @since      3.0.12
+	 * @package    Sesamy
+	 * @param WP_REST_Request $request Request.
+	 * @return true|WP_Error
+	 */
+	public function authorize( $request ) {
+
+		$unauthorized = new WP_Error( 'sesamy_unauthorized', __( 'A valid access token is required.', 'sesamy' ), array( 'status' => 401 ) );
 
 		// Get JWT token from the authorization header.
-		$jwt = isset( $_SERVER['HTTP_AUTHORIZATION'] ) ? sanitize_text_field( wp_unslash( $_SERVER['HTTP_AUTHORIZATION'] ) ) : '';
-
-		// If the post is locked, verify the JWT token. If not, just return the content.
-		$sesamy_helper_obj = new Sesamy_JWT_Helper();
-		$result            = Sesamy::is_locked( $post ) && preg_match('/^\s*Bearer/i', $jwt) ? $sesamy_helper_obj->verify( $jwt ) : true;
-
-		if ( is_wp_error( $result ) ) {
-			return $result;
-		} elseif ( is_bool( $result ) && true === $result ) {
-			return new WP_REST_Response( array( 'data' => apply_filters( 'the_content', $post->post_content ) ) );
-		} else {
-			return new WP_Error( 400, __( 'The link is incorrect or no longer valid.', 'sesamy' ) );
+		$auth_header = (string) $request->get_header( 'authorization' );
+		if ( ! preg_match( '/^\s*Bearer\s+(\S+)\s*$/i', $auth_header, $matches ) ) {
+			return $unauthorized;
 		}
+
+		try {
+			$claims = $this->get_jwt_helper()->decode( $matches[1] );
+		} catch ( Throwable $e ) {
+			return $unauthorized;
+		}
+
+		if ( is_wp_error( $claims ) ) {
+			return new WP_Error( 'sesamy_jwks_unavailable', __( 'Could not verify the access token.', 'sesamy' ), array( 'status' => 503 ) );
+		}
+		if ( ! is_array( $claims ) ) {
+			return $unauthorized;
+		}
+
+		if ( ! isset( $claims['permissions'] ) || ! is_array( $claims['permissions'] ) || ! in_array( 'vault:entitlement:manage', $claims['permissions'], true ) ) {
+			return new WP_Error( 'sesamy_forbidden', __( 'The access token does not grant access to this content.', 'sesamy' ), array( 'status' => 403 ) );
+		}
+
+		return true;
+	}
+
+	/**
+	 * Get the JWT helper used to verify tokens.
+	 *
+	 * @since      3.0.12
+	 * @package    Sesamy
+	 * @return Sesamy_JWT_Helper
+	 */
+	protected function get_jwt_helper() {
+		return new Sesamy_JWT_Helper();
 	}
 
 	/**
